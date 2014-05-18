@@ -11,13 +11,8 @@
 			
 			SC.rescope.all(["onKeyDown","onKeyUp"],this)
 			
-			if(!domElement)
-			{
-				domElement=window
-			}
-			this.domElement=domElement;
-			domElement.addEventListener("keydown", this.onKeyDown, false);
-			domElement.addEventListener("keyup", this.onKeyUp, false);
+			this.domElement=null;
+			this.setDomElement(domElement)
 			
 			this.map=map||CTRL.Keyboard.stdMap;
 			
@@ -55,6 +50,21 @@
 						return;
 					}
 				}
+			}
+		},
+		setDomElement:function(domElement)
+		{
+			if(this.domElement)
+			{
+				this.domElement.removeEventListener("keydown", this.onKeyDown, false);
+				this.domElement.removeEventListener("keyup", this.onKeyUp, false);
+				this.domElement=null;
+			}
+			if(domElement)
+			{
+				this.domElement=domElement;
+				domElement.addEventListener("keydown", this.onKeyDown, false);
+				domElement.addEventListener("keyup", this.onKeyUp, false);
 			}
 		},
 		onKeyDown:function(event)
