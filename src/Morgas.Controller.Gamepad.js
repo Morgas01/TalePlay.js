@@ -16,6 +16,7 @@
 			SC.rescope.all(["update"],this)
 			
 			this.pollDelay=pollDelay||GP.pollDelay;
+			this.pollKey=null;
 
 			this.map=map||{};
 			this.map.buttons=this.map.buttons||{};
@@ -42,13 +43,25 @@
 				this.map.buttons[i]=index;
 				this.setButton(index,this.gamepad.buttons[i].value);
 			}
-			setTimeout(this.update,this.pollDelay);
+			this.pollKey=setTimeout(this.update,this.pollDelay);
 		},
 		toJSON:function()
 		{
 			var json=CTRL.prototype.toJSON.call(this);
 			json.gpIndex=this.gpIndex;
 			return json;
+		},
+		setDisabled:function(disabled)
+		{
+			CTRL.prototype.setDisabled.call(this,disabled);
+			if(this.disabled)
+			{
+				clearTimeout(this.pollKey);
+			}
+			else
+			{
+				this.update();
+			}
 		}
 	});
 	GP.pollDelay=100;

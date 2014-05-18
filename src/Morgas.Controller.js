@@ -108,6 +108,7 @@
 	{
 		this.superInit(LST);
 		
+		this.disabled=false;
 		this.axes=[];
 		this.buttons=[];
 		
@@ -165,6 +166,14 @@
 			this.fire("changed");
 		}
 	};
+	CTRL.prototype.setDisabled=function(disabled)
+	{
+		this.disabled=disabled===true;
+		for(var i in this.listeners)
+		{
+			this.listeners[i].setDisabled(this.disabled);
+		}
+	}
 	
 	SMOD("Controller",CTRL);
 	
