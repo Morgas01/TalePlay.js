@@ -7,6 +7,27 @@
 		<script type="text/javascript" src="Morgas.Controller.js"></script>
 		<script type="text/javascript" src="Morgas.Controller.Keyboard.js"></script>
 		<script type="text/javascript" src="Morgas.Controller.Gamepad.js"></script>
+		
+		
+		<script type="text/javascript" src="Morgas.Board.js"></script>
+		<script type="text/javascript" src="Morgas.Board.Layer.js"></script>
+		<script type="text/javascript" src="Morgas.Board.GUIElement.js"></script>
+		<script type="text/javascript" src="Morgas.Menu.js"></script>
+		<script type="text/javascript" src="Morgas.Board.GUIElement.Menu.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="Morgas.Board.GUIElement.css">
+		<link rel="stylesheet" type="text/css" href="Morgas.Board.GUIElement.Menu.css">
+		<style type="text/css">
+			* {
+			    font-family: lucida console,monospace;
+			}
+			#board {
+			    border: 1px solid;
+			    height:300px;
+			    width:300px;
+			}
+		</style>
+		
 		<script type="text/javascript">
 			function logController()
 			{
@@ -20,12 +41,24 @@
 				  axes:{}
 			  });
 			  gp.addListener("changed",logController);
-			  GP=e.gamepad;
+			  board.addController(gp);
 			});
-			
+			window.addEventListener("load", function()
+			{
+				board=new µ.Board(document.getElementById("board"));
+				board.addController(controller);
+				layer=new µ.Board.Layer();
+				menu=new µ.Board.GUIElement.Menu(layer,{items:["test1","test2","test3","test4","test5"]});
+				var style=menu.domElement.style;
+				style.top=style.right="0";
+				board.addLayer(layer);
+				
+				//controller.setDomElement(window);
+			}, false);
 		</script>
 	</head>
 	<body>
 		<textarea id="logger" style="width: 100%;height:25%;"></textarea>
+		<div id="board"></div>
 	</body>
 </html>

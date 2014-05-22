@@ -1,0 +1,13 @@
+.GUIElement.Menu .menuitem {
+    margin: 10px 20px;
+}
+.GUIElement.Menu[data-type="VERTICAL"] .menuitem {
+    display: block;
+}
+.GUIElement.Menu .menuitem.active:before {
+    content: "►";
+    margin: 0 5px 0 -14px;
+}
+.GUIElement.Menu .menuitem.selected {
+    background-color: #FFFFFF;
+}

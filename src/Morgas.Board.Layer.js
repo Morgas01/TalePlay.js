@@ -4,13 +4,12 @@
 	LST=GMOD("Listeners");
 	
 	var LAYER=BOARD.Layer=µ.Class(LST,{
-		init:function(board)
+		init:function()
 		{
 			this.superInit(LST);
 			this.createListener("changed axisChanged buttonChanged .board");
 			
 			this.board=null;
-			this.setBoard(board);
 		},
 		setBoard:function(board)
 		{

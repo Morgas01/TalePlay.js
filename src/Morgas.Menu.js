@@ -1,18 +1,14 @@
 (function(µ,SMOD,GMOD){
-
-	var LST=GMOD("Listeners");
 	
-	var MENU=µ.Menu=µ.Class(LST,{
+	var MENU=µ.Menu=µ.Class({
 		init:function(param)
-		{
-			this.superInit(LST);
-			
+		{	
 			param=param||{};
 			
 			this.items=param.items||[];
 			this.selectedIndexs=[];
 			
-			this.active=0;
+			this.active=-1;
 			
 			this.loop=param.loop!==false;
 		},
@@ -26,9 +22,21 @@
 			if(index!==-1)
 			{
 				this.items.splice(index, 1);
-				return true;
+				var sIndex=this.selectedIndexs.indexOf(index);
+				if(sIndex!==-1)
+				{
+					this.selectedIndexs.splice(sIndex, 1);
+				}
+				if(this.active>index)
+				{
+					this.active--;
+				}
+				else if (this.active===index)
+				{
+					this.setActive(-1);
+				}
 			}
-			return false;
+			return index;
 		},
 		getItem:function(index)
 		{
@@ -40,7 +48,7 @@
 		},
 		setActive:function(index)
 		{
-			this.active=index;
+			this.active=Math.max(-1,Math.min(this.items.length-1,index));
 		},
 		activeUp:function()
 		{
@@ -66,15 +74,21 @@
 		},
 		toggleActive:function()
 		{
-			var index=this.selectedIndexs.indexOf(this.active);
-			if(index!==-1)
+			if(this.active!==-1)
 			{
-				this.selectedIndexs.push(this.active);
+				var index=this.selectedIndexs.indexOf(this.active);
+				if(index===-1)
+				{
+					this.selectedIndexs.push(this.active);
+					return true;
+				}
+				else
+				{
+					this.selectedIndexs.splice(index, 1);
+					return false;
+				}
 			}
-			else
-			{
-				this.selectedIndexs.splice(index, 1);
-			}
+			return null;
 		},
 		getSelectedItems:function()
 		{

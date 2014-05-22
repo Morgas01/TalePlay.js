@@ -3,7 +3,8 @@
 	var GUI=GMOD("GUIElement"),
 	
 	SC=GMOD("shortcut")({
-		MENU:"Menu"
+		MENU:"Menu",
+		find:"find"
 	});
 	
 	var MENU=GUI.Menu=µ.Class(GUI,{
@@ -19,11 +20,13 @@
 			this.buttons=param.buttons||[];
 			this.domItems=[];
 			
+			this.domElement.dataset.type = this.type===3 ? "GRID" : this.type===2 ? "HORIZONTAL" : "VERTICAL";
+			
 			this.lastdirection4=0;
 			this.lastButton=null;
 			
 			param=param||{};
-			this.menu=new SC.MENU(param);
+			this.menu=new SC.MENU();
 			
 			if(param.items)
 			{
@@ -40,6 +43,10 @@
 				var direction=axis.getDirection4();
 				if(direction!==this.lastdirection4&&direction!==0)
 				{
+					if(this.menu.active!==-1)
+					{
+						this.domItems[this.menu.active].classList.remove("active");
+					}
 					if(this.type===MENU.Types.VERTICAL&&direction===1||
 					   this.type===MENU.Types.HORIZONTAL&&direction===4)
 					{
@@ -52,6 +59,10 @@
 					}
 				}
 				this.lastdirection4=direction;
+				if(this.menu.active!==-1)
+				{
+					this.domItems[this.menu.active].classList.add("active");
+				}
 				this.fire("activeChanged")
 			}
 		},
@@ -65,19 +76,32 @@
 				}
 				else if (this.lastButton===null)
 				{
-					this.menu.toggleActive();
 					this.lastButton=index;
+					if(this.menu.active!==-1)
+					{
+						var cl=this.domItems[this.menu.active].classList;
+						if(this.menu.toggleActive())
+						{
+							cl.add("selected");
+						}
+						else
+						{
+							cl.remove("selected");
+						}
+						this.fire("selectionChanged");
+					}
 				}
 			}
 		},
 		addItem:function(item)
 		{
 			var domItem=document.createElement("span");
+			domItem.classList.add("menuitem");
 			domItem.innerHTML=item;
-			this.domItems.push(domIdem);
+			this.domItems.push(domItem);
 			this.menu.addItem(item);
 			
-			this.domELement.appendChild(domItem);
+			this.domElement.appendChild(domItem);
 		},
 		removeItem:function(item)
 		{

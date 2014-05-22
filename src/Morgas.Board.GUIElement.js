@@ -10,15 +10,15 @@
 	var GE=BOARD.GUIElement=µ.Class(LST,{
 		init:function(Layer,domElement)
 		{
-			this.onBoard=SC.rescope(this.onBoard);
-			SC.rescope(["onAxis","onButton"],this);
-			
-			this.layer=null;
-			this.setLayer(layer);
-			
+			this.superInit(LST);
+			SC.rescope.all(["onBoard","onAxis","onButton"],this);
+
 			this.domElement=domElement||document.createElement("div");
 			this.domElement.classList.add("GUIElement");
 			this.domElement.style.position="absolute";
+			
+			this.layer=null;
+			this.setLayer(layer);
 		},
 		setLayer:function(layer)
 		{
@@ -64,6 +64,6 @@
 		},
 	});
 	
-	SMOD("GUIElement");
+	SMOD("GUIElement",GE);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule)

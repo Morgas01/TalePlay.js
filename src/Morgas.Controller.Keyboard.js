@@ -69,11 +69,21 @@
 		},
 		onKeyDown:function(event)
 		{
-			this.set(event.keyCode,1)
+			if(!this.disabled)
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				this.set(event.keyCode,1);
+			}
 		},
 		onKeyUp:function(event)
 		{
-			this.set(event.keyCode,0)
+			if(!this.disabled)
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				this.set(event.keyCode,0);
+			}
 		},
 		destroy:function()
 		{
