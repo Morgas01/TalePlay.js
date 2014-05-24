@@ -17,20 +17,22 @@
 			this.map=map||CTRL.Keyboard.stdMap;
 			
 		},
-		set:function(code,value)
+		set:function(event,value)
 		{
-			if(code in this.map.buttons)
+			if(event.keyCode in this.map.buttons)
 			{
-				this.setButton(this.map.buttons[code],value)
+				this.setButton(this.map.buttons[event.keyCode],value);
+				event.preventDefault();
+				event.stopPropagation();
 			}
 			else
 			{
 				for(var i=0;i<this.map.axes.length;i++)
 				{
-					if(code in this.map.axes[i])
+					if(event.keyCode in this.map.axes[i])
 					{
 						var x=null,y=null;
-						switch(this.map.axes[i][code])
+						switch(this.map.axes[i][event.keyCode])
 						{
 							case 1:
 								y=value;
@@ -47,6 +49,8 @@
 							
 						}
 						this.setAxis(i,x,y);
+						event.preventDefault();
+						event.stopPropagation();
 						return;
 					}
 				}
@@ -71,18 +75,14 @@
 		{
 			if(!this.disabled)
 			{
-				event.preventDefault();
-				event.stopPropagation();
-				this.set(event.keyCode,1);
+				this.set(event,1);
 			}
 		},
 		onKeyUp:function(event)
 		{
 			if(!this.disabled)
 			{
-				event.preventDefault();
-				event.stopPropagation();
-				this.set(event.keyCode,0);
+				this.set(event,0);
 			}
 		},
 		destroy:function()
