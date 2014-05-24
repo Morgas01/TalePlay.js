@@ -52,7 +52,18 @@
 		},
 		activeUp:function()
 		{
-			if(this.active===0&&this.loop)
+			if(this.active===-1)
+			{
+				if(this.loop)
+				{
+					this.setActive(this.items.length-1);
+				}
+				else
+				{
+					this.setActive(0);
+				}
+			}
+			else if(this.active===0&&this.loop)
 			{
 				this.setActive(this.items.length-1);
 			}

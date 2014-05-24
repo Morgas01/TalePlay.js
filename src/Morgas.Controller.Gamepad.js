@@ -64,5 +64,5 @@
 			}
 		}
 	});
-	GP.pollDelay=100;
+	GP.pollDelay=50;
 })(Morgas,Morgas.setModule,Morgas.getModule);
