@@ -49,7 +49,8 @@
 				board=new µ.Board(document.getElementById("board"));
 				board.addController(controller);
 				layer=new µ.Board.Layer();
-				menu=new µ.Board.GUIElement.Menu(layer,{items:["test1","test2","test3","test4","test5"]});
+				menu=new µ.Board.GUIElement.Menu({items:["test1","test2","test3","test4","test5"]});
+				layer.add(menu);
 				var style=menu.domElement.style;
 				style.top=style.right="0";
 				board.addLayer(layer);

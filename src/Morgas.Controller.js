@@ -145,7 +145,7 @@
 		if(this.buttons[index]!==value)
 		{
 			this.buttons[index]=value;
-			this.fire("buttonChanged",index,value);
+			this.fire("buttonChanged",{index:index,value:value});
 			this.fire("changed");
 		}
 	};
@@ -162,7 +162,7 @@
 		if(!this.axes[index].equals(x,y))
 		{
 			this.axes[index].set(x,y)
-			this.fire("axisChanged",index,this.axes[index]);
+			this.fire("axisChanged",{index:index,axis:this.axes[index]});
 			this.fire("changed");
 		}
 	};
@@ -173,7 +173,7 @@
 		{
 			this.listeners[i].setDisabled(this.disabled);
 		}
-	}
+	};
 	
 	SMOD("Controller",CTRL);
 	

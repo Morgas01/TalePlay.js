@@ -5,30 +5,7 @@
 		ctrl:"Controller"
 	});
 	
-	var _ctrlCB=function(_self)
-	{
-		return function()
-		{
-			if(!_self.disabled&&_self.layers.length>0)
-			{
-				var args=Array.prototype.slice.call(arguments,0);
-				var player=null;
-				for(var i=_self.controllers.length-1;i>=0;i--)
-				{
-					if(_self.controllers[i].controller===this)
-					{
-						player=i;
-					}
-				}
-				if(!_self.playerDisabled[player])
-				{
-					args.splice(1,0,player);
-					_self.layers[0].fire.apply(_self.layers[0],args);
-				}
-			}
-		}
-	};
-	var CTRL_EVENTS="changed axisChanged buttonChanged";
+	var CTRL_EVENTS="axisChanged buttonChanged";
 	var BOARD=µ.Board=µ.Class({
 		init:function(container)
 		{
@@ -37,7 +14,8 @@
 			this.disabled=false;
 			this.playerDisabled={};
 			
-			this.ctrlCallback=_ctrlCB(this);
+
+			SC.rs.all(["ctrlCallback"],this);
 			
 			this.domElement=document.createElement("div");
 			this.domElement.style.position="relative";
@@ -72,7 +50,26 @@
 				}
 			}
 		},
-		ctrlCallback:null,/*see _ctrlCB function*/
+		ctrlCallback:function(event)
+		{
+			if(!this.disabled&&this.layers.length>0)
+			{
+				var args=Array.prototype.slice.call(arguments,0);
+				event.player=null;
+				for(var i=this.controllers.length-1;i>=0;i--)
+				{
+					if(this.controllers[i].controller===this)
+					{
+						event.player=i;
+						break;
+					}
+				}
+				if(!this.playerDisabled[event.player])
+				{
+					this.layers[0].onController(event);
+				}
+			}
+		},
 		addLayer:function(layer)
 		{
 			this.layers.unshift(layer);

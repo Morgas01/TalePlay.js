@@ -9,13 +9,13 @@
 	});
 	
 	var MENU=GUI.Menu=µ.Class(GUI,{
-		init:function(layer,param)
+		init:function(param)
 		{
 			SC.rescope.all(["_stepActive"],this);
 			
 			param=param||{};
 			
-			this.superInit(GUI,layer);
+			this.superInit(GUI);
 			this.menu=new SC.MENU();
 			this.domElement.classList.add("Menu");
 			
@@ -42,36 +42,36 @@
 				}
 			}
 		},
-		onAxis:function(type,player,index,axis)
+		onAxis:function(event)
 		{
 			if(!this.allow||
-			  (this.allow.axes&&this.allow.axes.indexOf(index)!==-1)||
-			  (this.allow[player]&&this.allow[player].axes&&this.allow[player].axes.indexOf(index)!==-1))
+			  (this.allow.axes&&this.allow.axes.indexOf(event.index)!==-1)||
+			  (this.allow[event.player]&&this.allow[event.player].axes&&this.allow[event.player].axes.indexOf(event.index)!==-1))
 			{
 				var value=0;
 				if(this.type===MENU.Types.VERTICAL)
 				{
-					if(axis.y>=0.5)
+					if(event.axis.y>=0.5)
 					{
 						value=1;
 					}
-					else if (axis.y<=-0.5)
+					else if (event.axis.y<=-0.5)
 					{
 						value=-1;
 					}
 				}
 				else if(this.type===MENU.Types.HORIZONTAL)
 				{
-					if(axis.x>=0.5)
+					if(event.axis.x>=0.5)
 					{
 						value=-1;
 					}
-					else if (axis.x<=-0.5)
+					else if (event.axis.x<=-0.5)
 					{
 						value=1;
 					}
 				}
-				if (value===0&&this.axisState.index===index&&this.axisState.player===player)
+				if (value===0&&this.axisState.index===event.index&&this.axisState.player===event.player)
 				{
 					this.axisState.index=this.axisState.player=null;
 					this.axisState.value=0;
@@ -80,8 +80,8 @@
 				}
 				else if (this.axisState.index===null&&value!==0)
 				{
-					this.axisState.index=index;
-					this.axisState.player=player;
+					this.axisState.index=event.index;
+					this.axisState.player=event.player;
 					this.axisState.value=value;
 					this._stepActive();
 				}
@@ -125,20 +125,20 @@
 				this.stepID=null;
 			}
 		},
-		onButton:function(type,player,index,value)
+		onButton:function(event)
 		{
 			if(!this.allow||
-			  (this.allow.buttons&&this.allow.buttons.indexOf(index)!==-1)||
-			  (this.allow[player]&&this.allow[player].buttons&&this.allow[player].buttons.indexOf(index)!==-1))
+			  (this.allow.buttons&&this.allow.buttons.indexOf(event.index)!==-1)||
+			  (this.allow[event.player]&&this.allow[event.player].buttons&&this.allow[event.player].buttons.indexOf(event.index)!==-1))
 			{
-				if(value===0&&this.buttonState.index===index&&this.buttonState.player===player)
+				if(event.value===0&&this.buttonState.index===event.index&&this.buttonState.player===event.player)
 				{
 					this.buttonState.index=this.buttonState.player=null;
 				}
-				else if (this.buttonState.index===null&&value===1)
+				else if (this.buttonState.index===null&&event.value===1)
 				{
-					this.buttonState.index=index;
-					this.buttonState.player=player;
+					this.buttonState.index=event.index;
+					this.buttonState.player=event.player;
 					
 					if(this.menu.active!==-1)
 					{
