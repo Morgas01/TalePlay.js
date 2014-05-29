@@ -48,40 +48,33 @@
 		},
 		setActive:function(index)
 		{
-			this.active=Math.max(-1,Math.min(this.items.length-1,index));
-		},
-		activeUp:function()
-		{
-			if(this.active===-1)
+			var min=-1,max=this.items.length-1;
+			index=min>index?min:(max<index?max:index);
+			if(this.active!==index)
 			{
-				if(this.loop)
-				{
-					this.setActive(this.items.length-1);
-				}
-				else
-				{
-					this.setActive(0);
-				}
-			}
-			else if(this.active===0&&this.loop)
-			{
-				this.setActive(this.items.length-1);
-			}
-			else if (this.active>0)
-			{
-				this.setActive(this.active-1);
+				this.active=index;
 			}
 		},
-		activeDown:function()
+		moveActive:function(val)
 		{
-			if(this.active===this.items.length-1&&this.loop)
+			var next=this.active+val;
+			if(!this.loop)
 			{
-				this.setActive(0);
+				next=0>next?0:next;
 			}
-			else if (this.active<this.items.length-1)
+			else
 			{
-				this.setActive(this.active+1);
+				if(this.active===-1&&val<0)
+				{
+					next++;
+				}
+				next=next%this.items.length;
+				if(next<0)
+				{
+					next=this.items.length-next;
+				}
 			}
+			this.setActive(next);
 		},
 		toggleActive:function()
 		{

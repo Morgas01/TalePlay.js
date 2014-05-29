@@ -19,6 +19,7 @@
 			
 			this.domElement=document.createElement("div");
 			this.domElement.style.position="relative";
+			this.domElement.classList.add("Board");
 			
 			if(container)
 			{

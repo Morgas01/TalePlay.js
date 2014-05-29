@@ -95,14 +95,9 @@
 				{
 					this.domItems[this.menu.active].classList.remove("active");
 				}
-				if(this.axisState.value===1)
-				{
-					this.menu.activeUp();
-				}
-				else
-				{
-					this.menu.activeDown();
-				}
+				
+				this.menu.moveActive(-this.axisState.value);
+				
 				if(this.menu.active!==-1)
 				{
 					this.domItems[this.menu.active].classList.add("active");
