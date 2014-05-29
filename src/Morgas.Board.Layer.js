@@ -30,8 +30,8 @@
 			{
 				switch(event.type)
 				{
-					case "axisChanged":
-						this.GUIElements[i].onAxis(event);
+					case "analogStickChanged":
+						this.GUIElements[i].onAnalogStick(event);
 						break;
 					case "buttonChanged":
 						this.GUIElements[i].onButton(event);

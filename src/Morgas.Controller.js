@@ -3,29 +3,53 @@
 	 * Defines a Controller with buttons and axes
 	 */
 	var SC=µ.shortcut({
-		rescope:"rescope"
+		rescope:"rescope",
+		mapping:"ControllerMapping"
 	});
 	
 	var LST=GMOD("Listeners");
 	
 	
 	var CTRL=µ.Controller=µ.Class(LST);
-	
-	CTRL.Axis=µ.Class({
+	CTRL.AnalogStick=µ.Class({
 		init:function(x,y)
 		{
 			this.x=x||0;
 			this.y=y||0;
 		},
+		setIndex:function(index,value)
+		{
+			if(index%2===0)
+			{
+				if(this.x!==value)
+				{
+					var old={x:this.x,y:this.y};
+					this.x=value;
+					return old;
+				}
+			}
+			else if(this.y!==value)
+			{
+				var old={x:this.x,y:this.y};
+				this.y=value;
+				return old;
+			}
+			return null;
+		},
 		set:function(x,y)
 		{
-			this.x=x;
-			this.y=y;
-			return this;
+			if(!this.equals(x, y))
+			{
+				var old={x:this.x,y:this.y};
+				this.x=x;
+				this.y=y;
+				return old;
+			}
+			return null;
 		},
 		equals:function(x,y)
 		{
-			if(this.x==x&&this.y==y||(typeof x==="object"&&this.x==x.x&&this.y==x.y))
+			if(this.x===x&&this.y===y||(typeof x==="object"&&this.x===x.x&&this.y===x.y))
 			{
 				return true;
 			}
@@ -99,38 +123,22 @@
 		},
 		toJSON:function()
 		{
-			return {direction:this.getDirection8(),x:this.x,y:this.y,angle:this.getAngle().toPrecision(4)};
+			return {x:this.x.toFixed(5).slice(0,6),y:this.y.toFixed(5).slice(0,6)};
 		}
 		
 	});
 	
-	CTRL.prototype.init=function(buttonCount,axesCount)
+	CTRL.prototype.init=function(mapping)
 	{
 		this.superInit(LST);
 		
 		this.disabled=false;
-		this.axes=[];
-		this.buttons=[];
+		this.analogSticks={};
+		this.buttons={};
+		this.mapping=null;
 		
-		if(!buttonCount)
-		{
-			buttonCount=10;
-		}
-		for(var i=0;i<buttonCount;i++)
-		{
-			this.buttons.push(0);
-		}
-		
-		if(!axesCount)
-		{
-			axesCount=2;
-		}
-		for(var i=0;i<axesCount;i++)
-		{
-			this.axes.push(new CTRL.Axis());
-		}
-		
-		this.createListener("changed axisChanged buttonChanged");
+		this.setMapping(mapping);
+		this.createListener("changed analogStickChanged buttonChanged");
 	};
 	CTRL.prototype.toString=function()
 	{
@@ -138,33 +146,120 @@
 	};
 	CTRL.prototype.toJSON=function()
 	{
-		return {buttons:this.buttons,axes:this.axes};
+		return {buttons:this.buttons,analogSticks:this.analogSticks};
 	};
-	CTRL.prototype.setButton=function(index,value)
+	CTRL.prototype.setMapping=function(mapping)
 	{
-		if(this.buttons[index]!==value)
+		if(mapping)
 		{
-			this.buttons[index]=value;
-			this.fire("buttonChanged",{index:index,value:value});
+			if(!(mapping instanceof SC.mapping))
+			{
+				mapping=new SC.mapping({data:mapping});
+			}
+			this.mapping=mapping;
+		}
+		else
+		{
+			this.mapping=null;
+		}
+	};
+	CTRL.prototype.getAnalogStick=function(axisIndex)
+	{
+		var stickIndex=Math.floor(axisIndex/2);
+		if(this.analogSticks[stickIndex]===undefined)
+		{
+			this.analogSticks[stickIndex]=new CTRL.AnalogStick();
+		}
+		return this.analogSticks[stickIndex];
+	};
+	CTRL.prototype.setButton=function(buttonMap)
+	{
+		var changed=false,axisMap=undefined;
+		if(this.mapping)
+		{
+			var remapped={};
+			axisMap={};
+			for(var i in buttonMap)
+			{
+				var axisIndex=this.mapping.getButtonAxisMapping(i);
+				if(axisIndex!==undefined)
+				{
+					axisMap[Math.abs(axisIndex)]=this.mapping.convertAxisValue(axisIndex,buttonMap[i]);
+				}
+				else
+				{
+					remapped[this.mapping.getButtonMapping(i)]=buttonMap[i];
+				}
+			}
+			buttonMap=remapped;
+		}
+		
+		for(var index in buttonMap)
+		{
+			var value=buttonMap[index]
+			if(this.buttons[index]===undefined||this.buttons[index]!==value)
+			{
+				var old=this.buttons[index]||0;
+				this.buttons[index]=value;
+				this.fire("buttonChanged",{index:index,value:value,oldValue:old});
+				changed=true;
+			}
+		}
+		if(axisMap)
+		{
+			changed=this.setAxis(axisMap,true)||changed;
+		}
+		if(changed)
+		{
 			this.fire("changed");
 		}
+		return changed;
 	};
-	CTRL.prototype.setAxis=function(index,x,y)
+	CTRL.prototype.setAxis=function(axisMap,fromButton)
 	{
-		if(x===null)
+		var changed=false;
+		if(this.mapping&&!fromButton)
 		{
-			x=this.axes[index].x;
+			var remapped={}
+			for(var i in axisMap)
+			{
+				var index=this.mapping.getAxisMapping(i),value=this.mapping.convertAxisValue(index,axisMap[i])
+				remapped[Math.abs(index)]=value;
+			}
+			axisMap=remapped;
 		}
-		if(y===null)
+		
+		var keys=Object.keys(axisMap).sort();
+		for(var i=0;i<keys.length;i++)
 		{
-			y=this.axes[index].y;
+			var old=undefined;
+			var index=keys[i];
+			var aStick=this.getAnalogStick(index);
+			if(index%2==0&&keys[i+1]===index+1)
+			{
+				i++;
+				old=aStick.set(axisMap[index],axisMap[index+1]);
+			}
+			else
+			{
+				old=aStick.setIndex(index,axisMap[index]);
+			}
+			if(old)
+			{
+				changed=true;
+				this.fire("analogStickChanged",{index:index,analogStick:aStick,oldValue:old});
+			}
 		}
-		if(!this.axes[index].equals(x,y))
+		if(changed&&!fromButton)
 		{
-			this.axes[index].set(x,y)
-			this.fire("axisChanged",{index:index,axis:this.axes[index]});
 			this.fire("changed");
 		}
+		return changed;
+	};
+	CTRL.prototype.set=function(buttons,axes)
+	{
+		this.setButton(buttons);
+		this.setAxis(axes);
 	};
 	CTRL.prototype.setDisabled=function(disabled)
 	{
@@ -174,7 +269,10 @@
 			this.listeners[i].setDisabled(this.disabled);
 		}
 	};
-	
+	CTRL.prototype.destroy=function()
+	{
+		//TODO;
+	};
 	SMOD("Controller",CTRL);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);

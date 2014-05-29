@@ -5,7 +5,7 @@
 		ctrl:"Controller"
 	});
 	
-	var CTRL_EVENTS="axisChanged buttonChanged";
+	var CTRL_EVENTS="analogStickChanged buttonChanged";
 	var BOARD=µ.Board=µ.Class({
 		init:function(container)
 		{

@@ -42,7 +42,7 @@
 				}
 			}
 		},
-		onAxis:function(event)
+		onAnalogStick:function(event)
 		{
 			if(!this.allow||
 			  (this.allow.axes&&this.allow.axes.indexOf(event.index)!==-1)||
@@ -51,22 +51,22 @@
 				var value=0;
 				if(this.type===MENU.Types.VERTICAL)
 				{
-					if(event.axis.y>=0.5)
+					if(event.analogStick.y>=0.5)
 					{
 						value=1;
 					}
-					else if (event.axis.y<=-0.5)
+					else if (event.analogStick.y<=-0.5)
 					{
 						value=-1;
 					}
 				}
 				else if(this.type===MENU.Types.HORIZONTAL)
 				{
-					if(event.axis.x>=0.5)
+					if(event.analogStick.x>=0.5)
 					{
 						value=-1;
 					}
-					else if (event.axis.x<=-0.5)
+					else if (event.analogStick.x<=-0.5)
 					{
 						value=1;
 					}

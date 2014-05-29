@@ -5,55 +5,21 @@
 	});
 	var CTRL=GMOD("Controller");
 	CTRL.Keyboard=µ.Class(CTRL,{
-		init:function(domElement,map,buttonCount,axesCount)
+		init:function(domElement,mapping,buttonCount,axesCount)
 		{
-			this.superInit(CTRL,buttonCount,axesCount);
+			this.superInit(CTRL,mapping||CTRL.Keyboard.stdMapping);
 			
 			SC.rescope.all(["onKeyDown","onKeyUp"],this)
 			
 			this.domElement=null;
 			this.setDomElement(domElement)
-			
-			this.map=map||CTRL.Keyboard.stdMap;
-			
 		},
-		set:function(event,value)
+		setMapping:function(mapping)
 		{
-			if(event.keyCode in this.map.buttons)
+			CTRL.prototype.setMapping.call(this, mapping);
+			if(this.mapping)
 			{
-				this.setButton(this.map.buttons[event.keyCode],value);
-				event.preventDefault();
-				event.stopPropagation();
-			}
-			else
-			{
-				for(var i=0;i<this.map.axes.length;i++)
-				{
-					if(event.keyCode in this.map.axes[i])
-					{
-						var x=null,y=null;
-						switch(this.map.axes[i][event.keyCode])
-						{
-							case 1:
-								y=value;
-								break;
-							case 2:
-								x=value;
-								break;
-							case 3:
-								y=-value;
-								break;
-							case 4:
-								x=-value;
-								break;
-							
-						}
-						this.setAxis(i,x,y);
-						event.preventDefault();
-						event.stopPropagation();
-						return;
-					}
-				}
+				this.mapping.setValueOf("type","Keyboard");
 			}
 		},
 		setDomElement:function(domElement)
@@ -73,25 +39,34 @@
 		},
 		onKeyDown:function(event)
 		{
-			if(!this.disabled)
-			{
-				this.set(event,1);
-			}
+			this.onKey(event,1);
 		},
 		onKeyUp:function(event)
 		{
-			if(!this.disabled)
+			this.onKey(event,0);
+		},
+		onKey:function(event,value)
+		{
+			if(!this.disabled&&this.mapping)
 			{
-				this.set(event,0);
+				if(this.mapping.hasButtonMapping(event.keyCode)||this.mapping.hasButtonAxisMapping(event.keyCode))
+				{
+					event.preventDefault();
+					event.stopPropagation();
+					
+					var map={};
+					map[event.keyCode]=value;
+					this.setButton(map);
+				}
 			}
 		},
 		destroy:function()
 		{
-			this.domElement.removeEventListener("keydown", this.onKeyDown, false);
-			this.domElement.removeEventListener("keyup", this.onKeyUp, false);
+			this.setDomElement();
+			CTRL.prototype.destroy.call(this);
 		}
 	});
-	CTRL.Keyboard.stdMap={
+	CTRL.Keyboard.stdMapping={
 		buttons:{
 			32:0,//space
 			16:1,//shift
@@ -104,17 +79,18 @@
 			19:8,//pause
 			13:9,//enter
 		},
-		axes:[{
+		buttonAxis:{
+			//1
 			87:1,//w
-			68:2,//d
-			83:3,//s
-			65:4//a
-		},{
-			38:1,//up
+			68:0,//d
+			83:-1,//s
+			65:-0,//a
+			//2
+			38:3,//up
 			39:2,//right
-			40:3,//down
-			37:4,//left
-		}]
+			40:-3,//down
+			37:-2,//left
+		}
 	}
 
 })(Morgas,Morgas.setModule,Morgas.getModule);

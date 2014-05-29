@@ -11,11 +11,11 @@
 			this.domElement=document.createElement("div");
 			this.domElement.classList.add("GUIElement");
 		},
-		onAxis:function(type,player,index,axis)
+		onAnalogStick:function(event)
 		{
 			
 		},
-		onButton:function(type,player,index,value)
+		onButton:function(event)
 		{
 			
 		},
