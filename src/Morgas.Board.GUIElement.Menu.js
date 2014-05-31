@@ -19,7 +19,7 @@
 			this.menu=new SC.MENU();
 			this.domElement.classList.add("Menu");
 			
-			this.createListener("activeChanged selectionChanged")
+			this.createListener("activeChanged select")
 
 			this.type=param.type||MENU.Types.VERTICAL;
 			this.axisState={index:null,player:null,value:0};
@@ -137,29 +137,37 @@
 					
 					if(this.menu.active!==-1)
 					{
-						var cl=this.domItems[this.menu.active].classList;
-						if(this.menu.toggleActive())
+						if(this.fire("select",this.menu.getItem(this.menu.active)))
 						{
-							cl.add("selected");
+							var cl=this.domItems[this.menu.active].classList;
+							if(this.menu.toggleActive())
+							{
+								cl.add("selected");
+							}
+							else
+							{
+								cl.remove("selected");
+							}
 						}
-						else
-						{
-							cl.remove("selected");
-						}
-						this.fire("selectionChanged");
 					}
 				}
 			}
 		},
 		addItem:function(item)
 		{
-			var domItem=document.createElement("span");
-			domItem.classList.add("menuitem");
-			domItem.innerHTML=item;
-			this.domItems.push(domItem);
+			if(!(item instanceof Node))
+			{
+				var domItem=document.createElement("span");
+				domItem.innerHTML=item;
+				item=domItem;
+			}
+			if(!item.parentNode)
+			{
+				this.domElement.appendChild(item);
+			}
+			item.classList.add("menuitem");
+			this.domItems.push(item);
 			this.menu.addItem(item);
-			
-			this.domElement.appendChild(domItem);
 		},
 		removeItem:function(item)
 		{

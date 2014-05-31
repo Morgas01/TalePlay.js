@@ -8,9 +8,94 @@
 .Layer,.panel {
 	position:absolute;
 }
+
+/*-- Menu --*/
 .GUIElement.Menu .menuitem {
     display: inline-block;
 }
 .GUIElement.Menu[data-type="VERTICAL"] .menuitem {
     display: block;
+}
+
+/*-- ControllerConfig --*/
+.ControllerConfig.Keyboard .axisButton {
+    display:none;
+}
+.ControllerConfig input {
+    position:absolute;
+}
+.ControllerConfig .buttons{
+    padding:20px 0;
+}
+.ControllerConfig .button {
+    position:relative;
+    border:1px solid;
+    border-radius:1000px;
+    padding:8px;
+    margin:8px;
+}
+.ControllerConfig .button input {
+    top:25px;
+    left:0px;
+}
+.ControllerConfig .analogSticks {
+    padding:50px 0;
+}
+.ControllerConfig .analogStick {
+    position:relative;
+    border:1px solid;
+    padding:20px;
+    margin:0 0 0 40px ;
+}
+.ControllerConfig label{
+    position: absolute;
+    font-size:10px;
+}
+.ControllerConfig label.axisButton {
+    top:-25px;
+    left:-35px;
+}
+.ControllerConfig input.axisButton {
+    left:-20px;
+    top:-17px;
+}
+.ControllerConfig .axisButton:not(:checked)+* > .neg {
+    display:none;
+}
+.ControllerConfig .axisButton:checked+* > label {
+    display:none;
+}
+.ControllerConfig  input.axis-x {
+    top:calc(50% - 12px);
+}
+.ControllerConfig  input.axis-y {
+    left:calc(50% - 12px);
+}
+.ControllerConfig  input.axis-y.pos {
+    top:-15px;
+}
+.ControllerConfig  input.axis-x.pos {
+    right:-15px;
+}
+.ControllerConfig  input.axis-y.neg {
+    bottom:-15px;
+}
+.ControllerConfig  input.axis-x.neg {
+    left:-15px;
+}
+.ControllerConfig .invert-axis-x {
+    right:-20px;
+    bottom:10px;
+}
+.ControllerConfig .invert-axis-x input {
+    bottom:14px;
+    right:-5px
+}
+.ControllerConfig .invert-axis-y {
+    left:-20px;
+    top:5px;
+}
+.ControllerConfig .invert-axis-y input {
+    top:-6px;
+    left:38px;
 }

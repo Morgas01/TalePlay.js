@@ -19,6 +19,10 @@
 		{
 			
 		},
+		destroy:function()
+		{
+			this.domElement.remove();
+		}
 	});
 	
 	SMOD("GUIElement",GE);

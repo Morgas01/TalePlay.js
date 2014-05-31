@@ -97,7 +97,30 @@
 		removeAxisMapping:function(from){this.removeMapping("axes", from)},
 		hasAxisMapping:function(from){return this.hasMapping("axes", from)},
 		
-		convertAxisValue:function(index,value){return Math.sign(1/index)*value;}
+		convertAxisValue:function(index,value){return Math.sign(1/index)*value;},
+		
+		getReverseMapping:function()
+		{
+			var mapping=this.getValueOf("data");
+			var reverse={
+				buttons:{},
+				buttonAxis:{},
+				axes:{}
+			};
+			for(var type in mapping)
+			{
+				for(var i in mapping[type])
+				{
+					var index=mapping[type][i];
+					if(index===0)
+					{
+						index=1/index<0?"-0":"0";
+					}
+					reverse[type][index]=i;
+				}
+			}
+			return reverse;
+		}
 		
 	});
 	SMOD("ControllerMapping",MAPPING);

@@ -15,19 +15,15 @@
 		<script type="text/javascript" src="Morgas.Board.Layer.js"></script>
 		<script type="text/javascript" src="Morgas.Board.GUIElement.js"></script>
 		<script type="text/javascript" src="Morgas.Menu.js"></script>
-		<script type="text/javascript" src="Morgas.Board.GUIElement.Menu.js"></script>
+		<script type="text/javascript" src="Morgas.Board.GUIElement.ControllerConfig.js"></script>
 		
 		<link rel="stylesheet" type="text/css" href="structure.css">
 		<link rel="stylesheet" type="text/css" href="TalePlay-classic.css">
 		<style type="text/css">
-			* {
-			    font-family: lucida console,monospace;
-			    font-size:20px;
-			}
 			#board {
 			    border: 1px solid;
-			    height:300px;
-			    width:300px;
+			    height:500px;
+			    width:500px;
 			}
 		</style>
 		
@@ -51,16 +47,9 @@
 				board=new µ.Board(document.getElementById("board"));
 				board.addController(controller);
 				layer=new µ.Board.Layer();
-				var menu=new µ.Board.GUIElement.Menu({items:["test1","test2","test3","test4","test5"]});
-				var style=menu.domElement.style;
-				style.top=style.right="0";
-				menu.domElement.classList.add("panel");
-				layer.add(menu);
-				menu=new µ.Board.GUIElement.Menu({items:["test1","test2","test3","test4","test5"],type:µ.Board.GUIElement.Menu.Types.HORIZONTAL});
-				var style=menu.domElement.style;
-				style.bottom=style.right="0";
-				menu.domElement.classList.add("panel");
-				layer.add(menu);
+				var config=new µ.Board.GUIElement.ControllerConfig({controller:controller,buttons:10,analogSticks:2});
+				config.domElement.classList.add("panel");
+				layer.add(config);
 				board.addLayer(layer);
 				
 				controller.setDomElement(window);
