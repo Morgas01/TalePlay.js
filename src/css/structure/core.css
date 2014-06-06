@@ -1,0 +1,10 @@
+.Board {
+	position: relative;
+}
+.Board,.Layer {
+	height:100%;
+	width:100%;
+}
+.Layer,.panel {
+	position:absolute;
+}
