@@ -11,23 +11,19 @@
 		{
 			this.gamepad=gamepad;
 			
-			this.superInit(CTRL,this.gamepad.buttons.length,this.gamepad.axes.length>>>1);
+			this.superInit(CTRL,map);
 			
 			SC.rescope.all(["update"],this)
 			
 			this.pollDelay=pollDelay||GP.pollDelay;
 			this.pollKey=null;
-
-			this.map=map||{};
-			this.map.buttons=this.map.buttons||{};
-			this.map.axes=this.map.axes||{};
 			
 			this.addListener(".created",this.update);
 		},
 		update:function()
 		{
 			this.set(this.gamepad.buttons.map(function(b){return b.value;}),this.gamepad.axes);
-			this.pollKey=setTimeout(this.update,this.pollDelay);
+			this.pollKey=requestAnimationFrame(this.update,this.pollDelay);
 		},
 		toJSON:function()
 		{
@@ -40,7 +36,7 @@
 			CTRL.prototype.setDisabled.call(this,disabled);
 			if(this.disabled)
 			{
-				clearTimeout(this.pollKey);
+				cancelAnimationFrame(this.pollKey);
 			}
 			else
 			{

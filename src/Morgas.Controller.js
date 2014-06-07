@@ -148,6 +148,10 @@
 	{
 		return {buttons:this.buttons,analogSticks:this.analogSticks};
 	};
+	CTRL.prototype.getMapping=function()
+	{
+		return this.mapping;
+	};
 	CTRL.prototype.setMapping=function(mapping)
 	{
 		if(mapping)
@@ -247,7 +251,7 @@
 			if(old)
 			{
 				changed=true;
-				this.fire("analogStickChanged",{index:index,analogStick:aStick,oldValue:old});
+				this.fire("analogStickChanged",{index:index>>1,analogStick:aStick,oldValue:old});
 			}
 		}
 		if(changed&&!fromButton)

@@ -39,7 +39,7 @@
     left:-20px;
     top:-17px;
 }
-.ControllerConfig .axisButton:not(:checked)+* > .neg {
+.ControllerConfig .axisButton:not(:checked)+* > .neg{
     display:none;
 }
 .ControllerConfig .axisButton:checked+* > label {

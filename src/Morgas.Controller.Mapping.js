@@ -112,9 +112,10 @@
 				for(var i in mapping[type])
 				{
 					var index=mapping[type][i];
-					if(index===0)
+					if(1/index<0)
 					{
-						index=1/index<0?"-0":"0";
+						index=-index;
+						i="-"+i;
 					}
 					reverse[type][index]=i;
 				}

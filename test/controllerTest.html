@@ -39,22 +39,50 @@
 			var controller=new Morgas.Controller.Keyboard();
 			controller.addListener("changed",logController)
 			window.addEventListener("gamepadconnected", function(e) {
-			  var gp=new µ.Controller.Gamepad(e.gamepad,{
-				  axes:{}
-			  });
-			  gp.addListener("changed",logController);
-			  board.addController(gp);
+				var gp=new µ.Controller.Gamepad(e.gamepad,{
+					"buttons": {
+						"0": "2",
+						"1": "0",
+						"2": "1",
+						"3": "3",
+						"4": "4",
+						"5": "5",
+						"6": "6",
+						"7": "7",
+						"8": "8",
+						"9": "9"
+					},
+					"buttonAxis": {},
+					"axes": {
+						"0": "0",
+						"1": -1,
+						"4": "2",
+						"5": -3
+					}
+				});
+				gp.addListener("changed",logController);
+				board.addController(gp);
+
+				config=new µ.Board.GUIElement.ControllerConfig({controller:gp,buttons:10,analogSticks:2});
+				config.domElement.classList.add("panel");
+				layer.add(config);
+				config.addListener("submit",function(e)
+				{
+					document.getElementById("logger").value=JSON.stringify(e.source.getMapping(),null,"\t");
+				})
+			  
 			});
 			window.addEventListener("load", function()
 			{
 				board=new µ.Board(document.getElementById("board"));
 				board.addController(controller);
 				layer=new µ.Board.Layer();
+				board.addLayer(layer);
+				/*
 				var config=new µ.Board.GUIElement.ControllerConfig({controller:controller,buttons:10,analogSticks:2});
 				config.domElement.classList.add("panel");
 				layer.add(config);
-				board.addLayer(layer);
-				
+				*/
 				controller.setDomElement(window);
 			}, false);
 		</script>

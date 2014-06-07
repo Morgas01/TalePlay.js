@@ -6,6 +6,11 @@
 		ctrl:"Controller"
 	});
 	
+	var controllerTypes={
+		Keyboard:1,
+		Gamepad:2
+	};
+	
 	var GUI=GMOD("GUIElement");
 	var getTitle=function(code)
 	{
@@ -73,138 +78,172 @@
 		
 		return title;
 	};
-	var getHTML=function(buttons,analogSticks,controller)
+	var getHTML=function(buttons,analogSticks)
 	{
-		var reverseMap=null;
-		if(controller.mapping)
-		{
-			reverseMap=controller.mapping.getReverseMapping();
-		}
 		var html='<div class="buttons">';
 		for(var i=0;i<buttons;i++)
 		{
-			var value=i;
-			if(reverseMap&&reverseMap.buttons[i]!==undefined)
-			{
-				value=reverseMap.buttons[i];
-			}
-			var title=getTitle(value);
-			html+='<span class="button">'+
+			html+=
+			'<span class="button">'+
 				'<span>'+i+'</span>'+
-				'<input type="text" size="3" data-button="'+i+'" value="'+value+'" title="'+title+'">'+
+				'<input type="text" size="3" data-button="'+i+'">'+
 			'</span>';
 		}
 		html+='</div><div class="analogSticks">';
 		for(var i=0;i<analogSticks*2;i+=2)
 		{
-			var x=i,y=i+1,
-			negX=0,negY=0;
-			if(reverseMap)
-			{
-				//TODO buttonAxis
-				if(reverseMap.buttonAxis[i]!==undefined)
-				{
-					x=reverseMap.buttonAxis[i];
-				}
-				if(reverseMap.buttonAxis["-"+i]!==undefined)
-				{
-					negX=reverseMap.buttonAxis["-"+i];
-				}
-				if(reverseMap.buttonAxis[i+1]!==undefined)
-				{
-					y=reverseMap.buttonAxis[i+1];
-				}
-				if(reverseMap.buttonAxis["-"+(i+1)]!==undefined)
-				{
-					negY=reverseMap.buttonAxis["-"+(i+1)];
-				}
-				
-/*
-				if(reverseMap.axes[i]!==undefined)
-				{
-					x=reverseMap.axes[i];
-				}
-				else if (reverseMap.axes[-i]!==undefined)
-				{
-					x=reverseMap.axes[-i];
-				}
-				if(reverseMap.axes[i+1]!==undefined)
-				{
-					y=reverseMap.axes[i+1];
-				}
-				else if (reverseMap.axes[-i-1]!==undefined)
-				{
-					y=reverseMap.axes[-i-1];
-				}
-*/
-			}
-
-			var titleX=getTitle(x);
-			var titleNegX=getTitle(negX);
-			var titleY=getTitle(y);
-			var titleNegY=getTitle(negY);
-			html+='<span class="analogStick">'+
+			html+=
+			'<span class="analogStick">'+
 				'<span>'+(i/2)+'</span>'+
 				'<label class="axisButton" for="axisButton'+(i/2)+'"> buttons </label><input class="axisButton" type="checkbox" id="axisButton'+(i/2)+'">'+
 				'<span>'+
-					'<input type="text" size="3" class="axis-y pos" data-axis="'+(i+1)+'" value="'+y+'" title="'+titleY+'">'+
-					'<label class="invert-axis-y"> invert <input type="checkbox"></label>'+
-					'<input type="text" size="3" class="axis-x pos" data-axis="'+i+'" value="'+x+'" title="'+titleX+'">'+
-					'<label class="invert-axis-x"> invert <input type="checkbox"></label>'+
-					'<input type="text" size="3" class="axis-y neg" data-axis="-'+(i+1)+'" value="'+negY+'" title="'+titleNegY+'">'+
-					'<input type="text" size="3" class="axis-x neg" data-axis="-'+i+'" value="'+negX+'" title="'+titleNegX+'">'+
+					'<input type="text" size="3" class="axis-y pos" data-axis="'+(i+1)+'">'+
+					'<input type="text" size="3" class="axis-x pos" data-axis="'+i+'">'+
+					'<input type="text" size="3" class="axis-y neg" data-axis="-'+(i+1)+'">'+
+					'<input type="text" size="3" class="axis-x neg" data-axis="-'+i+'">'+
 				'</span>'+
 			'</span>';
 		}
-		html+="</div>";
+		html+='</div><button>OK</button>';
 		return html;
 	};
-	
 	var CONF=GUI.ControllerConfig=µ.Class(GUI,
 	{
 		init:function(param)
 		{
 			this.superInit(GUI);
-			SC.rs.all(["onInputChange"],this);
+			SC.rs.all(["onInputChange","onClick","controllerChanged"],this);
 			param=param||{};
+			this.createListener("submit");
 			
 			this.domElement.classList.add("ControllerConfig");
 			this.domElement.addEventListener("keydown",this.onInputChange,false);
-			
-			this.controller=param.controller;
+			this.domElement.addEventListener("click",this.onClick,false);
 			
 			this.domElement.innerHTML=getHTML(param.buttons,param.analogSticks,this.controller);
 			
-			if(this.controller instanceof SC.ctrl.Keyboard)
+			this.controllerType=0;
+			this.controller=null;
+			this.setController(param.controller)
+		},
+		setController:function(controller)
+		{
+			if(this.controller!==controller)
 			{
-				this.domElement.classList.add("Keyboard");
-				this.controller.setDisabled(true);
-				var axisButtons=this.domElement.querySelectorAll(".axisButton");
-				for(var i=0;i<axisButtons.length;i++)
+				if(this.controller)
 				{
-					axisButtons[i].checked=true;
+					this.controller.setMapping(this.oldMapping);
+					this.controller.removeListener("analogStickChanged buttonChanged",this.controllerChanged);
+					this.controller.setDisabled(false);
+					
+					this.controllerType=0;
+					this.domElement.classList.remove("Keyboard");
+					this.domElement.classList.remove("Gamepad");
+					
+					this.controller=null;
 				}
+				this.controller=controller||null;
+			}
+			if(this.controller)
+			{
+				if(this.controller instanceof SC.ctrl.Keyboard)
+				{
+					this.controllerType=controllerTypes.Keyboard;
+					this.domElement.classList.add("Keyboard");
+					this.controller.setDisabled(true);
+				}
+				else
+				{
+					this.controllerType=controllerTypes.Gamepad;
+					this.domElement.classList.add("Gamepad");
+					this.controller.addListener("analogStickChanged buttonChanged",this.controllerChanged);
+				}
+				this.oldMapping=this.controller.getMapping();
+				this.controller.setMapping(null);
+				
+				if(this.oldMapping)
+				{
+					var reverseMap=this.oldMapping.getReverseMapping();
+	
+					var buttons=this.getButtons();
+					for(var i=0;i<buttons.length;i++)
+					{
+						var btn=buttons[i];
+						btn.value=reverseMap.buttons[btn.dataset.button];
+						if(controller===controllerTypes.Keyboard)
+						{
+							btn.title=getTitle(reverseMap.buttons[btn.dataset.button]);
+						}
+					}
+	
+					var axes=this.getAxes();
+					for(var i=0;i<axes.length;i++)
+					{
+						var axis=axes[i];
+						axis.value=reverseMap.axes[axis.dataset.axis];
+						if(controller===controllerTypes.Keyboard)
+						{
+							axis.title=getTitle(reverseMap.axes[axis.dataset.axis]);
+						}
+					}
+	
+					var axisButtons=this.getAxisButtons();
+					for(var i=0;i<axisButtons.length;i++)
+					{
+						var btnAxis=axisButtons[i];
+						btnAxis.value=reverseMap.buttonAxis[btnAxis.dataset.axis];
+						if(controller===controllerTypes.Keyboard)
+						{
+							btnAxis.title=getTitle(reverseMap.buttonAxis[btnAxis.dataset.axis]);
+						}
+					}
+				}
+			}
+		},
+		getButtons:function()
+		{
+			return this.domElement.querySelectorAll("input[data-button]");
+		},
+		getAxisButtons:function()
+		{
+			if(this.controllerType===controllerTypes.Keyboard)
+			{
+				return this.domElement.querySelectorAll(".analogStick [data-axis]");
 			}
 			else
 			{
-				this.controller.addListener("analogStickChanged buttonChanged",this.controllerChanged)
+				return this.domElement.querySelectorAll(".axisButton:checked+* > input");
 			}
+		},
+		getAxes:function()
+		{
+			return this.domElement.querySelectorAll(".axisButton:not(:checked)+* > .pos");
 		},
 		onInputChange:function(event)
 		{
-			event.preventDefault();
-			event.stopPropagation();
-			
-			var input=event.originalTarget;
-			input.value=event.keyCode;
-			input.title=getTitle(event.keyCode);
+			if(this.controllerType===controllerTypes.Keyboard)
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				
+				var input=event.originalTarget;
+				input.value=event.keyCode;
+				input.title=getTitle(event.keyCode);
+			}
+		},
+		onClick:function(event)
+		{
+			if(event.target.tagName==="BUTTON")
+			{
+				this.fire("submit")
+			}
 		},
 		controllerChanged:function(event)
 		{
 			if(event.type==="buttonChanged"&&							//button changed
-			  (document.activeElement.dataset.button!==undefined)||		//& button input
-			  	document.activeElement.dataset.axis!==undefined&&		// || buttonAxis input
-			  	document.activeElement.parentNode.previousSibling.checked===true)
+			  (document.activeElement.dataset.button!==undefined||		//& button input
+			   document.activeElement.dataset.axis!==undefined&&		// || buttonAxis input
+			  (document.activeElement.parentNode.previousSibling.checked===true||this.controllerType===controllerTypes.Keyboard)))
 			{
 				document.activeElement.value=event.index;
 			}
@@ -218,11 +257,21 @@
 				{
 					if(x>y)
 					{
-						document.activeElement.value=index*2;
+						var sign="";
+						if(event.analogStick.x<0)
+						{
+							sign="-";
+						}
+						document.activeElement.value=sign+(event.index*2);
 					}
 					else
 					{
-						document.activeElement.value=index*2+1;
+						var sign="";
+						if(event.analogStick.y<0)
+						{
+							sign="-";
+						}
+						document.activeElement.value=sign+(event.index*2+1);
 					}
 				}
 			}
@@ -240,27 +289,38 @@
 				var btn=btns[i];
 				data.buttons[btn.value]=btn.dataset.button;
 			}
-			var buttonAxis=this.domElement.querySelectorAll(".axisButton:checked+* > input");
+			var buttonAxis=null;
+			if(this.controllerType===controllerTypes.Keyboard)
+			{
+				buttonAxis=this.domElement.querySelectorAll(".analogStick input");
+			}
+			else
+			{
+				buttonAxis=this.domElement.querySelectorAll(".axisButton:checked+* > input");
+			}
 			for(var i=0;i<buttonAxis.length;i++)
 			{
 				data.buttonAxis[buttonAxis[i].value]=buttonAxis[i].dataset.axis;
 			}
-			var axes=this.domElement.querySelectorAll(".axisButton:checked+* > .pos");
+			var axes=this.domElement.querySelectorAll(".axisButton:not(:checked)+* > .pos");
 			for(var i=0;i<axes.length;i++)
 			{
 				var axis=axes[i];
-				var invert=axis.nextSibling.checked;
-				data.buttonAxis[axis.value]=(invert ? -axis.dataset.axis : axis.dataset.axis);
+				var from=axis.value;
+				var to=axis.dataset.axis;
+				if(1/from<0)
+				{
+					from=-from;
+					to=-to;
+				}
+				data.axes[from]=to;
 			}
 			var mapping=new SC.mapping({data:data});
 			return mapping;
 		},
 		destroy:function()
 		{
-			if(this.controller instanceof SC.ctrl.Keyboard)
-			{
-				this.controller.setDisabled(false);
-			}
+			this.setController(null);
 			GUI.prototype.destroy.call(this);
 		}
 	});

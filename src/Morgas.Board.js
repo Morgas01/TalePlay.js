@@ -26,6 +26,14 @@
 				container.appendChild(this.domElement);
 			}
 		},
+		setDisabled:function()
+		{
+			//TODO
+		},
+		setPlayerDisabled:function()
+		{
+			//TODO
+		},
 		addController:function(controller,player)
 		{
 			this.removeController(controller);
@@ -50,6 +58,10 @@
 					this.controllers.splice(i,1);
 				}
 			}
+		},
+		setControllerDisabled:function()
+		{
+			//TODO;
 		},
 		ctrlCallback:function(event)
 		{
