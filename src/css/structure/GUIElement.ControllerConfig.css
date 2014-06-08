@@ -42,6 +42,9 @@
 .ControllerConfig .axisButton:not(:checked)+* > .neg{
     display:none;
 }
+.ControllerConfig.Keyboard .analogStick .neg{
+    display:initial;
+}
 .ControllerConfig .axisButton:checked+* > label {
     display:none;
 }
