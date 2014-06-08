@@ -7,7 +7,7 @@
 	var CTRL=GMOD("Controller");
 	
 	var GP=CTRL.Gamepad=µ.Class(CTRL,{
-		init:function(gamepad,map,pollDelay)
+		init:function(gamepad,map)
 		{
 			this.gamepad=gamepad;
 			
@@ -15,7 +15,6 @@
 			
 			SC.rescope.all(["update"],this)
 			
-			this.pollDelay=pollDelay||GP.pollDelay;
 			this.pollKey=null;
 			
 			this.addListener(".created",this.update);
@@ -23,7 +22,7 @@
 		update:function()
 		{
 			this.set(this.gamepad.buttons.map(function(b){return b.value;}),this.gamepad.axes);
-			this.pollKey=requestAnimationFrame(this.update,this.pollDelay);
+			this.pollKey=requestAnimationFrame(this.update);
 		},
 		toJSON:function()
 		{
@@ -44,5 +43,4 @@
 			}
 		}
 	});
-	GP.pollDelay=50;
 })(Morgas,Morgas.setModule,Morgas.getModule);
