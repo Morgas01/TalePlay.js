@@ -44,6 +44,7 @@
 			if(this.GUIElements.indexOf(guiElement)===-1)
 			{
 				this.GUIElements.push(guiElement);
+				guiElement.setLayer(this);
 			}
 			
 			if(typeof target==="string")

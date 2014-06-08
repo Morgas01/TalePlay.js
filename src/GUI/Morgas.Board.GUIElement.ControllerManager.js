@@ -21,7 +21,13 @@
 			param=param||{};
 			this.domElement.innerHTML=template;
 			
-			this.update()
+			this.update();
+
+			var _self=this;
+			window.addEventListener("gamepadconnected",function()
+			{
+				_self.update("devices");
+			});
 		},
 		update:function(part)
 		{
@@ -33,10 +39,10 @@
 				{
 					html+='<option>'+gamepads[i].id+'<option>';
 				}
-				this.domElement.querySelecto(".devices").innerHTML=html;
+				this.domElement.querySelector(".devices").innerHTML=html;
 			}
 
-			if(part===undefined||part==="controllers")
+			if(this.layer&&this.layer.board&&(part===undefined||part==="controllers"))
 			{
 				var ctrls=this.layer.board.controllers;
 				var html="";
@@ -65,7 +71,7 @@
 						'</td>'+
 					'</tr>';
 				}
-				this.domElement.querySelecto(".controllers").innerHTML=html;
+				this.domElement.querySelector(".controllers").innerHTML=html;
 			}
 		},
 		onClick:function(event)
@@ -78,7 +84,7 @@
 		},
 		addDevice:function()
 		{
-			var index=this.domElement.querySelecto(".devices").selectedIndex;
+			var index=this.domElement.querySelector(".devices").selectedIndex;
 			if(index===0)
 			{
 				this.addController(new SC.ctrl.Keyboard());

@@ -13,9 +13,9 @@
 		
 		<script type="text/javascript" src="Morgas.Board.js"></script>
 		<script type="text/javascript" src="Morgas.Board.Layer.js"></script>
-		<script type="text/javascript" src="Morgas.Board.GUIElement.js"></script>
-		<script type="text/javascript" src="Morgas.Menu.js"></script>
-		<script type="text/javascript" src="Morgas.Board.GUIElement.ControllerConfig.js"></script>
+		<script type="text/javascript" src="GUI/Morgas.Board.GUIElement.js"></script>
+		<script type="text/javascript" src="GUI/Morgas.Board.GUIElement.ControllerManager.js"></script>
+		<script type="text/javascript" src="GUI/Morgas.Board.GUIElement.ControllerConfig.js"></script>
 		
 		<link rel="stylesheet" type="text/css" href="css/structure/core.css">
 		<link rel="stylesheet" type="text/css" href="css/structure/GUIElement.Menu.css">
@@ -36,8 +36,30 @@
 				var type=this instanceof Morgas.Controller.Keyboard?"Keyboard":"Gamepad "
 				document.getElementById("logger").value=type+": "+this;
 			}
-			var controller=new Morgas.Controller.Keyboard();
-			controller.addListener("changed",logController)
+			
+			controller=new Morgas.Controller.Keyboard();
+			controller.addListener("changed",logController);
+			
+			window.addEventListener("load", function()
+			{
+				board=new µ.Board(document.getElementById("board"));
+				board.addController(controller);
+				layer=new µ.Board.Layer();
+				board.addLayer(layer);
+
+				manager=new µ.Board.GUIElement.ControllerManager({buttons:10,analogSticks:2});
+				//manager.domElement.classList.add("panel");
+				layer.add(manager);
+				manager.update();
+				config.addListener("submit",function(e)
+				{
+					document.getElementById("logger").value=JSON.stringify(e.source.getMapping(),null,"\t");
+				})
+				
+				controller.setDomElement(window);
+			}, false);
+			
+
 			window.addEventListener("gamepadconnected", function(e) {
 				var gp=new µ.Controller.Gamepad(e.gamepad,{
 					"buttons": {
@@ -62,29 +84,8 @@
 				});
 				gp.addListener("changed",logController);
 				board.addController(gp);
-
-				config=new µ.Board.GUIElement.ControllerConfig({controller:gp,buttons:10,analogSticks:2});
-				config.domElement.classList.add("panel");
-				layer.add(config);
-				config.addListener("submit",function(e)
-				{
-					document.getElementById("logger").value=JSON.stringify(e.source.getMapping(),null,"\t");
-				})
-			  
+				
 			});
-			window.addEventListener("load", function()
-			{
-				board=new µ.Board(document.getElementById("board"));
-				board.addController(controller);
-				layer=new µ.Board.Layer();
-				board.addLayer(layer);
-				/*
-				var config=new µ.Board.GUIElement.ControllerConfig({controller:controller,buttons:10,analogSticks:2});
-				config.domElement.classList.add("panel");
-				layer.add(config);
-				*/
-				controller.setDomElement(window);
-			}, false);
 		</script>
 	</head>
 	<body>
