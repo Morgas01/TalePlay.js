@@ -5,7 +5,7 @@
 	});
 	var CTRL=GMOD("Controller");
 	CTRL.Keyboard=µ.Class(CTRL,{
-		init:function(domElement,mapping,buttonCount,axesCount)
+		init:function(mapping,domElement)
 		{
 			this.superInit(CTRL,mapping||CTRL.Keyboard.stdMapping);
 			
@@ -49,13 +49,13 @@
 		{
 			if(!this.disabled&&this.mapping)
 			{
-				if(this.mapping.hasButtonMapping(event.keyCode)||this.mapping.hasButtonAxisMapping(event.keyCode))
+				if(this.mapping.hasButtonMapping(event.code||event.key)||this.mapping.hasButtonAxisMapping(event.code||event.key))
 				{
 					event.preventDefault();
 					event.stopPropagation();
 					
 					var map={};
-					map[event.keyCode]=value;
+					map[event.code||event.key]=value;
 					this.setButton(map);
 				}
 			}
@@ -66,7 +66,33 @@
 			CTRL.prototype.destroy.call(this);
 		}
 	});
-	CTRL.Keyboard.stdMapping={
+	CTRL.Keyboard.stdMapping=/**/{
+		"buttons": {
+			"1": "2",
+			"2": "3",
+			"3": "4",
+			"4": "5",
+			"5": "6",
+			"6": "7",
+			" ": "0",
+			"Shift": "1",
+			"Pause": "8",
+			"Enter": "9"
+		},
+		"buttonAxis": {
+			"w": "1",
+			"d": "0",
+			"s": "-1",
+			"a": "-0",
+			"Up": "3",
+			"Right": "2",
+			"Down": "-3",
+			"Left": "-2"
+		},
+		"axes": {}
+	}
+	/*/
+	{
 		buttons:{
 			32:0,//space
 			16:1,//shift
@@ -92,5 +118,6 @@
 			37:-2,//left
 		}
 	}
+	/**/
 
 })(Morgas,Morgas.setModule,Morgas.getModule);
