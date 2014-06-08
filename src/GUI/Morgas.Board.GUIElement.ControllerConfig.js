@@ -14,11 +14,11 @@
 	var GUI=GMOD("GUIElement");
 	var getTitle=function(code)
 	{
-		code=~~code;
 		var title="";
 		switch(code)
 		{
 			case 32:
+			case " ":
 				title="space";
 				break;
 			case 16:
@@ -73,7 +73,14 @@
 				title="num 9";
 				break;
 			default:
-				title=String.fromCharCode(code);
+				if(typeof code==="string")
+				{
+					title=code;
+				}
+				else
+				{
+					title=String.fromCharCode(code);
+				}
 		}
 		
 		return title;
@@ -217,18 +224,25 @@
 		},
 		getAxes:function()
 		{
-			return this.domElement.querySelectorAll(".axisButton:not(:checked)+* > .pos");
+			if(this.controllerType!==controllerTypes.Keyboard)
+			{
+				return this.domElement.querySelectorAll(".axisButton:not(:checked)+* > .pos");
+			}
+			else
+			{
+				return [];
+			}
 		},
 		onInputChange:function(event)
 		{
-			if(this.controllerType===controllerTypes.Keyboard)
+			if(event.key!=="Backspace"&&this.controllerType===controllerTypes.Keyboard)
 			{
 				event.preventDefault();
 				event.stopPropagation();
 				
 				var input=event.originalTarget;
-				input.value=event.keyCode;
-				input.title=getTitle(event.keyCode);
+				input.value=event.code||event.key;
+				input.title=getTitle(event.code||event.key);
 			}
 		},
 		onClick:function(event)
@@ -283,26 +297,18 @@
 					buttonAxis:{},
 					axes:{}
 			};
-			var btns=this.domElement.querySelectorAll("input[data-button]");
+			var btns=this.getButtons();
 			for(var i=0;i<btns.length;i++)
 			{
 				var btn=btns[i];
 				data.buttons[btn.value]=btn.dataset.button;
 			}
-			var buttonAxis=null;
-			if(this.controllerType===controllerTypes.Keyboard)
-			{
-				buttonAxis=this.domElement.querySelectorAll(".analogStick input");
-			}
-			else
-			{
-				buttonAxis=this.domElement.querySelectorAll(".axisButton:checked+* > input");
-			}
+			var buttonAxis=this.getAxisButtons();
 			for(var i=0;i<buttonAxis.length;i++)
 			{
 				data.buttonAxis[buttonAxis[i].value]=buttonAxis[i].dataset.axis;
 			}
-			var axes=this.domElement.querySelectorAll(".axisButton:not(:checked)+* > .pos");
+			var axes=this.getAxes();
 			for(var i=0;i<axes.length;i++)
 			{
 				var axis=axes[i];
@@ -311,7 +317,7 @@
 				if(1/from<0)
 				{
 					from=-from;
-					to=-to;
+					to="-"+to;
 				}
 				data.axes[from]=to;
 			}

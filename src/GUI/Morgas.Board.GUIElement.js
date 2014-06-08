@@ -7,9 +7,15 @@
 		init:function()
 		{
 			this.superInit(LST);
+			
+			this.layer=null;
 
 			this.domElement=document.createElement("div");
 			this.domElement.classList.add("GUIElement");
+		},
+		setLayer:function(layer)
+		{
+			this.layer=layer;
 		},
 		onAnalogStick:function(event)
 		{
