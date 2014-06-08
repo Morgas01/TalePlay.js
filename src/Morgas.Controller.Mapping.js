@@ -112,10 +112,14 @@
 				for(var i in mapping[type])
 				{
 					var index=mapping[type][i];
-					if(1/index<0)
+					if(type==="axes"&&1/index<0)
 					{
 						index=-index;
 						i="-"+i;
+					}
+					else if(index===0&&1/index<0)
+					{
+						index="-0";
 					}
 					reverse[type][index]=i;
 				}
