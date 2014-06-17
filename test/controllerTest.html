@@ -6,11 +6,13 @@
 		
 		<script type="text/javascript" src="Morgas/src/Morgas.js"></script>
 		<script type="text/javascript" src="Morgas/src/DB/Morgas.DB.js"></script>
+		
 		<script type="text/javascript" src="Morgas.Controller.js"></script>
 		<script type="text/javascript" src="Morgas.Controller.Mapping.js"></script>
 		<script type="text/javascript" src="Morgas.Controller.Keyboard.js"></script>
 		<script type="text/javascript" src="Morgas.Controller.Gamepad.js"></script>
 		
+		<script type="text/javascript" src="Morgas/src/Morgas.NodePatch.js"></script>
 		<script type="text/javascript" src="Morgas.Board.js"></script>
 		<script type="text/javascript" src="Morgas.Board.Layer.js"></script>
 		<script type="text/javascript" src="GUI/Morgas.Board.GUIElement.js"></script>
@@ -19,6 +21,7 @@
 		
 		<link rel="stylesheet" type="text/css" href="css/structure/core.css">
 		<link rel="stylesheet" type="text/css" href="css/structure/GUIElement.Menu.css">
+		<link rel="stylesheet" type="text/css" href="css/structure/GUIElement.ControllerManager.css">
 		<link rel="stylesheet" type="text/css" href="css/structure/GUIElement.ControllerConfig.css">
 		
 		<link rel="stylesheet" type="text/css" href="css/themes/TalePlay-classic.css">
@@ -26,7 +29,7 @@
 		<style type="text/css">
 			#board {
 			    height:500px;
-			    width:500px;
+			    width:888px;
 			}
 		</style>
 		
@@ -51,15 +54,16 @@
 				//manager.domElement.classList.add("panel");
 				layer.add(manager);
 				manager.update();
+				/*
 				config.addListener("submit",function(e)
 				{
 					document.getElementById("logger").value=JSON.stringify(e.source.getMapping(),null,"\t");
-				})
+				})*/
 				
 				controller.setDomElement(window);
 			}, false);
 			
-
+/*
 			window.addEventListener("gamepadconnected", function(e) {
 				var gp=new µ.Controller.Gamepad(e.gamepad,{
 					"buttons": {
@@ -86,6 +90,7 @@
 				board.addController(gp);
 				
 			});
+*/
 		</script>
 	</head>
 	<body>

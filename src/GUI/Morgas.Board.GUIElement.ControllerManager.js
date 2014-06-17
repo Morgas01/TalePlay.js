@@ -10,15 +10,18 @@
 	
 	var template=
 	'<select class="devices"></select><button data-action="addDevice">add Device</button>'+
-	'<table class=".controllers"></table>';
+	'<table class="controllers"></table>';
 	var MANAGER=GUI.ControllerManager=µ.Class(GUI,{
 		init:function(param)
 		{
-			this.superInit(GUI);
+			this.superInit(GUI,"ControllerManager");
 			SC.rs.all(["onClick"],this);
 			this.domElement.addEventListener("click",this.onClick);
 			
 			param=param||{};
+			param.styleClass=param.styleClass||"overlay";
+			this.addStyleClass(param.styleClass);
+			
 			this.domElement.innerHTML=template;
 			
 			this.update();

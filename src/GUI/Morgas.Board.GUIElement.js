@@ -1,21 +1,29 @@
 (function(µ,SMOD,GMOD){
 
 	var BOARD=GMOD("Board"),
-	LST=GMOD("Listeners");
+	LST=GMOD("Listeners"),
+	NODE=GMOD("NodePatch");
 	
 	var GE=BOARD.GUIElement=µ.Class(LST,{
-		init:function()
+		init:function(styleClass)
 		{
 			this.superInit(LST);
-			
-			this.layer=null;
+			new NODE(this,{
+				parent:"layer"
+			})
+			//this.layer=null;
 
 			this.domElement=document.createElement("div");
 			this.domElement.classList.add("GUIElement");
+			
+			if (styleClass)
+			{
+				this.addStyleClass(styleClass);
+			}
 		},
-		setLayer:function(layer)
+		addStyleClass:function(styleClass)
 		{
-			this.layer=layer;
+			this.domElement.classList.add(styleClass);
 		},
 		onAnalogStick:function(event)
 		{
@@ -27,6 +35,10 @@
 		},
 		destroy:function()
 		{
+			if(this.layer)
+			{
+				this.layer.remove(this);
+			}
 			this.domElement.remove();
 		}
 	});

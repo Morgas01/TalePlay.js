@@ -1,28 +1,23 @@
 (function(µ,SMOD,GMOD){
 
 	var BOARD=GMOD("Board"),
-	LST=GMOD("Listeners");
+	LST=GMOD("Listeners"),
+	NODE=GMOD("NodePatch");
 	
 	var LAYER=BOARD.Layer=µ.Class(LST,{
 		init:function()
 		{
 			this.superInit(LST);
-			
-			this.board=null;
-			this.GUIElements=[];
+
+			this.nodePatch=new NODE(this,{
+				parent:"board",
+				children:"GUIElements",
+			});
+			//this.board=null;
+			//this.GUIElements=[];
 			
 			this.domElement=document.createElement("div");
 			this.domElement.classList.add("Layer");
-		},
-		setBoard:function(board)
-		{
-			this.board=board;
-			this.board.domElement.appendChild(this.domElement);
-		},
-		removeBoard:function()
-		{
-			this.board.domElement.removeChild(this.domElement);
-			this.board=null;
 		},
 		onController:function(event)
 		{
@@ -41,11 +36,7 @@
 		},
 		add:function(guiElement,target)
 		{
-			if(this.GUIElements.indexOf(guiElement)===-1)
-			{
-				this.GUIElements.push(guiElement);
-				guiElement.setLayer(this);
-			}
+			this.nodePatch.addChild(guiElement);
 			
 			if(typeof target==="string")
 			{
@@ -59,12 +50,12 @@
 		},
 		remove:function(guiElement)
 		{
-			index=this.GUIElements.indexOf(guiElement);
-			if(index!==-1)
+			if(this.nodePatch.removeChild(guiElement))
 			{
-				this.GUIElements[index].domElement.remove();
-				this.GUIElements.splice(index,1);
+				GUIElement.domElement.remove();
+				return true;
 			}
+			return false;
 		}
 	});
 	

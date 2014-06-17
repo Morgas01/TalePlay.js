@@ -5,12 +5,18 @@
 		ctrl:"Controller"
 	});
 	
+	var NODE=GMOD("NodePatch");
+	
 	var CTRL_EVENTS="analogStickChanged buttonChanged";
 	var BOARD=µ.Board=µ.Class({
 		init:function(container)
 		{
 			this.controllers=[];
-			this.layers=[];
+			this.nodePatch=new NODE(this,{
+				children:"layers"
+			});
+			//this.layers=[];
+			
 			this.disabled=false;
 			this.playerDisabled={};
 			
@@ -79,19 +85,23 @@
 				}
 				if(!this.playerDisabled[event.player])
 				{
-					this.layers[0].onController(event);
+					this.layers[this.layers.length-1].onController(event);
 				}
 			}
 		},
 		addLayer:function(layer)
 		{
-			this.layers.unshift(layer);
-			layer.setBoard(this);
+			this.nodePatch.addChild(layer);
+			this.domElement.appendChild(layer.domElement);
 		},
-		removeLayer:function()
+		removeLayer:function(layer)
 		{
-			this.layers.shift().removeBoard();
-			
+			if(this.nodePatch.removeChild)
+			{
+				layer.domElement.remove();
+				return true;
+			}
+			return false;
 		}
 	});
 	SMOD("Board",BOARD);
