@@ -45,10 +45,13 @@
 			this.removeController(controller);
 			this.controllers.push({controller:controller,player:player||0});
 			controller.addListener(CTRL_EVENTS,this.ctrlCallback);
+			//TODO no key events on a div
+			/*
 			if(controller instanceof SC.ctrl.Keyboard)
 			{
 				controller.setDomElement(this.domElement);
 			}
+			*/
 		},
 		removeController:function(controller)
 		{

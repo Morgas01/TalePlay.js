@@ -23,10 +23,20 @@
 .GUIElement.Menu .menuitem {
     margin: 10px 10px 10px 30px;
 }
-.GUIElement.Menu .menuitem.active:before {
+.GUIElement.Menu[data-type="TABLE"] .menuitem span:first-child{	
+    padding-left:30px;
+}
+.GUIElement.Menu:not(:hover):not([data-type="TABLE"]) .menuitem.active:before,
+.GUIElement.Menu:not(:hover)[data-type="TABLE"] .menuitem.active span:first-child:before,
+.GUIElement.Menu:not([data-type="TABLE"]) .menuitem:hover:before,
+.GUIElement.Menu[data-type="TABLE"] .menuitem:hover span:first-child:before {
     content: "►";
     margin: 0 0 0 -20px;
     position: absolute;
+}
+
+.GUIElement.Menu .menuitem:hover {
+	cursor: pointer;
 }
 .GUIElement.Menu .menuitem.selected {
     background-color: #FFFFFF;

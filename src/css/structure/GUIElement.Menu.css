@@ -4,3 +4,13 @@
 .GUIElement.Menu[data-type="VERTICAL"] .menuitem {
     display: block;
 }
+.GUIElement.Menu[data-type="TABLE"] {
+    display:table;
+}
+.GUIElement.Menu[data-type="TABLE"] .menuitem{
+    display:table-row;
+}
+.GUIElement.Menu[data-type="TABLE"] .menuitem span{
+    display:table-cell;
+    padding:5px;
+}

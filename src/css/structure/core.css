@@ -5,10 +5,10 @@
 	height:100%;
 	width:100%;
 }
-.Layer,.panel,.overlay {
+.Board .Layer,.Board .panel,.Board .overlay {
 	position:absolute;
 }
-.overlay {
+.Board .overlay {
     top:5px;
     right: 5px;
     bottom: 5px;

@@ -1,11 +1,13 @@
 (function(µ,SMOD,GMOD){
 
-	var GUI=GMOD("GUIElement");
+	var GUI=GMOD("GUIElement"),
+	ORG=GMOD("Organizer");
 	
 	var SC=GMOD("shortcut")({
 		rs:"rescope",
 		mapping:"ControllerMapping",
-		ctrl:"Controller"
+		ctrl:"Controller",
+		GMenu:"GUI.Menu"
 	});
 	
 	var template=
@@ -22,7 +24,11 @@
 			param.styleClass=param.styleClass||"overlay";
 			this.addStyleClass(param.styleClass);
 			
+			this.controllers=new SC.GMenu({type:SC.GMenu.Types.Table,converter:MANAGER.controllerConverter});
+			
 			this.domElement.innerHTML=template;
+			
+			this.mappings=new ORG();
 			
 			this.update();
 
@@ -67,7 +73,7 @@
 							}
 							html+=
 						'</td><td class="controller-mapping">'+
-							(controller.mapping&&controller.mapping.getValueOf("name")||"")
+							(controller.mapping&&controller.mapping.getValueOf("name")||"None")
 						'</td>'+
 						'</td><td class="controller-player">'+
 							ctrls[i].player||""
@@ -104,6 +110,15 @@
 			this.update();
 		}
 	});
+	MANAGER.controllerConverter=function(item,index,selected)
+	{
+		return [
+			index,
+			(controller instanceof SC.ctrl.Keyboard)?"Keyboard":item.gamepad.id,
+			(item.mapping&&item.mapping.getValueOf("name")||"None"),
+			item.player
+	    ];
+	}
 	SMOD("ControllerManager",MANAGER);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule)

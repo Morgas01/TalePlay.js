@@ -5,7 +5,17 @@
 		{	
 			param=param||{};
 			
-			this.items=param.items||[];
+			this.items=[];
+			this.remote=false;
+			if(param.remote)
+			{
+				this.remote=true;
+				this.items=param.remote;
+			}
+			else if (param.items)
+			{
+				this.items=param.items;
+			}
 			this.selectedIndexs=[];
 			
 			this.active=-1;
@@ -46,6 +56,71 @@
 				selected:this.selectedIndexs.indexOf(index)!==-1
 			};
 		},
+		clearSelect:function()
+		{
+			this.selectedIndexs.length=0;
+		},
+		isSelected:function(item)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			return this.selectedIndexs.indexOf(index)!==-1;
+		},
+		addSelect:function(item)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			if(this.items.hasOwnProperty(index)&&this.selectedIndexs.indexOf(index)===-1)
+			{
+				this.selectedIndexs.push(index);
+				return true;
+			}
+			return false;
+		},
+		removeSelect:function(item)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			index=this.selectedIndexs.indexOf(index)
+			if(index!==-1)
+			{
+				this.selectedIndexs.splice(index,1);
+				return true;
+			}
+			return false;
+		},
+		toggleSelect:function(item)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			if(this.items.hasOwnProperty(index))
+			{
+				var sIndex=this.selectedIndexs.indexOf(index);
+				if(sIndex===-1)
+				{
+					this.selectedIndexs.push(index);
+					return true;
+				}
+				else
+				{
+					this.selectedIndexs.splice(sIndex,1);
+					return false;
+				}
+			}
+			return null;
+		},
 		setActive:function(index)
 		{
 			var min=-1,max=this.items.length-1;
@@ -78,21 +153,7 @@
 		},
 		toggleActive:function()
 		{
-			if(this.active!==-1)
-			{
-				var index=this.selectedIndexs.indexOf(this.active);
-				if(index===-1)
-				{
-					this.selectedIndexs.push(this.active);
-					return true;
-				}
-				else
-				{
-					this.selectedIndexs.splice(index, 1);
-					return false;
-				}
-			}
-			return null;
+			return this.toggleSelect(this.active);
 		},
 		getSelectedItems:function()
 		{

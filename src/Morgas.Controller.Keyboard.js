@@ -12,7 +12,7 @@
 			SC.rescope.all(["onKeyDown","onKeyUp"],this)
 			
 			this.domElement=null;
-			this.setDomElement(domElement)
+			this.setDomElement(domElement||window)
 		},
 		setMapping:function(mapping)
 		{

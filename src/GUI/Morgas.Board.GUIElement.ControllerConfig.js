@@ -11,6 +11,8 @@
 		Gamepad:2
 	};
 	
+	
+	
 	var GUI=GMOD("GUIElement");
 	var getTitle=function(code)
 	{
@@ -321,7 +323,17 @@
 				}
 				data.axes[from]=to;
 			}
-			var mapping=new SC.mapping({data:data});
+			var type="";
+			switch (this.controllerType)
+			{
+				case controllerTypes.Keyboard:
+					type="KEYBOARD";
+					break;
+				case controllerTypes.Gamepad:
+					type="GAMEPAD";
+					break;
+			}
+			var mapping=new SC.mapping({data:data,type:type});
 			return mapping;
 		},
 		destroy:function()
