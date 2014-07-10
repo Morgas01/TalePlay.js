@@ -11,9 +11,8 @@
 		Gamepad:2
 	};
 	
-	
-	
 	var GUI=GMOD("GUIElement");
+	
 	var getTitle=function(code)
 	{
 		var title="";
@@ -116,6 +115,8 @@
 		html+='</div><button>OK</button>';
 		return html;
 	};
+	
+	
 	var CONF=GUI.ControllerConfig=µ.Class(GUI,
 	{
 		init:function(param)
@@ -126,8 +127,8 @@
 			this.createListener("submit");
 			
 			this.domElement.classList.add("ControllerConfig");
-			this.domElement.addEventListener("keydown",this.onInputChange,false);
-			this.domElement.addEventListener("click",this.onClick,false);
+			this.domElement.addEventListener("keydown",this.onInputChange,true);
+			this.domElement.addEventListener("click",this.onClick,true);
 			
 			this.domElement.innerHTML=getHTML(param.buttons,param.analogSticks,this.controller);
 			
@@ -237,7 +238,7 @@
 		},
 		onInputChange:function(event)
 		{
-			if(event.key!=="Backspace"&&this.controllerType===controllerTypes.Keyboard)
+			if(event.target.tagName==="INPUT"&&event.key!=="Backspace"&&this.controllerType===controllerTypes.Keyboard)
 			{
 				event.preventDefault();
 				event.stopPropagation();
@@ -342,6 +343,6 @@
 			GUI.prototype.destroy.call(this);
 		}
 	});
-	SMOD("ControllerConfig",CONF);
+	SMOD("GUI.ControllerConfig",CONF);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);

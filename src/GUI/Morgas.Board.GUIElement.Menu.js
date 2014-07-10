@@ -115,6 +115,10 @@
 		onClick:function(event)
 		{
 			var target=event.target;
+			if(target.tagName==="INPUT"||target.tagName==="SELECT"||target.tagName==="TEXTAREA")
+			{
+				return ;
+			}
 			while(target.parentNode&&target.parentNode!==this.domElement)
 			{
 				target=target.parentNode;
@@ -147,6 +151,10 @@
 			if(this.fire("select",this.menu.getItem(index)))
 			{
 				var cl=this.domElement.children[index].classList;
+				if(this.menu.selectionType===SC.MENU.SelectionTypes.single&&!this.menu.isSelected(index)&&this.menu.selectedIndexs.length>0)
+				{
+					this.domElement.children[this.menu.selectedIndexs[0]].classList.remove("selected");
+				}
 				if(this.menu.toggleSelect(index))
 				{
 					cl.add("selected");
@@ -190,6 +198,15 @@
 		{
 			this.menu.addItem(item);
 			this.domElement.appendChild(this.convertItem(item));
+			return this;
+		},
+		addAll:function(items)
+		{
+			for(var i=0;i<items.length;i++)
+			{
+				this.addItem(items[i]);
+			}
+			return this;
 		},
 		removeItem:function(item)
 		{
@@ -205,8 +222,16 @@
 			var rtn=this.menu.getItem(index);
 			rtn.domElement=this.domElement.children[index];
 			return rtn;
+		},
+		clear:function()
+		{
+			this.menu.clear();
+			while(this.domElement.lastChild)
+			{
+				this.domElement.lastChild.remove();
+			}
+			return this;
 		}
-		
 	});
 	MENU.Types={
 		VERTICAL:1,

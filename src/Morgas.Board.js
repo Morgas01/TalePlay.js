@@ -21,11 +21,19 @@
 			this.playerDisabled={};
 			
 
-			SC.rs.all(["ctrlCallback"],this);
+			SC.rs.all(["_ctrlCallback","focus"],this);
 			
 			this.domElement=document.createElement("div");
 			this.domElement.style.position="relative";
 			this.domElement.classList.add("Board");
+			
+			this.keyTrigger=document.createElement("textarea");
+			this.domElement.appendChild(this.keyTrigger);
+			this.keyTrigger.classList.add("keyTrigger");
+			this.keyTrigger.style.position="absolute";
+			this.keyTrigger.style.zIndex="-1";
+			
+			this.domElement.addEventListener("click", this.focus, false);
 			
 			if(container)
 			{
@@ -43,15 +51,15 @@
 		addController:function(controller,player)
 		{
 			this.removeController(controller);
-			this.controllers.push({controller:controller,player:player||0});
-			controller.addListener(CTRL_EVENTS,this.ctrlCallback);
+			this.controllers.push({controller:controller,player:player||1});
+			controller.addListener(CTRL_EVENTS,this._ctrlCallback);
 			//TODO no key events on a div
-			/*
+			/**/
 			if(controller instanceof SC.ctrl.Keyboard)
 			{
-				controller.setDomElement(this.domElement);
+				controller.setDomElement(this.keyTrigger);
 			}
-			*/
+			//*/
 		},
 		removeController:function(controller)
 		{
@@ -59,7 +67,7 @@
 			{
 				if(this.controllers[i].controller===controller)
 				{
-					controller.removeListener(CTRL_EVENTS,this.ctrlCallback);
+					controller.removeListener(CTRL_EVENTS,this._ctrlCallback);
 					if(controller instanceof SC.ctrl.Keyboard)
 					{
 						controller.setDomElement();
@@ -72,7 +80,7 @@
 		{
 			//TODO;
 		},
-		ctrlCallback:function(event)
+		_ctrlCallback:function(event)
 		{
 			if(!this.disabled&&this.layers.length>0)
 			{
@@ -105,6 +113,13 @@
 				return true;
 			}
 			return false;
+		},
+		focus:function(event)
+		{
+			if(!event||(event.target.tagName!=="INPUT"&&event.target.tagName!=="SELECT"&&event.target.tagName!=="TEXTAREA"))
+			{
+				this.keyTrigger.focus();
+			}
 		}
 	});
 	SMOD("Board",BOARD);

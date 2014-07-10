@@ -5,26 +5,26 @@
 		{	
 			param=param||{};
 			
-			this.items=[];
-			this.remote=false;
-			if(param.remote)
-			{
-				this.remote=true;
-				this.items=param.remote;
-			}
-			else if (param.items)
-			{
-				this.items=param.items;
-			}
-			this.selectedIndexs=[];
+			this.items=param.items||[];
+			this.selectionType=param.selectionType||MENU.SelectionTypes.multi;
+			this.loop=param.loop!==false;
 			
+			this.selectedIndexs=[];
 			this.active=-1;
 			
-			this.loop=param.loop!==false;
 		},
 		addItem:function(item)
 		{
 			this.items.push(item);
+			return this;
+		},
+		addAll:function(items)
+		{
+			for(var i=0;i<items.length;i++)
+			{
+				this.addItem(items[i]);
+			}
+			return this;
 		},
 		removeItem:function(item)
 		{
@@ -71,6 +71,11 @@
 		},
 		addSelect:function(item)
 		{
+			if(this.selectionType===MENU.SelectionTypes.none)
+			{
+				return false;
+			}
+			
 			var index=this.items.indexOf(item);
 			if(index===-1)
 			{
@@ -78,7 +83,14 @@
 			}
 			if(this.items.hasOwnProperty(index)&&this.selectedIndexs.indexOf(index)===-1)
 			{
-				this.selectedIndexs.push(index);
+				if(this.selectionType===MENU.SelectionTypes.single)
+				{
+					this.selectedIndexs[0]=index;
+				}
+				else
+				{
+					this.selectedIndexs.push(index);
+				}
 				return true;
 			}
 			return false;
@@ -100,6 +112,11 @@
 		},
 		toggleSelect:function(item)
 		{
+			if(this.selectionType===MENU.SelectionTypes.none)
+			{
+				return false;
+			}
+			
 			var index=this.items.indexOf(item);
 			if(index===-1)
 			{
@@ -110,7 +127,14 @@
 				var sIndex=this.selectedIndexs.indexOf(index);
 				if(sIndex===-1)
 				{
-					this.selectedIndexs.push(index);
+					if(this.selectionType===MENU.SelectionTypes.single)
+					{
+						this.selectedIndexs[0]=index;
+					}
+					else
+					{
+						this.selectedIndexs.push(index);
+					}
 					return true;
 				}
 				else
@@ -163,8 +187,37 @@
 				rtn.push(this.getItem(i));
 			}
 			return rtn;
+		},
+		getType:function()
+		{
+			return this.selectionType;
+		},
+		setType:function(selectionType)
+		{
+			switch(selectionType)
+			{
+				case MENU.SelectionTypes.none:
+					this.selectedIndexs.length=0;
+					break;
+				case MENU.SelectionTypes.single:
+					this.selectedIndexs.length=1;
+					break;
+			}
+			this.selectionType=selectionType;
+		},
+		clear:function()
+		{
+			this.items.length=this.selectedIndexs.length=0;
+			this.active=-1;
+			return this;
 		}
 	});
+	
+	MENU.SelectionTypes={
+		none:1,
+		single:2,
+		multi:3
+	};
 	
 	SMOD("Menu",MENU);
 	

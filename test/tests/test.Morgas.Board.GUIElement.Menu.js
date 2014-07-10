@@ -1,14 +1,16 @@
 (function() {
 	var name="Menu";
 	var SC=µ.getModule("shortcut")({
-		menu:"GUI.Menu"
+		Board:"Board",
+		gMenu:"GUI.Menu",
+		menu:"Menu"
 	});
 	module(name);
 	test(name, function() {
 		var board = getBoard(name),
-		layer=new µ.Board.Layer(),
-		vMenu=new SC.menu({
-			type:SC.menu.Types.VERTICAL,
+		layer=new SC.Board.Layer(),
+		vMenu=new SC.gMenu({
+			type:SC.gMenu.Types.VERTICAL,
 			items:[
 		       "item1",
 		       "item2",
@@ -17,8 +19,9 @@
 		       "item5"
 			]
 		}),
-		hMenu=new SC.menu({
-			type:SC.menu.Types.HORIZONTAL,
+		hMenu=new SC.gMenu({
+			type:SC.gMenu.Types.HORIZONTAL,
+			selectionType:SC.menu.SelectionTypes.single,
 			items:[
 				{val:1},
 				{val:2},
@@ -31,8 +34,8 @@
 				return "obj"+index+":"+val.val;
 			}
 		}),
-		tMenu=new SC.menu({
-			type:SC.menu.Types.TABLE,
+		tMenu=new SC.gMenu({
+			type:SC.gMenu.Types.TABLE,
 			items:[
 				{val:1},
 				{val:2},

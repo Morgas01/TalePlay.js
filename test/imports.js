@@ -42,10 +42,14 @@
 	WR(guiDir+"Morgas.Board.GUIElement.ControllerConfig.js");
 	CSS(cssDir+"structure/GUIElement.ControllerConfig.css");
 	
+	WR(testDir+"test.Morgas.Board.GUIElement.ControllerConfig.js")
+	
 	// ControllerManager
 	WR(morgasDir+"Morgas.Organizer.js");
 	WR(guiDir+"Morgas.Board.GUIElement.ControllerManager.js");
 	CSS(cssDir+"structure/GUIElement.ControllerManager.css");
+	
+	WR(testDir+"test.Morgas.Board.GUIElement.ControllerManager.js")
 	
 	// 
 	

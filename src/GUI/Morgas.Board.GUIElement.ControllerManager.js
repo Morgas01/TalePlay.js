@@ -7,12 +7,12 @@
 		rs:"rescope",
 		mapping:"ControllerMapping",
 		ctrl:"Controller",
-		GMenu:"GUI.Menu"
+		GMenu:"GUI.Menu",
+		Menu:"Menu"
 	});
 	
 	var template=
-	'<select class="devices"></select><button data-action="addDevice">add Device</button>'+
-	'<table class="controllers"></table>';
+	'<select class="devices"></select><button data-action="addDevice">add Device</button>';
 	var MANAGER=GUI.ControllerManager=µ.Class(GUI,{
 		init:function(param)
 		{
@@ -24,9 +24,15 @@
 			param.styleClass=param.styleClass||"overlay";
 			this.addStyleClass(param.styleClass);
 			
-			this.controllers=new SC.GMenu({type:SC.GMenu.Types.Table,converter:MANAGER.controllerConverter});
+			this.controllers=new SC.GMenu({
+				type:SC.GMenu.Types.TABLE,
+				selectionType:SC.Menu.SelectionTypes.single,
+				converter:MANAGER.controllerConverter,
+			});
 			
 			this.domElement.innerHTML=template;
+			
+			this.domElement.appendChild(this.controllers.domElement);
 			
 			this.mappings=new ORG();
 			
@@ -46,41 +52,14 @@
 				var gamepads=navigator.getGamepads();
 				for(var i=0;i<gamepads.length;i++)
 				{
-					html+='<option>'+gamepads[i].id+'<option>';
+					html+='<option>'+gamepads[i].id+'</option>';
 				}
 				this.domElement.querySelector(".devices").innerHTML=html;
 			}
 
 			if(this.layer&&this.layer.board&&(part===undefined||part==="controllers"))
 			{
-				var ctrls=this.layer.board.controllers;
-				var html="";
-				for(var i=0;i<ctrls.length;i++)
-				{
-					var controller=ctrls[i].controller;
-					html+=
-					'<tr>'+
-						'<td class="controller-index">'+
-							i+
-						'</td><td class="controller-device">';
-							if (controller instanceof SC.ctrl.Keyboard)
-							{
-								html+="Keyboard";
-							}
-							else
-							{
-								html+=controller.gamepad.id;
-							}
-							html+=
-						'</td><td class="controller-mapping">'+
-							(controller.mapping&&controller.mapping.getValueOf("name")||"None")
-						'</td>'+
-						'</td><td class="controller-player">'+
-							ctrls[i].player||""
-						'</td>'+
-					'</tr>';
-				}
-				this.domElement.querySelector(".controllers").innerHTML=html;
+				this.controllers.clear().addAll(this.layer.board.controllers)
 			}
 		},
 		onClick:function(event)
@@ -114,11 +93,11 @@
 	{
 		return [
 			index,
-			(controller instanceof SC.ctrl.Keyboard)?"Keyboard":item.gamepad.id,
-			(item.mapping&&item.mapping.getValueOf("name")||"None"),
-			item.player
+			(item.controller instanceof SC.ctrl.Keyboard)?"Keyboard":item.controller.gamepad.id,
+			(item.controller.mapping&&item.controller.mapping.getValueOf("name")||"None"),
+			'<input type="number" min="1" value="'+item.player+'" >'
 	    ];
 	}
-	SMOD("ControllerManager",MANAGER);
+	SMOD("GUI.ControllerManager",MANAGER);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule)

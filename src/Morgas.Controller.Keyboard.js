@@ -66,7 +66,7 @@
 			CTRL.prototype.destroy.call(this);
 		}
 	});
-	CTRL.Keyboard.stdMapping=/**/{
+	CTRL.Keyboard.stdMapping={
 		"buttons": {
 			"1": "2",
 			"2": "3",
@@ -91,33 +91,6 @@
 		},
 		"axes": {}
 	}
-	/*/
-	{
-		buttons:{
-			32:0,//space
-			16:1,//shift
-			97:2,//num 1
-			98:3,//num 2
-			99:4,//num 3
-			100:5,//num 4
-			101:6,//num 5
-			102:7,//num 6
-			19:8,//pause
-			13:9,//enter
-		},
-		buttonAxis:{
-			//1
-			87:1,//w
-			68:0,//d
-			83:-1,//s
-			65:-0,//a
-			//2
-			38:3,//up
-			39:2,//right
-			40:-3,//down
-			37:-2,//left
-		}
-	}
-	/**/
+	SMOD("Controller.Keyboard",CTRL.Keyboard)
 
 })(Morgas,Morgas.setModule,Morgas.getModule);
