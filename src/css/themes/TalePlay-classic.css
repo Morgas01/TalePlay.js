@@ -1,7 +1,7 @@
 .Board {
     background-color: black;
 }
-.Board,.board * {
+.Board,.Board * {
     color: white;
     font-family: lucida console,monospace;
     font-size:20px;
@@ -19,6 +19,9 @@
     box-shadow: 0 0 0 1px black;
     border-radius: 10px;
     margin: 1px;
+}
+.Board .overlay {
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 .GUIElement {

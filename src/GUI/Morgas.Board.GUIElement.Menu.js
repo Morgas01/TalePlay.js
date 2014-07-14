@@ -15,7 +15,7 @@
 			
 			param=param||{};
 			
-			this.superInit(GUI);
+			this.superInit(GUI,param.styleClass);
 			this.menu=new SC.MENU(param);
 			this.domElement.classList.add("Menu");
 			
@@ -127,6 +127,7 @@
 			if(index!==-1)
 			{
 				this.toggleSelect(index);
+				event.stopPropagation();
 			}
 		},
 		onButton:function(event)
@@ -148,22 +149,20 @@
 		},
 		toggleSelect:function(index)
 		{
-			if(this.fire("select",this.menu.getItem(index)))
+			var cl=this.domElement.children[index].classList;
+			if(this.menu.selectionType===SC.MENU.SelectionTypes.single&&!this.menu.isSelected(index)&&this.menu.selectedIndexs.length>0)
 			{
-				var cl=this.domElement.children[index].classList;
-				if(this.menu.selectionType===SC.MENU.SelectionTypes.single&&!this.menu.isSelected(index)&&this.menu.selectedIndexs.length>0)
-				{
-					this.domElement.children[this.menu.selectedIndexs[0]].classList.remove("selected");
-				}
-				if(this.menu.toggleSelect(index))
-				{
-					cl.add("selected");
-				}
-				else
-				{
-					cl.remove("selected");
-				}
+				this.domElement.children[this.menu.selectedIndexs[0]].classList.remove("selected");
 			}
+			if(this.menu.toggleSelect(index))
+			{
+				cl.add("selected");
+			}
+			else
+			{
+				cl.remove("selected");
+			}
+			this.fire("select",this.menu.getItem(index));
 		},
 		update:function()
 		{
@@ -221,6 +220,15 @@
 		{
 			var rtn=this.menu.getItem(index);
 			rtn.domElement=this.domElement.children[index];
+			return rtn;
+		},
+		getSelectedItems:function()
+		{
+			var rtn=[];
+			for(var i=0;i<this.menu.selectedIndexs.length;i++)
+			{
+				rtn.push(this.getItem(this.menu.selectedIndexs[i]));
+			}
 			return rtn;
 		},
 		clear:function()

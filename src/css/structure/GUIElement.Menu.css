@@ -1,6 +1,3 @@
-.GUIElement.Menu .menuitem {
-    display: inline-block;
-}
 .GUIElement.Menu[data-type="VERTICAL"] .menuitem {
     display: block;
 }

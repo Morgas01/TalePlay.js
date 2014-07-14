@@ -1,15 +1,6 @@
-.ControllerManager {
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 10px;
+.GUIElement.ControllerManager .MappingActions {
+	white-space: nowrap;
 }
-.ControllerManager .controllers {
-    background-color: #000000;
-}
-.ControllerManager .controllers tr:nth-child(odd) {
-    background-color: #FFFFFF;
-}
-.ControllerManager .controllers tr:nth-child(even) {
-    background-color: #EFEFEF;
+.GUIElement.ControllerManager .mappings .Menu {
+    width: 100%;
 }

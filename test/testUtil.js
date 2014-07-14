@@ -1,6 +1,3 @@
-var Kcon=new Morgas.Controller.Keyboard();
-Kcon.addListener("changed",logController);
-
 function logController()
 {
 	var type=this instanceof Morgas.Controller.Keyboard?"Keyboard":"Gamepad"
@@ -16,6 +13,9 @@ window.addEventListener("load", function()
 
 function getBoard(name)
 {
+	var Kcon=new Morgas.Controller.Keyboard();
+	Kcon.addListener("changed",logController);
+	
 	var container=document.createElement("fieldset");
 	container.innerHTML='<legend>'+name+'</legend>';
 	

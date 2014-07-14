@@ -1,7 +1,7 @@
 .Board {
 	position: relative;
 }
-.Board,.Layer{
+.Board,.Broard .Layer{
 	height:100%;
 	width:100%;
 }

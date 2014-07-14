@@ -184,7 +184,7 @@
 			var rtn=[];
 			for(var i=0;i<this.selectedIndexs.length;i++)
 			{
-				rtn.push(this.getItem(i));
+				rtn.push(this.getItem(this.selectedIndexs[i]));
 			}
 			return rtn;
 		},
