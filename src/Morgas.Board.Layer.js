@@ -52,7 +52,7 @@
 		{
 			if(this.nodePatch.removeChild(guiElement))
 			{
-				GUIElement.domElement.remove();
+				guiElement.domElement.remove();
 				return true;
 			}
 			return false;

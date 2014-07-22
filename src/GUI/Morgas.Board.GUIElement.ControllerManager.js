@@ -8,7 +8,8 @@
 		mapping:"ControllerMapping",
 		ctrl:"Controller",
 		GMenu:"GUI.Menu",
-		Menu:"Menu"
+		Menu:"Menu",
+		config:"GUI.ControllerConfig"
 	});
 	
 	var template=
@@ -34,19 +35,22 @@
 		init:function(param)
 		{
 			this.superInit(GUI,"ControllerManager");
-			SC.rs.all(["onClick","onMenuSelect"],this);
-			this.domElement.addEventListener("click",this.onClick);
+			SC.rs.all(["_Click","_MenuSelect"],this);
+			this.domElement.addEventListener("click",this._Click);
 			
 			param=param||{};
 			param.styleClass=param.styleClass||"overlay";
 			this.addStyleClass(param.styleClass);
+
+			this.buttons=param.buttons!==undefined ? param.buttons : 10;
+			this.analogSticks=param.analogSticks!==undefined ? param.analogSticks : 2;
 
 			this.controllers=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
 				selectionType:SC.Menu.SelectionTypes.single,
 				converter:MANAGER.controllerConverter,
 			});
-			this.controllers.addListener("select",this.onMenuSelect);
+			this.controllers.addListener("select",this._MenuSelect);
 
 			param.mappings=param.mappings||[];
 			param.mappings.unshift(null);
@@ -56,7 +60,7 @@
 				converter:MANAGER.mappingConverter,
 				items:param.mappings
 			});
-			this.mappings.addListener("select",this.onMenuSelect);
+			this.mappings.addListener("select",this._MenuSelect);
 			
 			this.domElement.innerHTML=template;
 
@@ -94,12 +98,13 @@
 				var controller=this.controllers.getSelectedItems()[0],
 				mapping=this.mappings.getSelectedItems()[0];
 
+				this.domElement.querySelector('.MappingActions [data-action="newMapping"]').disabled=!controller;
 				this.domElement.querySelector('.MappingActions [data-action="setMapping"]').disabled=!controller||!mapping;
-				this.domElement.querySelector('.MappingActions [data-action="editMapping"]').disabled=
-					this.domElement.querySelector('.MappingActions [data-action="deleteMapping"]').disabled=!mapping;
+				this.domElement.querySelector('.MappingActions [data-action="editMapping"]').disabled=!controller||!controller.value.controller.getMapping();
+				this.domElement.querySelector('.MappingActions [data-action="deleteMapping"]').disabled=!mapping;
 			}
 		},
-		onClick:function(event)
+		_Click:function(event)
 		{
 			var action=event.target.dataset.action;
 			if(action!==undefined)
@@ -122,7 +127,7 @@
 		},
 		newMapping:function()
 		{
-			//TODO
+			this._openControllerConfig(true);
 		},
 		setMapping:function()
 		{
@@ -136,7 +141,7 @@
 		},
 		editMapping:function()
 		{
-			//TODO
+			this._openControllerConfig(false);
 		},
 		deleteMapping:function()
 		{
@@ -151,9 +156,52 @@
 			this.layer.board.addController(controller);
 			this.update();
 		},
-		onMenuSelect:function()
+		_MenuSelect:function()
 		{
 			this.update("MappingActions");
+		},
+		_openControllerConfig:function(isNew)
+		{
+			var controller=this.controllers.getSelectedItems()[0];
+			if(controller)
+			{
+				controller=controller.value.controller;
+				var _self=this,
+				mapping=controller.getMapping(),
+				config=new SC.config({buttons:this.buttons,analogSticks:this.analogSticks,controller:controller,name:!!isNew});
+				if(isNew)
+				{
+					controller.setMapping(null);
+				}
+				else if (!mapping)
+				{
+					return false;
+				}
+				config.addStyleClass("panel");
+				this.layer.add(config);
+				config.addListener("submit:once",function(event)
+				{
+					switch(true)
+					{
+						case event.value==="ok":
+							if(isNew)//make new mapping
+							{
+								mapping=event.source.getMapping();
+								_self.mappings.addItem(mapping);
+							}
+							else//update mapping
+							{
+								mapping.setValueOf("data",event.source.getData());
+							}
+						case !!isNew://reset old mapping or set new
+							controller.setMapping(mapping);
+					}
+					_self.update("controllers");
+					event.source.destroy();
+				})
+				return true;
+			}
+			return false;
 		}
 	});
 	MANAGER.controllerConverter=function(item,index,selected)
@@ -161,7 +209,7 @@
 		return [
 			index,
 			(item.controller instanceof SC.ctrl.Keyboard)?"Keyboard":item.controller.gamepad.id,
-			(item.controller.mapping&&item.controller.mapping.getValueOf("name")||"None"),
+			((item.controller.mapping&&item.controller.mapping.getValueOf("name"))||"None"),
 			'<input type="number" min="1" value="'+item.player+'" >'
 	    ];
 	}

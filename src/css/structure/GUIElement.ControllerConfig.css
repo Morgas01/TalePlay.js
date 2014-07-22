@@ -1,7 +1,13 @@
+.ControllerConfig [data-field="name"] {
+	width: 50%;
+	margin: 10px 0 0 10px;
+}
+
 .ControllerConfig.Keyboard .axisButton {
     display:none;
 }
-.ControllerConfig input {
+.ControllerConfig .button input,
+.ControllerConfig .analogStick input {
     position:absolute;
 }
 .ControllerConfig .buttons{

@@ -5,9 +5,9 @@
 	});
 	var CTRL=GMOD("Controller");
 	CTRL.Keyboard=µ.Class(CTRL,{
-		init:function(mapping,domElement)
+		init:function(mapping,mappingName,domElement)
 		{
-			this.superInit(CTRL,mapping||CTRL.Keyboard.stdMapping);
+			this.superInit(CTRL,mapping!==undefined ? mapping : CTRL.Keyboard.stdMapping,mappingName);
 			
 			SC.rescope.all(["onKeyDown","onKeyUp"],this)
 			

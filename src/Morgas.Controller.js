@@ -128,7 +128,7 @@
 		
 	});
 	
-	CTRL.prototype.init=function(mapping)
+	CTRL.prototype.init=function(mapping,mappingName)
 	{
 		this.superInit(LST);
 		
@@ -137,7 +137,7 @@
 		this.buttons={};
 		this.mapping=null;
 		
-		this.setMapping(mapping);
+		this.setMapping(mapping,mappingName);
 		this.createListener("changed analogStickChanged buttonChanged");
 	};
 	CTRL.prototype.toString=function()
@@ -152,13 +152,13 @@
 	{
 		return this.mapping;
 	};
-	CTRL.prototype.setMapping=function(mapping)
+	CTRL.prototype.setMapping=function(mapping,mappingName)
 	{
 		if(mapping)
 		{
 			if(!(mapping instanceof SC.mapping))
 			{
-				mapping=new SC.mapping({data:mapping});
+				mapping=new SC.mapping({data:mapping,name:mappingName||"default"});
 			}
 			this.mapping=mapping;
 		}

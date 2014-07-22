@@ -86,9 +86,19 @@
 		
 		return title;
 	};
-	var getHTML=function(buttons,analogSticks)
+	var getHTML=function(buttons,analogSticks,name)
 	{
-		var html='<div class="buttons">';
+		var html='';
+		if(name)
+		{
+			html+='<input type="text" data-field="name"';
+			if(typeof name==="string")
+			{
+				html+=' value="'+name+'"';
+			}
+			html+='>';
+		}
+		html+='<div class="buttons">';
 		for(var i=0;i<buttons;i++)
 		{
 			html+=
@@ -112,7 +122,7 @@
 				'</span>'+
 			'</span>';
 		}
-		html+='</div><button>OK</button>';
+		html+='</div><button data-value="ok">OK</button><button data-value="cancel">Cancel</button>';
 		return html;
 	};
 	
@@ -130,7 +140,7 @@
 			this.domElement.addEventListener("keydown",this.onInputChange,true);
 			this.domElement.addEventListener("click",this.onClick,true);
 			
-			this.domElement.innerHTML=getHTML(param.buttons,param.analogSticks,this.controller);
+			this.domElement.innerHTML=getHTML(param.buttons,param.analogSticks,param.name);
 			
 			this.controllerType=0;
 			this.controller=null;
@@ -238,7 +248,7 @@
 		},
 		onInputChange:function(event)
 		{
-			if(event.target.tagName==="INPUT"&&event.key!=="Backspace"&&this.controllerType===controllerTypes.Keyboard)
+			if(event.target.tagName==="INPUT"&&event.target.dataset.field!=="name"&&event.key!=="Backspace"&&this.controllerType===controllerTypes.Keyboard)
 			{
 				event.preventDefault();
 				event.stopPropagation();
@@ -252,7 +262,7 @@
 		{
 			if(event.target.tagName==="BUTTON")
 			{
-				this.fire("submit")
+				this.fire("submit",{value:event.target.dataset.value})
 			}
 		},
 		controllerChanged:function(event)
@@ -293,7 +303,7 @@
 				}
 			}
 		},
-		getMapping:function()
+		getData:function()
 		{
 			var data={
 					buttons:{},
@@ -324,6 +334,10 @@
 				}
 				data.axes[from]=to;
 			}
+			return data;
+		},
+		getMapping:function()
+		{
 			var type="";
 			switch (this.controllerType)
 			{
@@ -334,7 +348,12 @@
 					type="GAMEPAD";
 					break;
 			}
-			var mapping=new SC.mapping({data:data,type:type});
+			var name=this.domElement.querySelector('[data-field="name"]')
+			if(name)
+			{
+				name=name.value;
+			}
+			var mapping=new SC.mapping({data:this.getData(),type:type,name:name});
 			return mapping;
 		},
 		destroy:function()
