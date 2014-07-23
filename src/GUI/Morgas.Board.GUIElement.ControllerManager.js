@@ -18,6 +18,7 @@
 			'<td>'+
 				'<select class="devices"></select>'+
 				'<button data-action="addDevice">add Device</button>'+
+				'<button data-action="removeController">remove Controller</button>'+
 			'</td>'+
 			'<td class="MappingActions">'+
 				'<button data-action="newMapping">New</button>'+
@@ -35,7 +36,7 @@
 		init:function(param)
 		{
 			this.superInit(GUI,"ControllerManager");
-			SC.rs.all(["_Click","_MenuSelect"],this);
+			SC.rs.all(["_Click","_MenuSelect","_playerChanged"],this);
 			this.domElement.addEventListener("click",this._Click);
 			
 			param=param||{};
@@ -64,11 +65,12 @@
 			
 			this.domElement.innerHTML=template;
 
+			this.domElement.querySelector(".controllers").addEventListener("change",this._playerChanged);
 			this.domElement.querySelector(".controllers").appendChild(this.controllers.domElement);
 			this.domElement.querySelector(".mappings").appendChild(this.mappings.domElement);
 			
 			this.update();
-
+			//TODO remove on destroy
 			var _self=this;
 			window.addEventListener("gamepadconnected",function()
 			{
@@ -93,15 +95,16 @@
 				this.controllers.clear().addAll(this.layer.board.controllers)
 			}
 
-			if(part===undefined||part==="MappingActions")
+			if(part===undefined||part==="actions")
 			{
 				var controller=this.controllers.getSelectedItems()[0],
 				mapping=this.mappings.getSelectedItems()[0];
 
-				this.domElement.querySelector('.MappingActions [data-action="newMapping"]').disabled=!controller;
-				this.domElement.querySelector('.MappingActions [data-action="setMapping"]').disabled=!controller||!mapping;
-				this.domElement.querySelector('.MappingActions [data-action="editMapping"]').disabled=!controller||!controller.value.controller.getMapping();
-				this.domElement.querySelector('.MappingActions [data-action="deleteMapping"]').disabled=!mapping;
+				this.domElement.querySelector('[data-action="removeController"]').disabled=
+					this.domElement.querySelector('[data-action="newMapping"]').disabled=!controller;
+				this.domElement.querySelector('[data-action="setMapping"]').disabled=!controller||!mapping;
+				this.domElement.querySelector('[data-action="editMapping"]').disabled=!controller||!controller.value.controller.getMapping();
+				this.domElement.querySelector('[data-action="deleteMapping"]').disabled=!mapping;
 			}
 		},
 		_Click:function(event)
@@ -123,6 +126,15 @@
 			{
 				var gamepad=navigator.getGamepads()[--index];
 				this.addController(new SC.ctrl.Gamepad(gamepad));
+			}
+		},
+		removeController:function()
+		{
+			var controller=this.controllers.getSelectedItems()[0];
+			if(controller)
+			{
+				this.layer.board.removeController(controller.value.controller);
+				this.update("controllers");
 			}
 		},
 		newMapping:function()
@@ -154,11 +166,11 @@
 		addController:function(controller)
 		{
 			this.layer.board.addController(controller);
-			this.update();
+			this.update("controllers");
 		},
 		_MenuSelect:function()
 		{
-			this.update("MappingActions");
+			this.update("actions");
 		},
 		_openControllerConfig:function(isNew)
 		{
@@ -202,6 +214,13 @@
 				return true;
 			}
 			return false;
+		},
+		_playerChanged:function(event)
+		{
+			if(event.target.dataset.controllerindex!==undefined)
+			{
+				this.layer.board.controllers[event.target.dataset.controllerindex].player=1*event.target.value||1;
+			}
 		}
 	});
 	MANAGER.controllerConverter=function(item,index,selected)
@@ -210,7 +229,7 @@
 			index,
 			(item.controller instanceof SC.ctrl.Keyboard)?"Keyboard":item.controller.gamepad.id,
 			((item.controller.mapping&&item.controller.mapping.getValueOf("name"))||"None"),
-			'<input type="number" min="1" value="'+item.player+'" >'
+			'<input type="number" min="1" value="'+item.player+'" data-controllerindex="'+index+'" >'
 	    ];
 	}
 	MANAGER.mappingConverter=function(item,index,selected)

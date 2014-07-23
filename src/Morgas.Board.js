@@ -73,8 +73,10 @@
 						controller.setDomElement();
 					}
 					this.controllers.splice(i,1);
+					return true;
 				}
 			}
+			return false;
 		},
 		setControllerDisabled:function()
 		{
