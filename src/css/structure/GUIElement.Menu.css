@@ -1,13 +1,16 @@
 .GUIElement.Menu[data-type="VERTICAL"] .menuitem {
     display: block;
 }
-.GUIElement.Menu[data-type="TABLE"] {
+.GUIElement.Menu[data-type="TABLE"],
+.GUIElement.Menu[data-type="GRID"] {
     display:table;
 }
-.GUIElement.Menu[data-type="TABLE"] .menuitem{
+.GUIElement.Menu[data-type="TABLE"] .menuitem,
+.GUIElement.Menu[data-type="GRID"] .row {
     display:table-row;
 }
-.GUIElement.Menu[data-type="TABLE"] .menuitem span{
+.GUIElement.Menu[data-type="TABLE"] .menuitem span,
+.GUIElement.Menu[data-type="GRID"] .menuitem {
     display:table-cell;
     padding:5px;
 }

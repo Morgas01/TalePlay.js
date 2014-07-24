@@ -47,15 +47,35 @@
 			{
 				return [index,val.val,JSON.stringify(val)];
 			}
+		}),
+		gMenu=new SC.gMenu({
+			type:SC.gMenu.Types.GRID,
+			items:[
+			       "item1",
+			       "item2",
+			       "item3",
+			       "item4",
+			       "item5",
+			       "item6",
+			       "item7",
+			       "item8",
+			       "item9",
+			       "item10",
+			       "item11",
+			       "item12",
+			       "item13"
+			]
 		});
 
 		layer.add(vMenu);
 		layer.add(hMenu);
 		layer.add(tMenu);
+		layer.add(gMenu);
 
 		vMenu.domElement.classList.add("panel");
 		hMenu.domElement.classList.add("panel");
 		tMenu.domElement.classList.add("panel");
+		gMenu.domElement.classList.add("panel");
 		
 		board.addLayer(layer); 
 
@@ -65,6 +85,8 @@
 		vMenu.domElement.style.top=height;
 		tMenu.domElement.style.top=height;
 		tMenu.domElement.style.left=width;
+		gMenu.domElement.style.top=height;
+		gMenu.domElement.style.left=vMenu.domElement.getBoundingClientRect().width+5+tMenu.domElement.getBoundingClientRect().width+5+"px";
 		
 		ok(true);
 	});

@@ -32,7 +32,8 @@
 .GUIElement.Menu .menuitem {
     margin: 10px 10px 10px 30px;
 }
-.GUIElement.Menu[data-type="TABLE"] .menuitem span:first-child{	
+.GUIElement.Menu[data-type="TABLE"] .menuitem span:first-child,
+.GUIElement.Menu[data-type="GRID"] .menuitem {	
     padding-left:30px;
 }
 .GUIElement.Menu:not(:hover):not([data-type="TABLE"]) .menuitem.active:before,

@@ -25,6 +25,9 @@
 
 			this.type=param.type||MENU.Types.VERTICAL;
 			this.converter=param.converter||MENU.defaultConverter;
+			this.rows=param.rows||null;
+			this.columns=param.columns||null;
+			
 			this.axisState={index:null,player:null,value:0};
 			this.buttonState={index:null,player:null};
 			
@@ -42,25 +45,49 @@
 			var value=0;
 			switch(this.type)
 			{
-			case MENU.Types.VERTICAL:
-			case MENU.Types.TABLE:
+				case MENU.Types.VERTICAL:
+				case MENU.Types.TABLE:
 					if(event.analogStick.y>=0.5)
 					{
-						value=1;
+						value=-1;
 					}
 					else if (event.analogStick.y<=-0.5)
 					{
-						value=-1;
+						value=1;
 					}
 					break;
 				case MENU.Types.HORIZONTAL:
 					if(event.analogStick.x>=0.5)
 					{
-						value=-1;
+						value=1;
 					}
 					else if (event.analogStick.x<=-0.5)
 					{
+						value=-1;
+					}
+					break;
+				case MENU.Types.GRID:
+					var gridLayout=this.getGridLayout();
+					if(event.analogStick.x>=0.5)
+					{
 						value=1;
+					}
+					else if (event.analogStick.x<=-0.5)
+					{
+						value=-1;
+					}
+					else if(event.analogStick.y>=0.5)
+					{
+						value=-gridLayout.columns;
+					}
+					else if (event.analogStick.y<=-0.5)
+					{
+						value=gridLayout.columns;
+						if(this.menu.active+value>=this.menu.items.length)
+						{
+							value=this.menu.active%gridLayout.columns;
+							value=this.menu.items.length-this.menu.active+value;
+						}
 					}
 					break;
 			}
@@ -85,14 +112,14 @@
 			{
 				if(this.menu.active!==-1)
 				{
-					this.domElement.children[this.menu.active].classList.remove("active");
+					this.getItemDomElement(this.menu.active).classList.remove("active");
 				}
 				
-				this.menu.moveActive(-this.axisState.value);
+				this.menu.moveActive(this.axisState.value);
 				
 				if(this.menu.active!==-1)
 				{
-					this.domElement.children[this.menu.active].classList.add("active");
+					this.getItemDomElement(this.menu.active).classList.add("active");
 				}
 				this.fire("activeChanged")
 				
@@ -114,21 +141,33 @@
 		},
 		onClick:function(event)
 		{
-			var target=event.target;
+			var target=event.target,
+			index=-1;
 			if(target.tagName==="INPUT"||target.tagName==="SELECT"||target.tagName==="TEXTAREA")
 			{
 				return ;
 			}
-			while(target.parentNode&&target.parentNode!==this.domElement)
+			while(target&&!target.classList.contains("menuitem"))
 			{
 				target=target.parentNode;
 			}
-			var index=Array.indexOf(this.domElement.children,target);
-			if(index!==-1)
+			if(this.type===MENU.Types.GRID)
 			{
-				this.toggleSelect(index);
-				event.stopPropagation();
+				var column=Array.indexOf(target.parentNode.children,target),
+				row=Array.indexOf(this.domElement.children,target.parentNode),
+				gridLayout=this.getGridLayout();
+				index=row*gridLayout.columns+column;
 			}
+			else
+			{
+				index=Array.indexOf(this.domElement.children,target);
+			}
+			if(index>-1)
+			{
+				event.stopPropagation();
+				this.toggleSelect(index);
+			}
+			
 		},
 		onButton:function(event)
 		{
@@ -149,10 +188,10 @@
 		},
 		toggleSelect:function(index)
 		{
-			var cl=this.domElement.children[index].classList;
+			var cl=this.getItemDomElement(index).classList;
 			if(this.menu.selectionType===SC.MENU.SelectionTypes.single&&!this.menu.isSelected(index)&&this.menu.selectedIndexs.length>0)
 			{
-				this.domElement.children[this.menu.selectedIndexs[0]].classList.remove("selected");
+				this.getItemDomElement(this.menu.selectedIndexs[0]).classList.remove("selected");
 			}
 			if(this.menu.toggleSelect(index))
 			{
@@ -164,12 +203,46 @@
 			}
 			this.fire("select",this.menu.getItem(index));
 		},
+		getGridLayout:function()
+		{
+			var rtn={rows:this.rows,columns:this.columns}
+			if(rtn.rows===null&&rtn.columns===null)
+			{
+				rtn.columns=Math.ceil(Math.sqrt(this.menu.items.length));
+			}
+			if(rtn.rows==null)
+			{
+				rtn.rows=Math.ceil(this.menu.items.length/rtn.columns);
+			}
+			else if(rtn.columns==null)
+			{
+				rtn.columns=Math.ceil(this.menu.items.length/rtn.rows);
+			}
+			return rtn;
+		},
 		update:function()
 		{
 			this.domElement.innerHTML="";
-			for(var i=0;i<this.menu.items.length;i++)
+			if(this.type===MENU.Types.GRID&&this.menu.items.length>0)
 			{
-				this.domElement.appendChild(this.convertItem(this.menu.items[i]));
+				var gridLayout=this.getGridLayout();
+				
+				for(var r=0,row=document.createElement("span");r<gridLayout.rows;r++,row=document.createElement("span"))
+				{
+					row.classList.add("row");
+					this.domElement.appendChild(row);
+					for(var c=0,index=r*gridLayout.columns;c<gridLayout.columns&&index<this.menu.items.length;c++,index=r*gridLayout.columns+c)
+					{
+						row.appendChild(this.convertItem(this.menu.items[index]));
+					}
+				}
+			}
+			else
+			{
+				for(var i=0;i<this.menu.items.length;i++)
+				{
+					this.domElement.appendChild(this.convertItem(this.menu.items[i]));
+				}
 			}
 		},
 		convertItem:function(item)
@@ -212,14 +285,28 @@
 			var index=this.menu.removeItem(item);
 			if(index!==-1&&index<this.domElement.children.length)
 			{
-				this.domElement.children[index].remove();
+				this.getItemDomElement(index).remove();
 			}
 			return index;
+		},
+		getItemDomElement:function(index)
+		{
+			if(this.type===MENU.Types.GRID)
+			{
+				var gridLayout=this.getGridLayout(),
+				row=Math.floor(index/gridLayout.columns),
+				column=index-row*gridLayout.columns;
+				return this.domElement.children[row].children[column];
+			}
+			else
+			{
+				return this.domElement.children[index];
+			}
 		},
 		getItem:function(index)
 		{
 			var rtn=this.menu.getItem(index);
-			rtn.domElement=this.domElement.children[index];
+			rtn.domElement=this.getItemDomElement(index);
 			return rtn;
 		},
 		getSelectedItems:function()
