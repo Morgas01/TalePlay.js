@@ -4,7 +4,6 @@
 	
 	SC=GMOD("shortcut")({
 		MENU:"Menu",
-		find:"find",
 		rescope:"rescope"
 	});
 	
@@ -79,6 +78,11 @@
 					else if(event.analogStick.y>=0.5)
 					{
 						value=-gridLayout.columns;
+						if(this.menu.active+value>=this.menu.items.length)
+						{
+							value=this.menu.active%gridLayout.columns;
+							value=this.menu.items.length-this.menu.active+value;
+						}
 					}
 					else if (event.analogStick.y<=-0.5)
 					{
@@ -193,7 +197,7 @@
 			{
 				this.getItemDomElement(this.menu.selectedIndexs[0]).classList.remove("selected");
 			}
-			if(this.menu.toggleSelect(index))
+			if(this.menu.toggleSelect(index,true))
 			{
 				cl.add("selected");
 			}
@@ -233,7 +237,7 @@
 					this.domElement.appendChild(row);
 					for(var c=0,index=r*gridLayout.columns;c<gridLayout.columns&&index<this.menu.items.length;c++,index=r*gridLayout.columns+c)
 					{
-						row.appendChild(this.convertItem(this.menu.items[index]));
+						row.appendChild(this.convertItem(this.menu.items[index],index));
 					}
 				}
 			}
@@ -241,28 +245,28 @@
 			{
 				for(var i=0;i<this.menu.items.length;i++)
 				{
-					this.domElement.appendChild(this.convertItem(this.menu.items[i]));
+					this.domElement.appendChild(this.convertItem(this.menu.items[i],i));
 				}
 			}
 		},
-		convertItem:function(item)
+		convertItem:function(item,index)
 		{
-			if(!(item instanceof Node))
+			var converted=this.converter(item,index,this.menu.selectedIndexs.indexOf(index)!==-1);
+			item=document.createElement("span");
+			if(Array.isArray&&typeof converted !=="string")
 			{
-				var index=this.menu.items.indexOf(item)
-				var converted=this.converter(item,index,this.menu.selectedIndexs.indexOf(index)!==-1);
-				item=document.createElement("span");
-				if(Array.isArray&&typeof converted !=="string")
-				{
-					converted="<span>"+converted.join("</span><span>")+"</span>";
-				}
-				item.innerHTML=converted;
-
+				converted="<span>"+converted.join("</span><span>")+"</span>";
 			}
+			item.innerHTML=converted;
+			
 			item.classList.add("menuitem");
 			if(this.menu.isSelected(item))
 			{
 				item.classList.add("selected");
+			}
+			if(this.menu.active===index)
+			{
+				item.classList.add("active");
 			}
 			return item;
 		},

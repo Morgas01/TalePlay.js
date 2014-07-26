@@ -10,7 +10,8 @@
 	testDir="tests/",
 	guiDir="GUI/",
 	morgasDir="Morgas/src/",
-	cssDir="css/";
+	cssDir="css/",
+	gameDir="minigames/";
 	
 
 	WR(morgasDir+"Morgas.js");
@@ -51,7 +52,11 @@
 	
 	WR(testDir+"test.Morgas.Board.GUIElement.ControllerManager.js")
 	
-	// 
+	// TicTacToe
+	WR(gameDir+"TicTacToe.js");
+	CSS(gameDir+"TicTacToe.css");
+	
+	WR(testDir+"test.TicTacToe.js")
 	
 	CSS(cssDir+"themes/TalePlay-classic.css");
 })();

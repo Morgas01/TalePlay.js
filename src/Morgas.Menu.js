@@ -11,7 +11,10 @@
 			
 			this.selectedIndexs=[];
 			this.active=-1;
-			
+			if (param.active!==undefined&&param.active>-1&&param.active<this.items.length)
+			{
+				this.active=param.active;
+			}
 		},
 		addItem:function(item)
 		{
@@ -51,6 +54,7 @@
 		getItem:function(index)
 		{
 			return {
+				index:index,
 				value:this.items[index],
 				active:this.active===index,
 				selected:this.selectedIndexs.indexOf(index)!==-1
@@ -110,14 +114,14 @@
 			}
 			return false;
 		},
-		toggleSelect:function(item)
+		toggleSelect:function(item,isIndex)
 		{
 			if(this.selectionType===MENU.SelectionTypes.none)
 			{
 				return false;
 			}
 			
-			var index=this.items.indexOf(item);
+			var index=isIndex?item:this.items.indexOf(item);
 			if(index===-1)
 			{
 				index=item;
@@ -170,7 +174,7 @@
 				next=next%this.items.length;
 				if(next<0)
 				{
-					next=this.items.length-next;
+					next=this.items.length+next;
 				}
 			}
 			this.setActive(next);

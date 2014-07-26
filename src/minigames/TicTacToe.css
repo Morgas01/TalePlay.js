@@ -1,0 +1,23 @@
+.TicTacToe.GUIElement.Menu .row .menuitem {
+    display: inline-block;
+    height: 30px;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    width: 30px;
+    border: 1px solid black;
+    text-align: center;
+}
+.TicTacToe[data-turn="1"] .menuitem.active {
+    box-shadow: 0 0 5px 1px blue;
+}
+.TicTacToe[data-turn="2"] .menuitem.active {
+    box-shadow: 0 0 5px 1px red;
+}
+
+.TicTacToe.GUIElement.Menu:not(:hover):not([data-type="TABLE"]) .menuitem.active:before,
+.TicTacToe.GUIElement.Menu:not(:hover)[data-type="TABLE"] .menuitem.active span:first-child:before,
+.TicTacToe.GUIElement.Menu:not([data-type="TABLE"]) .menuitem:hover:before,
+.TicTacToe.GUIElement.Menu[data-type="TABLE"] .menuitem:hover span:first-child:before {
+	content: "";
+}
