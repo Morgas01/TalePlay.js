@@ -35,13 +35,13 @@
 	var MANAGER=GUI.ControllerManager=µ.Class(GUI,{
 		init:function(param)
 		{
-			this.superInit(GUI,"ControllerManager");
-			SC.rs.all(["_Click","_MenuSelect","_playerChanged"],this);
-			this.domElement.addEventListener("click",this._Click);
-			
 			param=param||{};
 			param.styleClass=param.styleClass||"overlay";
-			this.addStyleClass(param.styleClass);
+			
+			this.superInit(GUI,param.styleClass);
+			this.addStyleClass("ControllerManager");
+			SC.rs.all(["_Click","_MenuSelect","_playerChanged"],this);
+			this.domElement.addEventListener("click",this._Click);
 
 			this.buttons=param.buttons!==undefined ? param.buttons : 10;
 			this.analogSticks=param.analogSticks!==undefined ? param.analogSticks : 2;
@@ -189,7 +189,7 @@
 				{
 					return false;
 				}
-				config.addStyleClass("panel");
+				config.addStyleClass("panel","overlay");
 				this.layer.add(config);
 				config.addListener("submit:once",function(event)
 				{

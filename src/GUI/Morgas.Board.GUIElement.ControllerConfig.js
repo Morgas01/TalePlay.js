@@ -131,12 +131,12 @@
 	{
 		init:function(param)
 		{
-			this.superInit(GUI);
-			SC.rs.all(["onInputChange","onClick","controllerChanged"],this);
 			param=param||{};
+			this.superInit(GUI,param.styleClass);
+			SC.rs.all(["onInputChange","onClick","controllerChanged"],this);
 			this.createListener("submit");
 			
-			this.domElement.classList.add("ControllerConfig");
+			this.addStyleClass("ControllerConfig");
 			this.domElement.addEventListener("keydown",this.onInputChange,true);
 			this.domElement.addEventListener("click",this.onClick,true);
 			
@@ -154,7 +154,6 @@
 				{
 					this.controller.setMapping(this.oldMapping);
 					this.controller.removeListener("analogStickChanged buttonChanged",this.controllerChanged);
-					this.controller.setDisabled(false);
 					
 					this.controllerType=0;
 					this.domElement.classList.remove("Keyboard");
@@ -170,7 +169,6 @@
 				{
 					this.controllerType=controllerTypes.Keyboard;
 					this.domElement.classList.add("Keyboard");
-					this.controller.setDisabled(true);
 				}
 				else
 				{

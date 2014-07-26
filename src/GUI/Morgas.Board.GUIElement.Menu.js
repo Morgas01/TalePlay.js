@@ -17,7 +17,7 @@
 			
 			this.superInit(GUI,param.styleClass);
 			this.menu=new SC.MENU(param);
-			this.domElement.classList.add("Menu");
+			this.addStyleClass("Menu");
 			
 			this.domElement.addEventListener("click",this.onClick,false);
 			

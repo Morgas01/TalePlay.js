@@ -14,7 +14,7 @@
 			//this.layer=null;
 
 			this.domElement=document.createElement("div");
-			this.domElement.classList.add("GUIElement");
+			this.addStyleClass("GUIElement");
 			
 			if (styleClass)
 			{
@@ -23,7 +23,27 @@
 		},
 		addStyleClass:function(styleClass)
 		{
-			this.domElement.classList.add(styleClass);
+			var list=this.domElement.classList;
+			if(!Array.isArray(styleClass))
+			{
+				list.add.apply(list,arguments);
+			}
+			else
+			{
+				list.add(styleClass);
+			}
+		},
+		removeStyleClass:function(styleClass)
+		{
+			var list=this.domElement.classList;
+			if(!Array.isArray(styleClass))
+			{
+				list.remove.apply(list,arguments);
+			}
+			else
+			{
+				list.remove(styleClass);
+			}
 		},
 		onAnalogStick:function(event)
 		{

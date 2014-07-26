@@ -1,5 +1,6 @@
 .ControllerConfig [data-field="name"] {
 	width: 50%;
+	max-width: 200px;
 	margin: 10px 0 0 10px;
 }
 
