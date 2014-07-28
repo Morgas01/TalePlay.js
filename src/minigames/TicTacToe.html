@@ -13,6 +13,7 @@
 		<script src="../Morgas.Controller.js"></script>
 		<script src="../Morgas.Controller.Mapping.js"></script>
 		<script src="../Morgas.Controller.Keyboard.js"></script>
+		<script src="../Morgas.Controller.Gamepad.js"></script>
 		
 		<script src="../GUI/Morgas.Board.GUIElement.js"></script>
 		<script src="../GUI/Morgas.Board.GUIElement.Menu.js"></script>
@@ -76,6 +77,11 @@
 					alert(message);
 					this.clear();
 				});
+				
+				window.addEventListener("gamepadconnected", function gamepadconnected(e){
+					var gp=new µ.Controller.Gamepad(e.gamepad);
+					board.addController(gp);
+				},false);
 			}, false);
 		</script>
 	</head>
