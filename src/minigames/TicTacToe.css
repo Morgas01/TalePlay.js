@@ -8,10 +8,12 @@
     border: 1px solid black;
     text-align: center;
 }
-.TicTacToe[data-turn="1"] .menuitem.active {
+.TicTacToe[data-turn="1"]:not(:hover) .menuitem.active,
+.TicTacToe[data-turn="1"] .menuitem:hover {
     box-shadow: 0 0 5px 1px blue;
 }
-.TicTacToe[data-turn="2"] .menuitem.active {
+.TicTacToe[data-turn="2"]:not(:hover) .menuitem.active,
+.TicTacToe[data-turn="2"] .menuitem:hover {
     box-shadow: 0 0 5px 1px red;
 }
 

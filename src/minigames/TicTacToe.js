@@ -60,16 +60,13 @@
 			var items=this.menu.items;
 			for(var i=0;i<3;i++)
 			{
-				if(items[i*3])
+				if(items[i*3]&&items[i*3]===items[i*3+1]&&items[i*3]===items[i*3+2])
 				{
-					if(items[i*3]===items[i*3+1]&&items[i*3]===items[i*3+2])
-					{
-						return items[i*3];
-					}
-					else if(items[i]===items[i+2]&&items[i]===items[i+6])
-					{
-						return items[i];
-					}
+					return items[i*3];
+				}
+				else if(items[i]&&items[i]===items[i+3]&&items[i]===items[i+6])
+				{
+					return items[i];
 				}
 			}
 			if (items[4]&&((items[4]===items[0]&&items[4]===items[8])||(items[4]===items[2]&&items[4])===items[6]))
@@ -84,6 +81,14 @@
 				}
 			}
 			return 0;
+		},
+		clear:function()
+		{
+			this.menu.clear();
+			this.menu.addAll([0,0,0,0,0,0,0,0,0]);
+			this.update();
+			this.toggleTurn();
+			this.setActive(4);
 		}
 	});
 	TicTacToe.defaultConverter=function(item)

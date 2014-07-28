@@ -170,6 +170,10 @@
 			{
 				event.stopPropagation();
 				this.toggleSelect(index);
+				if(this.layer&&this.layer.board)
+				{
+					this.layer.board.focus();
+				}
 			}
 			
 		},
@@ -330,6 +334,10 @@
 				this.domElement.lastChild.remove();
 			}
 			return this;
+		},
+		setActive:function(index)
+		{
+			this.menu.setActive(index);
 		}
 	});
 	MENU.Types={

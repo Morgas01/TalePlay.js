@@ -4,10 +4,9 @@
 	LST=GMOD("Listeners"),
 	NODE=GMOD("NodePatch");
 	
-	var LAYER=BOARD.Layer=µ.Class(LST,{
+	var LAYER=BOARD.Layer=µ.Class({
 		init:function()
 		{
-			this.superInit(LST);
 
 			this.nodePatch=new NODE(this,{
 				parent:"board",
