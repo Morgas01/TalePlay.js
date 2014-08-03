@@ -1,0 +1,7 @@
+.TimeStroke {
+	position: relative;
+	overflow: hidden;
+}
+.TimeStroke .ButtonItem {
+	position: absolute;
+}

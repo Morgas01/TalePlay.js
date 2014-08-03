@@ -1,0 +1,134 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<title>TimeStroke</title>
+		<meta charset="UTF-8">
+		<script src="../Morgas/src/Morgas.js"></script>
+		<script src="../Morgas/src/Morgas.NodePatch.js"></script>
+		<script src="../Morgas/src/DB/Morgas.DB.js"></script>
+		
+		<script src="../Morgas.Menu.js"></script>
+		<script src="../Morgas.Board.js"></script>
+		<script src="../Morgas.Board.Layer.js"></script>
+		<script src="../Morgas.Controller.js"></script>
+		<script src="../Morgas.Controller.Mapping.js"></script>
+		<script src="../Morgas.Controller.Keyboard.js"></script>
+		<script src="../Morgas.Controller.Gamepad.js"></script>
+		
+		<script src="../GUI/Morgas.Board.GUIElement.js"></script>
+		
+		
+		<link rel="stylesheet" href="../css/structure/core.css">
+		
+		<link rel="stylesheet" href="../css/themes/TalePlay-classic.css">
+		
+		
+		
+		<script src="TimeStroke.js"></script>
+		<link rel="stylesheet" href="TimeStroke.css">
+		
+		<style type="text/css">
+			body {
+			    text-align:center;
+			}
+			.Board {
+				text-align:left;
+			    display:inline-block;
+			    width:1000px;
+			    height:100px;
+			}
+			
+			.TimeStroke {
+				height: 50px;
+				padding: 10px 0;
+			}
+			.TimeStroke .zone {
+				height: 50px;
+				width: 50px;
+				transform: translateX(16px);
+				border: 1px solid;
+				display: inline-block;
+			}
+			.TimeStroke .ButtonItem {
+				height: 50px;
+				width: 50px;
+				display: inline-block;
+				background-color: red;
+			}
+			.TimeStroke .ButtonItem[data-active="true"] {
+				box-shadow: 0px 0px 5px 5px;
+			}
+		</style>
+		<script>
+			window.addEventListener("load", function loaded(){
+				var SC=µ.getModule("shortcut")({
+					Board:"Board",
+					game:"Minigames.TimeStroke",
+					CK:"Controller.Keyboard"
+				})
+				var board=new SC.Board(document.body),
+				layer=new SC.Board.Layer(),
+				ctrl=new SC.CK(),
+				game=new SC.game({zoneWidth:5});
+				
+				board.addLayer(layer);
+				board.addController(ctrl);
+				board.focus();
+				layer.add(game);
+				
+				game.addListener("finish",function(event)
+				{
+					var message="finish";
+					alert(message);
+				});
+				var score={hit:0,miss:0};
+				game.addListener("hit miss",function(event)
+				{
+					document.querySelector("#"+event.type).textContent=++score[event.type];
+					//fillItems(game); //endless mode
+					if(event.type==="hit")
+					{
+						game.speed+=2;
+					}
+					
+				});
+				
+				var fillItems=function()
+				{
+					while(game.buttonItems.length<25)
+					{
+						var lastItem=game.buttonItems[game.buttonItems.length-1];
+						var minTime=lastItem&&lastItem.time||4000;
+						
+						var item=new SC.game.ButtonItem(0,minTime+250+Math.random()*1000);
+						
+						game.buttonItems.push(item);
+					}
+				};
+				fillItems();
+				game.start();
+				window.addEventListener("gamepadconnected", function gamepadconnected(e){
+					var gp=new µ.Controller.Gamepad(e.gamepad);
+					board.addController(gp);
+				},false);
+			}, false);
+		</script>
+	</head>
+	<body>
+		press button 0(space) when the red square is in the white box (it "glows")
+		<table id="score">
+			<tr>
+				<td>
+					hits
+				</td>
+				<td id="hit">0</td>
+			</tr>
+			<tr>
+				<td>
+					misses
+				</td>
+				<td id="miss">0</td>
+			</tr>
+		</table>
+	</body>
+</html>

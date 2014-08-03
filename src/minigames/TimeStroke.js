@@ -17,23 +17,27 @@
 
 			this.buttonItems=param.buttonItems||[];
 			this.speed=param.speed||30;// %/s
-			this.acceleration=param.acceleration||1; // %/s²
 			this.zoneWidth=param.zoneWidth||10;
 			
 			this.request=null;
 			this.lastStep=null;
+			this.time=0;
 			
-			this.domElement.innerHtml='<div clas="zone" style="width:'+this.zoneWidth+'%;></div>'
+			this.domElement.innerHTML='<div class="zone" style="width:'+this.zoneWidth+'%;"></div>'
 		},
-		start:function(){
-			if(this.request!==null&&this.buttonItems.length>0)
+		start:function(time){
+			if(time!==undefined)
 			{
-				this._step();
+				this.time=time;
+			}
+			if(this.request===null&&this.buttonItems.length>0)
+			{
+				this._step(Date.now()-performance.timing.domContentLoadedEventEnd);
 			}
 		},
 		pause:function(){
 			cancelAnimationFrame(this.request);
-			this.request=null;
+			this.request=this.lastStep=null;
 		},
 		stop:function(){
 			this.pause();
@@ -46,35 +50,38 @@
 		onButton:function(event)
 		{
 			var item=this.buttonItems[0]
-			if(event.value===1&&item.active===true&&item.button===event.index)
+			if(event.value===1)
 			{
-				this.fire("hit",{buttonItem:item});
-				this.buttonItems.splice(0,1);
-				if(this.buttonItems.length===0)
+				if(item&&item.active===true&&item.button===event.index)
 				{
-					this.stop();
-					this.fire("finish");
+					this.fire("hit",{buttonItem:item});
+					this.buttonItems.splice(0,1);
+					item.domElement.remove();
+					if(this.buttonItems.length===0)
+					{
+						this.stop();
+						this.fire("finish");
+					}
 				}
-			}
-			else
-			{
-				this.fire("miss",{buttonItem:null});
+				else
+				{
+					this.fire("miss",{buttonItem:null});
+				}
 			}
 		},
 		_step:function(stepTime)
 		{
 			this.request=requestAnimationFrame(this._step);
-			var time=0;
 			if(stepTime&&this.lastStep)
 			{
-				time=this.lastStep-stepTime;
+				this.time+=stepTime-this.lastStep;
 			}
-			var maxTime=time+100/this.speed*1000;
+			var maxTime=this.time+100/this.speed*1000;
 			
-			for(var i=0;i<this.buttonItems.length&&this.buttonItems[0].time<maxTime;i++);
+			for(var i=0;i<this.buttonItems.length&&this.buttonItems[i].time<maxTime;i++)
 			{
 				var item=this.buttonItems[i],
-				distance=(maxTime-item.time)*this.speed/1000;
+				distance=(item.time-this.time)*this.speed/1000;
 				if(distance>0)
 				{
 					item.domElement.style.left=distance+"%";
@@ -106,7 +113,7 @@
 		this.button=button;
 		this.time=time;
 		this.domElement=document.createElement("span");
-		this.domElement.classlist.add("ButtonItem");
+		this.domElement.classList.add("ButtonItem");
 		this.domElement.text=button;
 		this.active=false;
 	};

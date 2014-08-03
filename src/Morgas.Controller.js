@@ -205,7 +205,7 @@
 			{
 				var old=this.buttons[index]||0;
 				this.buttons[index]=value;
-				this.fire("buttonChanged",{index:index,value:value,oldValue:old});
+				this.fire("buttonChanged",{index:1*index,value:value,oldValue:old});
 				changed=true;
 			}
 		}
