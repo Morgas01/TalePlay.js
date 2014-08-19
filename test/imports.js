@@ -9,6 +9,7 @@
 	var srcDir="./",
 	testDir="tests/",
 	guiDir="GUI/",
+	MathDir="Math/",
 	morgasDir="Morgas/src/",
 	cssDir="css/",
 	gameDir="minigames/";
@@ -31,6 +32,10 @@
 	CSS("test.css");
 	
 	CSS(cssDir+"structure/core.css");
+	
+	//Math
+	WR(MathDir+"Morgas.Math.Point.js");
+	WR(testDir+"test.Morgas.Math.Point.js");
 	
 	// MENU
 	WR(srcDir+"Morgas.Menu.js");
