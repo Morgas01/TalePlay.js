@@ -19,7 +19,7 @@
 
         var animate=function(time)
         {
-            map.setPosition(Math.sin(time/500)*50+50,Math.cos(time/500)*50+50);
+            map.setPosition(Math.sin(time/500)*50,Math.cos(time/500)*50);
             var image=map.getImages({name:"moving"})[0];
             image.setPosition(Math.sin(time/500)*75+75,Math.cos(time/500)*75+75);
             requestAnimationFrame(animate);

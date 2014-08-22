@@ -35,6 +35,8 @@
         setPosition:function(position,y)
         {
             this.position.set(position,y);
+            var b=this.domElement.getBoundingClientRect();
+            this.position.add(b.width/2,b.height/2);
             this.update(true);
         },
         move:function(numberOrPoint,y)
