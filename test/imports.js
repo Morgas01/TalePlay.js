@@ -27,6 +27,8 @@
 	WR(srcDir+"Morgas.Board.js");
 	WR(srcDir+"Morgas.Board.Layer.js");
 	WR(guiDir+"Morgas.Board.GUIElement.js");
+
+    WR(morgasDir+"Morgas.util.object.js");
 	
 	WR("testUtil.js");
 	CSS("test.css");
@@ -36,6 +38,9 @@
 	//Math
 	WR(MathDir+"Morgas.Math.Point.js");
 	WR(testDir+"test.Morgas.Math.Point.js");
+
+	WR(MathDir+"Morgas.Math.Rect.js");
+	//TODO WR(testDir+"test.Morgas.Math.Rect.js");
 	
 	// MENU
 	WR(srcDir+"Morgas.Menu.js");
@@ -62,6 +67,13 @@
 	CSS(gameDir+"TicTacToe.css");
 	
 	WR(testDir+"test.TicTacToe.js")
-	
+
+    // Map
+    WR(srcDir+"Morgas.Map.js");
+    WR(testDir+"test.Morgas.Map.js");
+    CSS(cssDir+"structure/Map.css");
+
+
+	// Theme
 	CSS(cssDir+"themes/TalePlay-classic.css");
 })();

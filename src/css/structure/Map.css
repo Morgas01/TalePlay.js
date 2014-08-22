@@ -1,0 +1,10 @@
+.Map {
+    position: relative;
+    overflow: hidden;
+}
+.Map .stage {
+    position: absolute;
+}
+.Map .stage img {
+    position: absolute;
+}

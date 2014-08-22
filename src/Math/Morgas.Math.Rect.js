@@ -44,7 +44,13 @@
 			that=rect.getAbsolute();
 			
 			return !(me.min.x>that.max.x||me.min.y>that.max.y||me.max.x<that.min.x||me.max.y<that.min.y);
-		}
+		},
+        isInside:function(numberOrPoint,y)
+        {
+            var p=new POINT(numberOrPoint,y);
+            return (this.position.x < p.x && this.position.x+this.size.x > p.x &&
+                    this.position.y < p.y && this.position.y+this.size.y > p.y);
+        }
 	});
 	SMOD("Math.Rect",RECT);
 })(Morgas,Morgas.setModule,Morgas.getModule);

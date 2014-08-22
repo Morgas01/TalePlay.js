@@ -10,18 +10,21 @@ window.addEventListener("load", function()
 	logger.id="logger";
 	document.body.insertBefore(logger, document.querySelector("#qunit-fixture").nextSibling);
 });
-
+function getContainer(name)
+{
+    var container=document.createElement("fieldset");
+    container.innerHTML='<legend>'+name+'</legend>';
+    document.body.appendChild(container);
+    return container
+}
 function getBoard(name)
 {
 	var Kcon=new Morgas.Controller.Keyboard();
 	Kcon.addListener("changed",logController);
 	
-	var container=document.createElement("fieldset");
-	container.innerHTML='<legend>'+name+'</legend>';
-	
+	var container=getContainer(name);
 	var board=new µ.Board(container);
 	board.addController(Kcon);
-	
-	document.body.appendChild(container);
+
 	return board;
 }

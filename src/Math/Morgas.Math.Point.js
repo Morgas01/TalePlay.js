@@ -21,7 +21,7 @@
 				this.x=1*numberOrPoint;
 				if(y===undefined)
 				{
-					y=x;
+					y=numberOrPoint;
 				}
 				this.y=1*y;
 			}
@@ -43,7 +43,7 @@
 				this.x+=1*numberOrPoint;
 				if(y===undefined)
 				{
-					y=x;
+					y=numberOrPoint;
 				}
 				this.y+=1*y;
 			}
@@ -61,7 +61,7 @@
 				this.x-=numberOrPoint;
 				if(y===undefined)
 				{
-					y=x;
+					y=numberOrPoint;
 				}
 				this.y-=y;
 			}
@@ -79,7 +79,7 @@
 				this.x*=numberOrPoint;
 				if(y===undefined)
 				{
-					y=x;
+					y=numberOrPoint;
 				}
 				this.y*=y;
 			}
@@ -97,7 +97,7 @@
 				this.x/=numberOrPoint;
 				if(y===undefined)
 				{
-					y=x;
+					y=numberOrPoint;
 				}
 				this.y/=y;
 			}
