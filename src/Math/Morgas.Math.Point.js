@@ -123,7 +123,25 @@
 		{
 			this.div(this.length());
 			return this;
-		}
+		},
+		doMath:function(fn,numberOrPoint,y)
+		{
+			if(typeof numberOrPoint==="object"&&numberOrPoint!==null)
+			{
+				this.x=fn(this.x,1*numberOrPoint.x);
+				this.y=fn(this.y,1*numberOrPoint.y);
+			}
+			else if (typeof numberOrPoint==="number")
+			{
+				this.x=fn(this.x,1*numberOrPoint);
+				if(y===undefined)
+				{
+					y=1*numberOrPoint;
+				}
+				this.y=fn(this.y,y);
+			}
+			return this;
+		},
 	});
 	
 	SMOD("Math.Point",µ.Math.Point);

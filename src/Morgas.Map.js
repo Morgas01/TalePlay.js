@@ -36,7 +36,8 @@
         {
             this.position.set(position,y);
             var b=this.domElement.getBoundingClientRect();
-            this.position.add(b.width/2,b.height/2);
+            this.position.doMath(Math.max,0).doMath(Math.min,this.getSize());
+            this.position.sub(b.width/2,b.height/2);
             this.update(true);
         },
         move:function(numberOrPoint,y)
@@ -56,6 +57,15 @@
         getImages:function(pattern)
         {
             return SC.find(this.images,pattern,true);
+        },
+        getSize:function()
+        {
+        	var size=new POINT();
+        	for(var i=0;i<this.images.length;i++)
+        	{
+        		size.doMath(Math.max,this.images[i].position.clone().add(this.images[i].size));
+        	}
+        	return size;
         }
     });
     MAP.Image= µ.Class(RECT,
