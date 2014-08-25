@@ -1,0 +1,154 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<title>ButtonStack</title>
+		<meta charset="UTF-8">
+		<script src="../Morgas/src/Morgas.js"></script>
+		<script src="../Morgas/src/Morgas.NodePatch.js"></script>
+		<script src="../Morgas/src/DB/Morgas.DB.js"></script>
+		
+		<script src="../Morgas.Menu.js"></script>
+		<script src="../Morgas.Board.js"></script>
+		<script src="../Morgas.Board.Layer.js"></script>
+		<script src="../Morgas.Controller.js"></script>
+		<script src="../Morgas.Controller.Mapping.js"></script>
+		<script src="../Morgas.Controller.Keyboard.js"></script>
+		<script src="../Morgas.Controller.Gamepad.js"></script>
+		
+		<script src="../GUI/Morgas.Board.GUIElement.js"></script>
+		
+		
+		<link rel="stylesheet" href="../css/structure/core.css">
+		
+		<link rel="stylesheet" href="../css/themes/TalePlay-classic.css">
+		
+		
+		
+		<script src="ButtonStack.js"></script>
+		<link rel="stylesheet" href="ButtonStack.css">
+		
+		<style type="text/css">
+			body {
+			    text-align:center;
+			}
+			.Board {
+				text-align:left;
+			    display:inline-block;
+			    width:1000px;
+			    height:100px;
+			}
+			
+			.ButtonStack {
+				height: 50px;
+				padding: 10px 0;
+			}
+			.ButtonStack .ButtonItem {
+				height: 50px;
+				width: 50px;
+				display: inline-block;
+                background-size: 100%;
+			}
+            .ButtonStack .ButtonItem:first-child {
+                box-shadow: 0px 0px 5px 5px;
+            }
+			.ButtonStack .ButtonItem[data-button="1"] {
+                background-image: url("../Images/1.png");
+			}
+			.ButtonStack .ButtonItem[data-button="2"] {
+                background-image: url("../Images/2.png");
+			}
+			.ButtonStack .ButtonItem[data-button="3"] {
+                background-image: url("../Images/3.png");
+			}
+		</style>
+		<script>
+			window.addEventListener("load", function loaded(){
+				var SC=µ.getModule("shortcut")({
+					Board:"Board",
+					game:"Minigames.ButtonStack",
+					CK:"Controller.Keyboard"
+				}),
+				board=new SC.Board(document.body),
+				layer=new SC.Board.Layer(),
+				ctrl=new SC.CK({buttons:{
+                    1:"1",
+                    2:"2",
+                    3:"3"
+                }}),
+				game=new SC.game();
+				
+				board.addLayer(layer);
+				board.addController(ctrl);
+				board.focus();
+				layer.add(game);
+				
+				game.addListener("finish",function(event)
+				{
+					var message="finish";
+					alert(message);
+				});
+				var score={hit:0,miss:0};
+				game.addListener("hit miss",function(event)
+				{
+					document.querySelector("#"+event.type).textContent=++score[event.type];
+					//fillItems(game); //endless mode
+					if(event.type==="hit")
+					{
+						game.speed+=2;
+					}
+					
+				});
+
+                while(game.buttonItems.length<25)
+                {
+                    var button=Math.floor(Math.random()*3)+1,
+                    item=new SC.game.ButtonItem(button);
+
+                    game.addItems(item);
+                }
+				window.addEventListener("gamepadconnected", function gamepadconnected(e){
+					var gp=new µ.Controller.Gamepad(e.gamepad);
+					board.addController(gp);
+				},false);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<table>
+            <thead>
+                <tr>
+                    <th>Button</th>
+                    <th>Key</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0</td>
+                    <td>space</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>shift</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+		</table>
+		<table id="score">
+			<tr>
+				<td>
+					hits
+				</td>
+				<td id="hit">0</td>
+			</tr>
+			<tr>
+				<td>
+					misses
+				</td>
+				<td id="miss">0</td>
+			</tr>
+		</table>
+	</body>
+</html>
