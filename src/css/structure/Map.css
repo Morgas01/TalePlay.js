@@ -1,6 +1,7 @@
 .Map {
-    position: relative;
+	display:inline-block;
     overflow: hidden;
+    position: relative;
 }
 .Map .stage {
     position: absolute;
