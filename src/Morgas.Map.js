@@ -7,17 +7,18 @@
     });
     var MAP=µ.Map=µ.Class(
     {
-        init:function(images,position)
+        init:function(param)
         {
+        	param=param||{};
             this.images=[];
             this.domElement=document.createElement("div");
             this.domElement.classList.add("Map");
-            this.stage=document.createElement("div");
+            this.stage=param.domElement||document.createElement("div");
             this.stage.classList.add("stage");
             this.domElement.appendChild(this.stage);
-            this.add(images);
+            this.add(param.images);
             this.position=new POINT();
-            this.setPosition(position);
+            this.setPosition(param.position);
         },
         add:function(images)
         {
@@ -35,6 +36,9 @@
         setPosition:function(position,y)
         {
             this.position.set(position,y);
+            var b=this.domElement.getBoundingClientRect();
+            this.position.doMath(Math.max,0).doMath(Math.min,this.getSize());
+            this.position.sub(b.width/2,b.height/2);
             this.update(true);
         },
         move:function(numberOrPoint,y)
@@ -54,6 +58,15 @@
         getImages:function(pattern)
         {
             return SC.find(this.images,pattern,true);
+        },
+        getSize:function()
+        {
+        	var size=new POINT();
+        	for(var i=0;i<this.images.length;i++)
+        	{
+        		size.doMath(Math.max,this.images[i].position.clone().add(this.images[i].size));
+        	}
+        	return size;
         }
     });
     MAP.Image= µ.Class(RECT,
