@@ -1,9 +1,9 @@
 (function(µ,SMOD,GMOD){
 
-    var POINT=GMOD("Math.Point"),
-    RECT=GMOD("Math.Rect"),
+    var RECT=GMOD("Math.Rect"),
     SC=GMOD("shortcut")({
-        find:"find"
+        find:"find",
+        point:"Math.Point"
     });
     var MAP=µ.Map=µ.Class(
     {
@@ -17,7 +17,7 @@
             this.stage.classList.add("stage");
             this.domElement.appendChild(this.stage);
             this.add(param.images);
-            this.position=new POINT();
+            this.position=new SC.point();
             this.setPosition(param.position);
         },
         add:function(images)
@@ -32,6 +32,15 @@
                     images[i].update();
                 }
             }
+        },
+        remove:function(image)
+        {
+        	var index=this.images.indexOf(image);
+        	if(index!==-1)
+        	{
+        		this.domElement.removeChild(image.domElement);
+        		this.images.splice(index, 1);
+        	}
         },
         setPosition:function(position,y)
         {
@@ -61,7 +70,7 @@
         },
         getSize:function()
         {
-        	var size=new POINT();
+        	var size=new SC.point();
         	for(var i=0;i<this.images.length;i++)
         	{
         		size.doMath(Math.max,this.images[i].position.clone().add(this.images[i].size));
