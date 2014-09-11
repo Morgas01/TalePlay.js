@@ -68,11 +68,14 @@
 	
 	WR(testDir+"test.TicTacToe.js")
 
-    // Map
+    // Morgas.Map
     WR(srcDir+"Morgas.Map.js");
     WR(testDir+"test.Morgas.Map.js");
     CSS(cssDir+"structure/Map.css");
 
+    // Map
+    WR(guiDir+"Morgas.Board.GUIElement.Map.js");
+    WR(testDir+"test.Morgas.Board.GUIElement.Map.js");
 
 	// Theme
 	CSS(cssDir+"themes/TalePlay-classic.css");

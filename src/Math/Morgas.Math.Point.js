@@ -31,6 +31,22 @@
 		{
 			return new µ.Math.Point(this);
 		},
+		equals:function(numberOrPoint,y)
+		{
+			if(typeof numberOrPoint==="object"&&numberOrPoint!==null)
+			{
+				return this.x==numberOrPoint.x&&this.y==numberOrPoint.y;
+			}
+			else if (typeof numberOrPoint==="number")
+			{
+				if(y===undefined)
+				{
+					y=numberOrPoint;
+				}
+				return this.x==numberOrPoint&&this.y==y;
+			}
+			return false;
+		},
 		add:function(numberOrPoint,y)
 		{
 			if(typeof numberOrPoint==="object"&&numberOrPoint!==null)
@@ -121,7 +137,11 @@
 		},
 		normalize:function()
 		{
-			this.div(this.length());
+			var l=this.length();
+			if(l)
+			{
+				this.div(l);
+			}
 			return this;
 		},
 		doMath:function(fn,numberOrPoint,y)

@@ -11,9 +11,9 @@
         {
         	param=param||{};
             this.images=[];
-            this.domElement=document.createElement("div");
+            this.domElement=param.domElement||document.createElement("div");
             this.domElement.classList.add("Map");
-            this.stage=param.domElement||document.createElement("div");
+            this.stage=document.createElement("div");
             this.stage.classList.add("stage");
             this.domElement.appendChild(this.stage);
             this.add(param.images);
@@ -84,7 +84,7 @@
         {
             this.superInit(RECT,position,size);
             this.domElement=document.createElement("img");
-            this.domElement.setAttribute("src",url);
+            this.domElement.src=url;
             this.name=name;
         },
         update:function()
@@ -101,7 +101,7 @@
         },
         move:function(numberOrPoint,y)
         {
-            thisl.position.add(numberOrPoint,y);
+            this.position.add(numberOrPoint,y);
             this.update();
         }
     });

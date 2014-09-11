@@ -32,7 +32,7 @@
 			}
 			if(this.request===null&&this.buttonItems.length>0)
 			{
-				this._step(Date.now()-performance.timing.domContentLoadedEventEnd);
+				this._step(Date.now()-performance.timing.navigationStart);
 			}
 		},
 		pause:function(){

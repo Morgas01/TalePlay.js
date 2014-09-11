@@ -15,9 +15,10 @@
 			param=param||{};
 			
 			this.superInit(GUI,param.styleClass)
-			this.map=new SC.Map({
+			SC.rescope.all(["_animateCursor"],this);
+			this.map=new SC.MAP({
 				domElement:this.domElement,
-				items:param.items,
+				images:param.images,
 				position:param.position
 			});
 			SC.proxy("map",{
@@ -32,6 +33,11 @@
 			this.offset=new SC.point();
 			this._negOffset=new SC.point();
 			this.setOffset(param.offset);
+			this.speed=new SC.point(100);
+			this.setSpeed(param.speed);
+			
+			this.direction=new SC.point(0,0);
+			this.lastTime=null;
 		},
 		setCursor:function(cursor)
 		{
@@ -42,6 +48,7 @@
 			this.map.add(cursor);
 			this.cursor=cursor;
 			this.cursor.move(this._negOffset);
+			this.updateCursor();
 		},
 		getCursor:function()
 		{
@@ -80,11 +87,11 @@
 		{
 			if(this.cursor)
 			{
-				return this.cursor.position.clone().add(this._negOffset);
+				return this.cursor.position.clone().add(this.offset);
 			}
 			return undefined
 		},
-        update:function(noimages)
+        update:function(noImages)
         {
         	this.updateCursor();
         	this.map.update(noImages);
@@ -112,12 +119,31 @@
 					pos.y=size.y+this._negOffset.y;
 				}
 				this.cursor.update();
+				this.map.setPosition(this.getCursorPosition())
 			}
+        },
+        setSpeed:function(numberOrPoint,y)
+        {
+        	this.speed.set(numberOrPoint,y);
         },
 		onAnalogStick:function(event)
 		{
+			this.direction.set(event.analogStick).mul(1,-1).normalize().mul(this.speed);
+			this.lastTime=Date.now()-performance.timing.navigationStart;
 			
+			requestAnimationFrame(this._animateCursor);
+		},
+		_animateCursor:function(time)
+		{
+			if(!this.direction.equals(0)&&this.cursor)
+			{
+				requestAnimationFrame(this._animateCursor);
+				this.moveCursor(this.direction.clone().mul((time-this.lastTime)/1000));
+				this.lastTime=time;
+			}
 		}
 	});
+	
+	SMOD("GUI.Map",GUI.Map);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);
