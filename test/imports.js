@@ -6,7 +6,7 @@
 		document.write('<link rel="stylesheet" href="'+path+'">');
 	};
 	
-	var srcDir="./",
+	var srcDir="../src/",
 	testDir="tests/",
 	guiDir=srcDir+"GUI/",
 	MathDir=srcDir+"Math/",
