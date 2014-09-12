@@ -50,9 +50,17 @@
             this.position.sub(b.width/2,b.height/2);
             this.update(true);
         },
+        getPosition:function()
+        {
+            var b=this.domElement.getBoundingClientRect();
+            return this.position.clone().add(b.width/2, b.height/2);
+        },
         move:function(numberOrPoint,y)
         {
-            thisl.position.add(numberOrPoint,y);
+            this.position.add(numberOrPoint,y);
+            var b=this.domElement.getBoundingClientRect(),
+            bP={x:-b.width/2,y:-b.height/2};
+            this.position.doMath(Math.max,bP).doMath(Math.min,this.getSize().add(bP));
             this.update(true);
         },
         update:function(noimages)

@@ -45,6 +45,10 @@
 			
 			return !(me.min.x>that.max.x||me.min.y>that.max.y||me.max.x<that.min.x||me.max.y<that.min.y);
 		},
+        contains:function(point)
+        {
+            return (this.position.x<=point.x&&this.position.x+this.size.x>=point.x&&this.position.y<=point.y&&this.position.y+this.size.y>=point.y);
+        },
         isInside:function(numberOrPoint,y)
         {
             var p=new POINT(numberOrPoint,y);

@@ -29,13 +29,15 @@
 				getSize:"getSize"
 			},this);
 			this.cursor=null;
-			this.setCursor(param.cursor);
 			this.offset=new SC.point();
 			this._negOffset=new SC.point();
-			this.setOffset(param.offset);
 			this.speed=new SC.point(100);
+            this.threshold=new SC.point();
+			this.setCursor(param.cursor);
+			this.setOffset(param.offset);
 			this.setSpeed(param.speed);
-			
+			this.setThreshold(param.threshold);
+
 			this.direction=new SC.point(0,0);
 			this.lastTime=null;
 		},
@@ -43,9 +45,9 @@
 		{
 			if(this.cursor)
 			{
-				this.map.remove(this.cursor);
+				this.map.stage.removeChild(this.cursor.domElement);
 			}
-			this.map.add(cursor);
+			this.map.stage.appendChild(cursor.domElement);
 			this.cursor=cursor;
 			this.cursor.move(this._negOffset);
 			this.updateCursor();
@@ -72,7 +74,7 @@
 			if(this.cursor)
 			{
 				this.cursor.setPosition(this._negOffset.clone().add(numberOrPoint,y));
-	        	this.updateCursor();
+				this.updateCursor();
 			}
 		},
 		moveCursor:function(numberOrPoint,y)
@@ -80,7 +82,7 @@
 			if(this.cursor)
 			{
 				this.cursor.move(numberOrPoint,y);
-	        	this.updateCursor();
+				this.updateCursor();
 			}
 		},
 		getCursorPosition:function()
@@ -91,44 +93,49 @@
 			}
 			return undefined
 		},
-        update:function(noImages)
-        {
-        	this.updateCursor();
-        	this.map.update(noImages);
-        },
-        updateCursor:function()
-        {
+		update:function(noImages)
+		{
+			this.updateCursor();
+			this.map.update(noImages);
+		},
+		updateCursor:function()
+		{
 			if(this.cursor)
 			{
 				var size=this.map.getSize(),
 				pos=this.cursor.position;
-				if(pos.x+this.offset<0)
+				if(pos.x+this.offset.x<0)
 				{
 					pos.x=this._negOffset.x;
 				}
-				if(pos.x+this.offset>size.x)
+				if(pos.x+this.offset.x>size.x)
 				{
 					pos.x=size.x+this._negOffset.x;
 				}
-				if(pos.y+this.offset<0)
+				if(pos.y+this.offset.y<0)
 				{
 					pos.y=this._negOffset.y;
 				}
-				if(pos.y+this.offset>size.y)
+				if(pos.y+this.offset.y>size.y)
 				{
 					pos.y=size.y+this._negOffset.y;
 				}
 				this.cursor.update();
+
 				this.map.setPosition(this.getCursorPosition())
 			}
-        },
-        setSpeed:function(numberOrPoint,y)
+		},
+		setSpeed:function(numberOrPoint,y)
+		{
+			this.speed.set(numberOrPoint,y);
+		},
+        setThreshold:function(numberOrPoint,y)
         {
-        	this.speed.set(numberOrPoint,y);
+            this.threshold.set(numberOrPoint,y);
         },
 		onAnalogStick:function(event)
 		{
-			this.direction.set(event.analogStick).mul(1,-1).normalize().mul(this.speed);
+			this.direction.set(event.analogStick).mul(1,-1).mul(this.speed);
 			this.lastTime=Date.now()-performance.timing.navigationStart;
 			
 			requestAnimationFrame(this._animateCursor);
