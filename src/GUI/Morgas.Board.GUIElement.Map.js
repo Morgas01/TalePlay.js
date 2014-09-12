@@ -28,15 +28,15 @@
 				getImages:"getImages",
 				getSize:"getSize"
 			},this);
-			this.cursor=null;
-			this.offset=new SC.point();
-			this._negOffset=new SC.point();
-			this.speed=new SC.point(100);
+            this.offset=new SC.point();
+            this._negOffset=new SC.point();
             this.threshold=new SC.point();
-			this.setCursor(param.cursor);
-			this.setOffset(param.offset);
-			this.setSpeed(param.speed);
-			this.setThreshold(param.threshold);
+            this.speed=new SC.point(100);
+            this.cursor=null;
+            this.setOffset(param.offset);
+            this.setThreshold(param.threshold);
+            this.setSpeed(param.speed);
+            this.setCursor(param.cursor);
 
 			this.direction=new SC.point(0,0);
 			this.lastTime=null;
@@ -122,17 +122,36 @@
 				}
 				this.cursor.update();
 
-				this.map.setPosition(this.getCursorPosition())
+				var distance=this.getCursorPosition().sub(this.map.getPosition()),
+				moveX=0,
+				moveY=0;
+				if(distance.x<-this.threshold.x)
+				{
+					moveX=this.threshold.x+distance.x;
+				}
+				else if (distance.x>this.threshold.x)
+				{
+					moveX=distance.x-this.threshold.y;
+				}
+				if(distance.y<-this.threshold.y)
+				{
+					moveY=this.threshold.y+distance.y;
+				}
+				else if (distance.y>this.threshold.y)
+				{
+					moveY=distance.y-this.threshold.y;
+				}
+				this.map.move(moveX,moveY);
 			}
 		},
 		setSpeed:function(numberOrPoint,y)
 		{
 			this.speed.set(numberOrPoint,y);
 		},
-        setThreshold:function(numberOrPoint,y)
-        {
-            this.threshold.set(numberOrPoint,y);
-        },
+		setThreshold:function(numberOrPoint,y)
+		{
+			this.threshold.set(numberOrPoint,y);
+		},
 		onAnalogStick:function(event)
 		{
 			this.direction.set(event.analogStick).mul(1,-1).mul(this.speed);
