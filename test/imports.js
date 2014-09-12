@@ -8,11 +8,11 @@
 	
 	var srcDir="./",
 	testDir="tests/",
-	guiDir="GUI/",
-	MathDir="Math/",
-	morgasDir="Morgas/src/",
-	cssDir="css/",
-	gameDir="minigames/";
+	guiDir=srcDir+"GUI/",
+	MathDir=srcDir+"Math/",
+	morgasDir=srcDir+"Morgas/src/",
+	cssDir=srcDir+"css/",
+	gameDir=srcDir+"minigames/";
 	
 
 	WR(morgasDir+"Morgas.js");
