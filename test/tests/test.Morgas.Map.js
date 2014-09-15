@@ -8,10 +8,10 @@
 	{
         var map=new MAP({
         	images:[
-	            new MAP.Image("Images/1.png",{x:50,y:0},{x:100,y:100}),
-	            new MAP.Image("Images/2.png",{x:0,y:100},{x:100,y:100}),
-	            new MAP.Image("Images/3.png",{x:100,y:100},{x:100,y:100}),
-	            new MAP.Image("Images/1.png",{x:75,y:75},{x:50,y:50},"moving")
+	            new MAP.Image(srcDir+"Images/1.png",{x:50,y:0},{x:100,y:100}),
+	            new MAP.Image(srcDir+"Images/2.png",{x:0,y:100},{x:100,y:100}),
+	            new MAP.Image(srcDir+"Images/3.png",{x:100,y:100},{x:100,y:100}),
+	            new MAP.Image(srcDir+"Images/1.png",{x:75,y:75},{x:50,y:50},"moving")
 	        ]
         });
 
