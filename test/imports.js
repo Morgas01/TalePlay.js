@@ -6,12 +6,12 @@
 		document.write('<link rel="stylesheet" href="'+path+'">');
 	};
 	
-	var srcDir="./",
-	testDir="tests/",
-	guiDir=srcDir+"GUI/",
-	MathDir=srcDir+"Math/",
-	morgasDir=srcDir+"Morgas/src/",
-	cssDir=srcDir+"css/",
+	srcDir="./";
+	testDir="tests/";
+	guiDir=srcDir+"GUI/";
+	MathDir=srcDir+"Math/";
+	morgasDir=srcDir+"Morgas/src/";
+	cssDir=srcDir+"css/";
 	gameDir=srcDir+"minigames/";
 	
 
