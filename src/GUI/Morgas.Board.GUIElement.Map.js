@@ -14,7 +14,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(GUI,param.styleClass)
+			this.superInit(GUI,param.styleClass)<
 			SC.rescope.all(["_animateCursor"],this);
 			this.map=new SC.MAP({
 				domElement:this.domElement,
@@ -39,6 +39,7 @@
             this.setCursor(param.cursor);
 
 			this.direction=new SC.point(0,0);
+			this.direction8=0;
 			this.lastTime=null;
 		},
 		setCursor:function(cursor)
@@ -155,6 +156,7 @@
 		onAnalogStick:function(event)
 		{
 			this.direction.set(event.analogStick).mul(1,-1).mul(this.speed);
+            this.direction8=event.analogStick.getDirection8();
 			this.lastTime=Date.now()-performance.timing.navigationStart;
 			
 			requestAnimationFrame(this._animateCursor);
@@ -166,7 +168,31 @@
 				requestAnimationFrame(this._animateCursor);
 				this.moveCursor(this.direction.clone().mul((time-this.lastTime)/1000));
 				this.lastTime=time;
+
+                this.cursor.domElement.classList.add("moving");
+                this.cursor.domElement.classList.remove("up","right","down","left");
+
+                if(this.direction8>=1&&(this.direction8<=2||this.direction8===8))
+                {
+                    this.cursor.domElement.classList.add("up");
+                }
+                if(this.direction8>=2&&this.direction8<=4)
+                {
+                    this.cursor.domElement.classList.add("right");
+                }
+                if(this.direction8>=4&&this.direction8<=6)
+                {
+                    this.cursor.domElement.classList.add("down");
+                }
+                if(this.direction8>=6&&this.direction8<=8)
+                {
+                    this.cursor.domElement.classList.add("left");
+                }
 			}
+            else
+            {
+                this.cursor.domElement.classList.remove("moving");
+            }
 		}
 	});
 	

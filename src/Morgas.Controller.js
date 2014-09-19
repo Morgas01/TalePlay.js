@@ -107,7 +107,7 @@
 		},
 		getDirection8:function()
 		{
-			//0:none 1:up 2:up-left 3:left 4:down-left ...
+			//0:none 1:up 2:up-right 3:right 4:down-right ...
 			if(this.y===0&&this.x===0)
 			{
 				return 0;
@@ -200,7 +200,7 @@
 		
 		for(var index in buttonMap)
 		{
-			var value=buttonMap[index]
+			var value=buttonMap[index]<
 			if(this.buttons[index]===undefined||this.buttons[index]!==value)
 			{
 				var old=this.buttons[index]||0;
@@ -224,11 +224,11 @@
 		var changed=false;
 		if(this.mapping&&!fromButton)
 		{
-			var remapped={}
+			var remapped={};
 			for(var i in axisMap)
 			{
-				var index=this.mapping.getAxisMapping(i),value=this.mapping.convertAxisValue(index,axisMap[i])
-				remapped[Math.abs(index)]=value;
+				var index=this.mapping.getAxisMapping(i);
+				remapped[Math.abs(index)]=this.mapping.convertAxisValue(index,axisMap[i]);
 			}
 			axisMap=remapped;
 		}
