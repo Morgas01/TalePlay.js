@@ -1,9 +1,9 @@
 (function(µ,SMOD,GMOD){
 
-    var RECT=GMOD("Math.Rect"),
-    SC=GMOD("shortcut")({
+    var SC=GMOD("shortcut")({
         find:"find",
-        point:"Math.Point"
+        point:"Math.Point",
+        RECT:"Math.Rect"
     });
     var MAP=µ.Map=µ.Class(
     {
@@ -81,35 +81,49 @@
         	var size=new SC.point();
         	for(var i=0;i<this.images.length;i++)
         	{
-        		size.doMath(Math.max,this.images[i].position.clone().add(this.images[i].size));
+        		size.doMath(Math.max,this.images[i].rect.position.clone().add(this.images[i].rect.size));
         	}
         	return size;
         }
     });
-    MAP.Image= µ.Class(RECT,
+    MAP.Image= µ.Class(
     {
-        init:function(url,position,size,name)
+        init:function(url,position,size,name,colision,trigger)
         {
-            this.superInit(RECT,position,size);
+        	this.rect=new SC.RECT(position,size);
             this.domElement=document.createElement("img");
-            this.domElement.src=url;
-            this.name=name;
+            Object.defineProperty(this,"url",{
+            	enumerable:true,
+            	get:function(){return this.domElement.src;},
+            	set:function(url){this.domElement.src=url;}
+            });
+            this.url=url;
+            Object.defineProperty(this,"name",{
+            	enumerable:true,
+            	get:function(){return this.domElement.dataset.name;},
+            	set:function(name){this.domElement.dataset.name=name;}
+            });
+            this.name=name||"";
+            this.colision=colision||false;
+            this.trigger=trigger||null;
         },
         update:function()
         {
-            this.domElement.style.top=this.position.y+"px";
-            this.domElement.style.left=this.position.x+"px";
-            this.domElement.style.height=this.size.y+"px";
-            this.domElement.style.width=this.size.x+"px";
+            this.domElement.style.top=this.rect.position.y+"px";
+            this.domElement.style.left=this.rect.position.x+"px";
+            this.domElement.style.height=this.rect.size.y+"px";
+            this.domElement.style.width=this.rect.size.x+"px";
+            
+            this.domElement.style.zIndex=this.rect.position.y;
         },
         setPosition:function(numberOrPoint,y)
         {
-            this.position.set(numberOrPoint,y);
+        	this.rect.setPosition(numberOrPoint,y);
             this.update();
         },
         move:function(numberOrPoint,y)
         {
-            this.position.add(numberOrPoint,y);
+            this.rect.position.add(numberOrPoint,y);
             this.update();
         }
     });

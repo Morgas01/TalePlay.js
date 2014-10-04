@@ -6,8 +6,11 @@
 	{
 		init:function(position,size)
 		{
-			this.position=new POINT(position);
-			this.size=new POINT(size);
+			this.position=new POINT();
+			this.size=new POINT();
+			
+			this.setPosition(position);
+			this.setSize(size);
 		},
 		setPosition:function(x,y)
 		{

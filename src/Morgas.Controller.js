@@ -200,7 +200,7 @@
 		
 		for(var index in buttonMap)
 		{
-			var value=buttonMap[index]<
+			var value=buttonMap[index];
 			if(this.buttons[index]===undefined||this.buttons[index]!==value)
 			{
 				var old=this.buttons[index]||0;

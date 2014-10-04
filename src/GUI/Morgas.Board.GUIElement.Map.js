@@ -1,10 +1,10 @@
 (function(µ,SMOD,GMOD){
 
 	var GUI=GMOD("GUIElement"),
-	
+	MAP=GMOD("Map"),
 	SC=GMOD("shortcut")({
-		MAP:"Map",
 		rescope:"rescope",
+		find:"find",
 		proxy:"proxy",
 		point:"Math.Point"
 	});
@@ -16,7 +16,7 @@
 			
 			this.superInit(GUI,param.styleClass)<
 			SC.rescope.all(["_animateCursor"],this);
-			this.map=new SC.MAP({
+			this.map=new MAP({
 				domElement:this.domElement,
 				images:param.images,
 				position:param.position
@@ -32,73 +32,54 @@
             this._negOffset=new SC.point();
             this.threshold=new SC.point();
             this.speed=new SC.point(100);
-            this.cursor=null;
-            this.setOffset(param.offset);
+            this.cursors=[];
             this.setThreshold(param.threshold);
             this.setSpeed(param.speed);
-            this.setCursor(param.cursor);
+            this.addCursors(param.cursors);
 
 			this.direction=new SC.point(0,0);
 			this.direction8=0;
 			this.lastTime=null;
 		},
-		setCursor:function(cursor)
+		addCursors:function(cursors)
 		{
-			if(this.cursor)
-			{
-				this.map.stage.removeChild(this.cursor.domElement);
-			}
-			this.map.stage.appendChild(cursor.domElement);
-			this.cursor=cursor;
-			this.cursor.move(this._negOffset);
-			this.updateCursor();
+			cursors=[].concat(cursors);
+            for(var i=0;i<cursors.length;i++)
+            {
+                if(this.cursors.indexOf(cursors[i])===-1)
+                {
+    				this.addImages(cursors[i]);
+                    this.cursors.push(cursors[i]);
+                }
+            }
 		},
-		getCursor:function()
+		getCursors:function(pattern)
 		{
-			return this.cursor;
+			return SC.find(this.cursors,pattern,true);
 		},
-		setOffset:function(numberOrPoint,y)
+		setCursorPosition:function(numberOrPoint,y,index)
 		{
-			if(this.cursor)
+			index=index||0;
+			if(this.cursors[index])
 			{
-				this.cursor.move(this.offset);
-			}
-			this.offset.set(numberOrPoint,y);
-			this._negOffset.set(this.offset).negate();
-			if(this.cursor)
-			{
-				this.cursor.move(this._negOffset);
+				//TODO colision
+				this.cursors[index].setPosition(this._negOffset.clone().add(numberOrPoint,y));
 			}
 		},
-		setCursorPosition:function(numberOrPoint,y)
+		moveCursor:function(numberOrPoint,y,index)
 		{
-			if(this.cursor)
+			index=index||0;
+			if(this.cursors[index])
 			{
-				this.cursor.setPosition(this._negOffset.clone().add(numberOrPoint,y));
-				this.updateCursor();
+				//TODO colision
+				this.cursors[index].move(numberOrPoint,y);
 			}
-		},
-		moveCursor:function(numberOrPoint,y)
-		{
-			if(this.cursor)
-			{
-				this.cursor.move(numberOrPoint,y);
-				this.updateCursor();
-			}
-		},
-		getCursorPosition:function()
-		{
-			if(this.cursor)
-			{
-				return this.cursor.position.clone().add(this.offset);
-			}
-			return undefined
 		},
 		update:function(noImages)
 		{
-			this.updateCursor();
 			this.map.update(noImages);
 		},
+		/*
 		updateCursor:function()
 		{
 			if(this.cursor)
@@ -145,6 +126,7 @@
 				this.map.move(moveX,moveY);
 			}
 		},
+		*/
 		setSpeed:function(numberOrPoint,y)
 		{
 			this.speed.set(numberOrPoint,y);
@@ -163,39 +145,69 @@
 		},
 		_animateCursor:function(time)
 		{
-			if(!this.direction.equals(0)&&this.cursor)
+			if(!this.direction.equals(0)&&this.cursors[0])
 			{
 				requestAnimationFrame(this._animateCursor);
 				this.moveCursor(this.direction.clone().mul((time-this.lastTime)/1000));
 				this.lastTime=time;
 
-                this.cursor.domElement.classList.add("moving");
-                this.cursor.domElement.classList.remove("up","right","down","left");
+                this.cursors[0].domElement.classList.add("moving");
+                this.cursors[0].domElement.classList.remove("up","right","down","left");
 
                 if(this.direction8>=1&&(this.direction8<=2||this.direction8===8))
                 {
-                    this.cursor.domElement.classList.add("up");
+                    this.cursors[0].domElement.classList.add("up");
                 }
                 if(this.direction8>=2&&this.direction8<=4)
                 {
-                    this.cursor.domElement.classList.add("right");
+                    this.cursors[0].domElement.classList.add("right");
                 }
                 if(this.direction8>=4&&this.direction8<=6)
                 {
-                    this.cursor.domElement.classList.add("down");
+                    this.cursors[0].domElement.classList.add("down");
                 }
                 if(this.direction8>=6&&this.direction8<=8)
                 {
-                    this.cursor.domElement.classList.add("left");
+                    this.cursors[0].domElement.classList.add("left");
                 }
 			}
             else
             {
-                this.cursor.domElement.classList.remove("moving");
+                this.cursors[0].domElement.classList.remove("moving");
             }
 		}
 	});
-	
+    GUI.Map.Cursor=µ.Class(MAP.Image,{
+    	init:function(url,position,size,offset,name,colision,trigger)
+    	{
+    		this.superInit(MAP.Image,url,position,size,name,colision,trigger);
+    		this.domElement.classList.add("cursor");
+    		this.offset=new SC.point();
+    		this.setOffset(offset);
+    	},
+        update:function()
+        {
+        	MAP.Image.prototype.update.call(this);
+            this.domElement.style.zIndex=this.rect.position.y+GUI.Map.Cursor.zIndexOffset;
+        },
+    	setOffset:function(numberOrPoint,y)
+    	{
+    		this.rect.position.add(this.offset);
+    		this.offset.set(numberOrPoint,y);
+    		this.rect.position.add(this.offset);
+    		this.update();
+    	},
+    	setPosition:function(numberOrPoint,y)
+    	{
+            this.rect.position.set(numberOrPoint,y).sub(this.offset);
+            this.update();
+    	},
+    	getPosition:function()
+    	{
+    		return this.rect.position.clone().add(this.offset);
+    	}
+    });
+    GUI.Map.Cursor.zIndexOffset=100;
 	SMOD("GUI.Map",GUI.Map);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);
