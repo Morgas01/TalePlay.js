@@ -11,13 +11,18 @@
         {
         	param=param||{};
             this.images=[];
+            this.position=new SC.point();
+            this.size=new SC.point(param.size);
             this.domElement=param.domElement||document.createElement("div");
             this.domElement.classList.add("Map");
             this.stage=document.createElement("div");
             this.stage.classList.add("stage");
             this.domElement.appendChild(this.stage);
             this.add(param.images);
-            this.position=new SC.point();
+            if(this.size.equals(0))
+            {
+            	this.calcSize();
+            }
             this.setPosition(param.position);
         },
         add:function(images)
@@ -60,7 +65,7 @@
             this.position.add(numberOrPoint,y);
             var b=this.domElement.getBoundingClientRect(),
             bP={x:-b.width/2,y:-b.height/2};
-            this.position.doMath(Math.max,bP).doMath(Math.min,this.getSize().add(bP));
+            this.position.doMath(Math.max,bP).doMath(Math.min,this.getSize().clone().add(bP));
             this.update(true);
         },
         update:function(noimages)
@@ -78,17 +83,40 @@
         },
         getSize:function()
         {
-        	var size=new SC.point();
+        	return this.size;
+        },
+        setSize:function(numberOrPoint,y)
+        {
+        	this.size.set(numberOrPoint,y);
+        },
+        calcSize:function(filter)
+        {
+        	this.size.set(0);
         	for(var i=0;i<this.images.length;i++)
         	{
-        		size.doMath(Math.max,this.images[i].rect.position.clone().add(this.images[i].rect.size));
+        		if(!filter||filter(this.images[i]))
+        		{
+        			this.size.doMath(Math.max,this.images[i].rect.position.clone().add(this.images[i].rect.size));
+        		}
         	}
-        	return size;
+        },
+        collide:function(rect)
+        {
+        	var rtn=[],
+        	cImages=SC.find(this.images,{collision:true},true);
+        	for(var i=0;i<cImages.length;i++)
+        	{
+        		if(cImages[i].rect.collide(rect))
+        		{
+        			rtn.push(cImages[i]);
+        		}
+        	}
+        	return rtn;
         }
     });
     MAP.Image= µ.Class(
     {
-        init:function(url,position,size,name,colision,trigger)
+        init:function(url,position,size,name,collision,trigger)
         {
         	this.rect=new SC.RECT(position,size);
             this.domElement=document.createElement("img");
@@ -104,7 +132,7 @@
             	set:function(name){this.domElement.dataset.name=name;}
             });
             this.name=name||"";
-            this.colision=colision||false;
+            this.collision=!!collision;
             this.trigger=trigger||null;
         },
         update:function()
@@ -114,7 +142,7 @@
             this.domElement.style.height=this.rect.size.y+"px";
             this.domElement.style.width=this.rect.size.x+"px";
             
-            this.domElement.style.zIndex=this.rect.position.y;
+            this.domElement.style.zIndex=Math.floor(this.rect.position.y);
         },
         setPosition:function(numberOrPoint,y)
         {

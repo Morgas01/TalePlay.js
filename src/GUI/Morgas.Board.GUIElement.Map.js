@@ -28,8 +28,6 @@
 				getImages:"getImages",
 				getSize:"getSize"
 			},this);
-            this.offset=new SC.point();
-            this._negOffset=new SC.point();
             this.threshold=new SC.point();
             this.speed=new SC.point(100);
             this.cursors=[];
@@ -60,20 +58,83 @@
 		setCursorPosition:function(numberOrPoint,y,index)
 		{
 			index=index||0;
-			if(this.cursors[index])
+			var cursor=this.cursors[index];
+			if(cursor)
 			{
-				//TODO colision
-				this.cursors[index].setPosition(this._negOffset.clone().add(numberOrPoint,y));
+				this.moveCursor(cursor.position.clone().negate().add(cursor.offset).add(numberOrPoint,y), null, index);
 			}
 		},
 		moveCursor:function(numberOrPoint,y,index)
 		{
 			index=index||0;
-			if(this.cursors[index])
+			var cursor=this.cursors[index];
+			var distance=new SC.point();
+			if(cursor)
 			{
-				//TODO colision
-				this.cursors[index].move(numberOrPoint,y);
+				var size=this.map.getSize();
+				distance.set(numberOrPoint,y);
+				//map boundary
+				var pos=cursor.rect.position.clone().add(cursor.offset);
+				if(pos.x+distance.x<0)
+				{
+					distance.x=-pos.x;
+				}
+				else if (pos.x+distance.x>size.x)
+				{
+					distance.x=size.x-pos.x;
+				}
+				if(pos.y+distance.y<0)
+				{
+					distance.y=-pos.y;
+				}
+				else if (pos.y+distance.y>size.y)
+				{
+					distance.y=size.y-pos.y;
+				}
+				//collision
+				if(cursor.collision)
+				{
+					var progress=1;
+					var rect=cursor.rect.clone();
+					rect.position.add(numberOrPoint,y);
+					var collisions=this.map.collide(rect);
+					for(var i=0;i<collisions.length;i++)
+					{
+						var cImage=collisions[i];
+						var p=null;
+						if(cImage===cursor||cursor.rect.contains(cImage.rect)||cImage.rect.contains(cursor.rect))
+						{//is self or inside
+							continue;
+						}
+						
+						if(distance.x>0&&cursor.rect.position.x+cursor.rect.size.x<=cImage.rect.position.x)
+						{
+							p=Math.max(p,(cImage.rect.position.x-cursor.rect.position.x-cursor.rect.size.x)/distance.x);
+						}
+						else if (distance.x<0&&cursor.rect.position.x>=cImage.rect.position.x+cImage.rect.size.x)
+						{
+							p=Math.max(p,(cImage.rect.position.x+cImage.rect.size.x-cursor.rect.position.x)/distance.x);
+						}
+						
+						if(distance.y>0&&cursor.rect.position.y+cursor.rect.size.y<=cImage.rect.position.y)
+						{
+							p=Math.max(p,(cImage.rect.position.y-cursor.rect.position.y-cursor.rect.size.y)/distance.y);
+						}
+						else if (distance.y<0&&cursor.rect.position.y>=cImage.rect.position.y+cImage.rect.size.y)
+						{
+							p=Math.max(p,(cImage.rect.position.y+cImage.rect.size.y-cursor.rect.position.y)/distance.y);
+						}
+						
+						if(p!==null)
+						{
+							progress=Math.min(progress,p);
+						}
+					}
+					distance.mul(progress);
+				}
+				cursor.move(distance);
 			}
+			return distance;
 		},
 		update:function(noImages)
 		{
@@ -149,6 +210,23 @@
 			{
 				requestAnimationFrame(this._animateCursor);
 				this.moveCursor(this.direction.clone().mul((time-this.lastTime)/1000));
+				var pos=this.cursors[0].rect.position.clone().sub(this.cursors[0].offset);
+				if(pos.x<this.map.position.x-this.threshold.x)
+				{
+					this.move(pos.x-this.map.position.x+this.threshold.x,0);
+				}
+				else if(pos.x>this.map.position.x+this.threshold.x)
+				{
+					this.move(pos.x-this.map.position.x-this.threshold.x,0);
+				}
+				if(pos.y<this.map.position.y-this.threshold.y)
+				{
+					this.move(0,pos.y-this.map.position.y+this.threshold.y);
+				}
+				else if(pos.y>this.map.position.y+this.threshold.y)
+				{
+					this.move(0,pos.y-this.map.position.y-this.threshold.y);
+				}
 				this.lastTime=time;
 
                 this.cursors[0].domElement.classList.add("moving");
@@ -188,13 +266,13 @@
         update:function()
         {
         	MAP.Image.prototype.update.call(this);
-            this.domElement.style.zIndex=this.rect.position.y+GUI.Map.Cursor.zIndexOffset;
+            this.domElement.style.zIndex=Math.floor(this.rect.position.y+GUI.Map.Cursor.zIndexOffset);
         },
     	setOffset:function(numberOrPoint,y)
     	{
     		this.rect.position.add(this.offset);
     		this.offset.set(numberOrPoint,y);
-    		this.rect.position.add(this.offset);
+    		this.rect.position.sub(this.offset);
     		this.update();
     	},
     	setPosition:function(numberOrPoint,y)

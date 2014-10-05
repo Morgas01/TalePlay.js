@@ -12,6 +12,10 @@
 			this.setPosition(position);
 			this.setSize(size);
 		},
+		clone:function()
+		{
+			return new RECT(this.position,this.size);
+		},
 		setPosition:function(x,y)
 		{
 			this.position.set(x,y);
@@ -43,20 +47,23 @@
 		},
 		collide:function(rect)
 		{
-			var me=this.getAbsolute(),
-			that=rect.getAbsolute();
-			
-			return !(me.min.x>that.max.x||me.min.y>that.max.y||me.max.x<that.min.x||me.max.y<that.min.y);
+			if(rect===this)
+			{
+				return true;
+			}
+			else
+			{
+				var me=this.getAbsolute(),
+				that=rect.getAbsolute();
+				
+				return !(me.min.x>=that.max.x||me.min.y>=that.max.y||me.max.x<=that.min.x||me.max.y<=that.min.y);
+			}
 		},
-        contains:function(point)
-        {
-            return (this.position.x<=point.x&&this.position.x+this.size.x>=point.x&&this.position.y<=point.y&&this.position.y+this.size.y>=point.y);
-        },
-        isInside:function(numberOrPoint,y)
+        contains:function(numberOrPoint,y)
         {
             var p=new POINT(numberOrPoint,y);
-            return (this.position.x < p.x && this.position.x+this.size.x > p.x &&
-                    this.position.y < p.y && this.position.y+this.size.y > p.y);
+            return (this.position.x <= p.x && this.position.x+this.size.x > p.x &&
+                    this.position.y <= p.y && this.position.y+this.size.y > p.y);
         }
 	});
 	SMOD("Math.Rect",RECT);
