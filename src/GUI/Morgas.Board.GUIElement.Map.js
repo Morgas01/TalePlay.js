@@ -163,22 +163,23 @@
 				var timeDiff=Math.min(time-this.lastTime,GUI.Map.MAX_TIME_DELAY);
 				requestAnimationFrame(this._animateCursor);
 				this.moveCursor(this.direction.clone().mul((timeDiff)/1000));
-				var pos=this.cursors[0].rect.position.clone().sub(this.cursors[0].offset);
-				if(pos.x<this.map.position.x-this.threshold.x)
+				var pos=this.cursors[0].getPosition();
+				var mapPos=this.map.getPosition();
+				if(pos.x<mapPos.x-this.threshold.x)
 				{
-					this.move(pos.x-this.map.position.x+this.threshold.x,0);
+					this.move(pos.x-mapPos.x+this.threshold.x,0);
 				}
-				else if(pos.x>this.map.position.x+this.threshold.x)
+				else if(pos.x>mapPos.x+this.threshold.x)
 				{
-					this.move(pos.x-this.map.position.x-this.threshold.x,0);
+					this.move(pos.x-mapPos.x-this.threshold.x,0);
 				}
-				if(pos.y<this.map.position.y-this.threshold.y)
+				if(pos.y<mapPos.y-this.threshold.y)
 				{
-					this.move(0,pos.y-this.map.position.y+this.threshold.y);
+					this.move(0,pos.y-mapPos.y+this.threshold.y);
 				}
-				else if(pos.y>this.map.position.y+this.threshold.y)
+				else if(pos.y>mapPos.y+this.threshold.y)
 				{
-					this.move(0,pos.y-this.map.position.y-this.threshold.y);
+					this.move(0,pos.y-mapPos.y-this.threshold.y);
 				}
 				this.lastTime=time;
 
