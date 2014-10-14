@@ -140,54 +140,6 @@
 		{
 			this.map.update(noImages);
 		},
-		/*
-		updateCursor:function()
-		{
-			if(this.cursor)
-			{
-				var size=this.map.getSize(),
-				pos=this.cursor.position;
-				if(pos.x+this.offset.x<0)
-				{
-					pos.x=this._negOffset.x;
-				}
-				if(pos.x+this.offset.x>size.x)
-				{
-					pos.x=size.x+this._negOffset.x;
-				}
-				if(pos.y+this.offset.y<0)
-				{
-					pos.y=this._negOffset.y;
-				}
-				if(pos.y+this.offset.y>size.y)
-				{
-					pos.y=size.y+this._negOffset.y;
-				}
-				this.cursor.update();
-
-				var distance=this.getCursorPosition().sub(this.map.getPosition()),
-				moveX=0,
-				moveY=0;
-				if(distance.x<-this.threshold.x)
-				{
-					moveX=this.threshold.x+distance.x;
-				}
-				else if (distance.x>this.threshold.x)
-				{
-					moveX=distance.x-this.threshold.y;
-				}
-				if(distance.y<-this.threshold.y)
-				{
-					moveY=this.threshold.y+distance.y;
-				}
-				else if (distance.y>this.threshold.y)
-				{
-					moveY=distance.y-this.threshold.y;
-				}
-				this.map.move(moveX,moveY);
-			}
-		},
-		*/
 		setSpeed:function(numberOrPoint,y)
 		{
 			this.speed.set(numberOrPoint,y);
@@ -208,8 +160,9 @@
 		{
 			if(!this.direction.equals(0)&&this.cursors[0])
 			{
+				var timeDiff=Math.min(time-this.lastTime,GUI.Map.MAX_TIME_DELAY);
 				requestAnimationFrame(this._animateCursor);
-				this.moveCursor(this.direction.clone().mul((time-this.lastTime)/1000));
+				this.moveCursor(this.direction.clone().mul((timeDiff)/1000));
 				var pos=this.cursors[0].rect.position.clone().sub(this.cursors[0].offset);
 				if(pos.x<this.map.position.x-this.threshold.x)
 				{
@@ -255,6 +208,7 @@
             }
 		}
 	});
+	GUI.Map.MAX_TIME_DELAY=250;
     GUI.Map.Cursor=µ.Class(MAP.Image,{
     	init:function(url,position,size,offset,name,colision,trigger)
     	{
