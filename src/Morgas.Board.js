@@ -90,7 +90,7 @@
 				event.player=null;
 				for(var i=this.controllers.length-1;i>=0;i--)
 				{
-					if(this.controllers[i].controller===this)
+					if(this.controllers[i].controller===event.source)
 					{
 						event.player=i;
 						break;
