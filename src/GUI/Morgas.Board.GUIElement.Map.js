@@ -14,7 +14,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(GUI,param.styleClass)<
+			this.superInit(GUI,param.styleClass);
 			SC.rescope.all(["_animateCursor"],this);
 			this.map=new MAP({
 				domElement:this.domElement,
