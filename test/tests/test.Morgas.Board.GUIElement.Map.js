@@ -40,7 +40,17 @@
 		//collision
 		var collide=new SC.map.Image("Images/empty.png",{x:25,y:25},{x:50,y:50},"collide",true);
 		collide.domElement.style.backgroundColor="black";
-		map.addImages(collide)
+		//trigger activate
+		var activate=new SC.map.Image("Images/empty.png",{x:325,y:25},{x:50,y:50},"trigger_activate",false,{type:"activate",value:"activate"});
+		activate.domElement.style.backgroundColor="orange";
+		//trigger step
+		var step=new SC.map.Image("Images/empty.png",{x:325,y:325},{x:50,y:50},"trigger_step",false,{type:"step",value:"step"});
+		step.domElement.style.backgroundColor="green";
+		//trigger move
+		var move=new SC.map.Image("Images/empty.png",{x:25,y:325},{x:50,y:50},"trigger_move",true,{type:"move",value:"move"});
+		move.domElement.style.backgroundColor="blue";
+		
+		map.addImages([collide,activate,step,move]);
 		
 		layer.add(map);
 		
@@ -48,6 +58,14 @@
 
         map.setPosition(200,200);
 		map.update();
+		var eventlog=document.createElement("textarea");
+		board.domElement.parentNode.appendChild(eventlog)
+		
+		map.addListener("trigger",function(event)
+		{
+			eventlog.value=event.triggerType+" "+Date.now();
+			console.info(event);
+		})
 		ok(true);
 	});
 })();

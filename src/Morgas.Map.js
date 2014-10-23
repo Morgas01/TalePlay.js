@@ -112,6 +112,19 @@
         		}
         	}
         	return rtn;
+        },
+        trigger:function(numberOrPoint,y)
+        {
+        	var rtn=[],
+        	tImages=SC.find(this.images,{trigger:µ.constantFunctions.boolean},true);
+        	for(var i=0;i<tImages.length;i++)
+        	{
+        		if(tImages[i].rect.contains(numberOrPoint,y))
+        		{
+        			rtn.push(tImages[i]);
+        		}
+        	}
+        	return rtn;
         }
     });
     MAP.Image= µ.Class(

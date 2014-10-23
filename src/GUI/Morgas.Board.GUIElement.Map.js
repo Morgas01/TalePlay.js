@@ -15,6 +15,7 @@
 			param=param||{};
 			
 			this.superInit(GUI,param.styleClass);
+			this.createListener("trigger");
 			SC.rescope.all(["_animateCursor"],this);
 			this.map=new MAP({
 				domElement:this.domElement,
@@ -31,13 +32,17 @@
             this.threshold=new SC.point();
             this.speed=new SC.point(100);
             this.cursors=[];
+            this.movingCursors=new Map();
             this.setThreshold(param.threshold);
             this.setSpeed(param.speed);
             this.addCursors(param.cursors);
-
+            this.assignFilter=param.assignFilter||null;
+            /*
 			this.direction=new SC.point(0,0);
 			this.direction8=0;
 			this.lastTime=null;
+			*/
+            this.animationRquest=null;
 		},
 		addCursors:function(cursors)
 		{
@@ -133,6 +138,18 @@
 					distance.mul(progress);
 				}
 				cursor.move(distance);
+
+				//step trigger
+				var stepTrigger=SC.find(this.map.trigger(cursor.getPosition()),{trigger:{type:"step"}},true);
+				for(var i=0;i<stepTrigger.length;i++)
+				{
+					this.fire("trigger",{
+						triggerType:"step",
+						image:stepTrigger[i],
+						cursor:cursor,
+						distance:distance
+					});
+				}
 			}
 			return distance;
 		},
@@ -150,73 +167,140 @@
 		},
 		onAnalogStick:function(event)
 		{
+			for(var i=0;i<this.cursors.length;i++)
+			{
+				if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
+				{
+					var data=this.movingCursors.get(i);
+					if(!data)
+					{
+						data={
+							direction:new SC.point(),
+							direction8:0,
+							lastTime:Date.now()-performance.timing.navigationStart
+						};
+						this.movingCursors.set(i,data);
+					}
+					data.direction.set(event.analogStick).mul(1,-1).mul(this.cursors[i].speed);
+					data.direction8=event.analogStick.getDirection8();
+				}
+			}
+			if(this.animationRquest===null)
+			{
+				this.animationRquest=requestAnimationFrame(this._animateCursor);
+			}
+			/*
 			this.direction.set(event.analogStick).mul(1,-1).mul(this.speed);
             this.direction8=event.analogStick.getDirection8();
 			this.lastTime=Date.now()-performance.timing.navigationStart;
 			
 			requestAnimationFrame(this._animateCursor);
+			*/
 		},
 		_animateCursor:function(time)
 		{
-			if(!this.direction.equals(0)&&this.cursors[0])
+			for(move of this.movingCursors)
 			{
-				var timeDiff=Math.min(time-this.lastTime,GUI.Map.MAX_TIME_DELAY);
-				requestAnimationFrame(this._animateCursor);
-				this.moveCursor(this.direction.clone().mul((timeDiff)/1000));
-				var pos=this.cursors[0].getPosition();
-				var mapPos=this.map.getPosition();
-				if(pos.x<mapPos.x-this.threshold.x)
+				var index=move[0];
+				var cursor=this.cursors[index];
+				var data=move[1];
+				if(data.direction8!==0&&cursor)
 				{
-					this.move(pos.x-mapPos.x+this.threshold.x,0);
+					var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
+					this.moveCursor(data.direction.clone().mul((timeDiff)/1000),index);
+					data.lastTime=time;
+					
+					//move map
+					var pos=cursor.getPosition();
+					var mapPos=this.map.getPosition();
+					if(pos.x<mapPos.x-this.threshold.x)
+					{
+						this.move(pos.x-mapPos.x+this.threshold.x,0);
+					}
+					else if(pos.x>mapPos.x+this.threshold.x)
+					{
+						this.move(pos.x-mapPos.x-this.threshold.x,0);
+					}
+					if(pos.y<mapPos.y-this.threshold.y)
+					{
+						this.move(0,pos.y-mapPos.y+this.threshold.y);
+					}
+					else if(pos.y>mapPos.y+this.threshold.y)
+					{
+						this.move(0,pos.y-mapPos.y-this.threshold.y);
+					}
+	
+					//set classes
+	                cursor.domElement.classList.add("moving");
+	                cursor.domElement.classList.remove("up","right","down","left");
+	
+	                if(data.direction8>=1&&(data.direction8<=2||data.direction8===8))
+	                {
+	                    cursor.domElement.classList.add("up");
+	                }
+	                if(data.direction8>=2&&data.direction8<=4)
+	                {
+	                    cursor.domElement.classList.add("right");
+	                }
+	                if(data.direction8>=4&&data.direction8<=6)
+	                {
+	                    cursor.domElement.classList.add("down");
+	                }
+	                if(data.direction8>=6&&data.direction8<=8)
+	                {
+	                    cursor.domElement.classList.add("left");
+	                }
 				}
-				else if(pos.x>mapPos.x+this.threshold.x)
-				{
-					this.move(pos.x-mapPos.x-this.threshold.x,0);
-				}
-				if(pos.y<mapPos.y-this.threshold.y)
-				{
-					this.move(0,pos.y-mapPos.y+this.threshold.y);
-				}
-				else if(pos.y>mapPos.y+this.threshold.y)
-				{
-					this.move(0,pos.y-mapPos.y-this.threshold.y);
-				}
-				this.lastTime=time;
-
-                this.cursors[0].domElement.classList.add("moving");
-                this.cursors[0].domElement.classList.remove("up","right","down","left");
-
-                if(this.direction8>=1&&(this.direction8<=2||this.direction8===8))
-                {
-                    this.cursors[0].domElement.classList.add("up");
-                }
-                if(this.direction8>=2&&this.direction8<=4)
-                {
-                    this.cursors[0].domElement.classList.add("right");
-                }
-                if(this.direction8>=4&&this.direction8<=6)
-                {
-                    this.cursors[0].domElement.classList.add("down");
-                }
-                if(this.direction8>=6&&this.direction8<=8)
-                {
-                    this.cursors[0].domElement.classList.add("left");
-                }
+	            else
+	            {
+	                cursor.domElement.classList.remove("moving");
+	                this.movingCursors["delete"](index);
+	            }
 			}
-            else
-            {
-                this.cursors[0].domElement.classList.remove("moving");
-            }
+			if(this.movingCursors.size>0)
+			{
+				this.animationRquest=requestAnimationFrame(this._animateCursor);
+			}
+			else
+			{
+				this.animationRquest=null;
+			}
+		},
+		onButton:function(event)
+		{
+			if(event.value===1)
+			{
+				for(var i=0;i<this.cursors.length;i++)
+				{
+					if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
+					{
+						var activateTrigger=SC.find(this.map.trigger(this.cursors[i].getPosition()),{trigger:{type:"activate"}},true);
+						for(var t=0;t<activateTrigger.length;t++)
+						{
+							if(activateTrigger[t].trigger.type==="activate")
+							{
+								this.fire("trigger",{
+									triggerType:"activate",
+									image:activateTrigger[t],
+									cursor:this.cursors[i]
+								});
+							}
+						}
+					}
+				}
+			}
 		}
 	});
 	GUI.Map.MAX_TIME_DELAY=250;
     GUI.Map.Cursor=µ.Class(MAP.Image,{
-    	init:function(url,position,size,offset,name,colision,trigger)
+    	init:function(url,position,size,offset,name,colision,trigger,speed)
     	{
     		this.superInit(MAP.Image,url,position,size,name,colision,trigger);
     		this.domElement.classList.add("cursor");
     		this.offset=new SC.point();
     		this.setOffset(offset);
+    		this.speed=new SC.point(100);
+    		this.setSpeed(speed);
     	},
         update:function()
         {
@@ -238,6 +322,10 @@
     	getPosition:function()
     	{
     		return this.rect.position.clone().add(this.offset);
+    	},
+    	setSpeed:function(numberOrPoint,y)
+    	{
+            this.speed.set(numberOrPoint,y);
     	}
     });
     GUI.Map.Cursor.zIndexOffset=100;
