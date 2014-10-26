@@ -31,7 +31,11 @@
 	            new SC.map.Image("Images/2.png",{x:200,y:300},{x:100,y:100}),
 	            new SC.map.Image("Images/1.png",{x:300,y:300},{x:100,y:100})
 	        ],
-	        cursors:new SC.gMap.Cursor("Images/cursor_target.svg",{x:200,y:200},{x:50,y:50},{x:25,y:25},"cursor",true),
+	        cursors:[
+	 	    	new SC.gMap.Cursor("Images/cursor_target.svg",{x:150,y:200},{x:50,y:50},{x:25,y:25},"crossair"),
+		    	new SC.gMap.Cursor("Images/empty.png",{x:250,y:200},{x:50,y:50},{x:25,y:25},"arrow",true)
+		    ],
+		    assignFilter:function(event,cursor,index){return event.type!=="analogStickChanged"||event.index===index;},
             threshold:75
 	        
 		});
@@ -63,7 +67,7 @@
 		
 		map.addListener("trigger",function(event)
 		{
-			eventlog.value=event.triggerType+" "+Date.now();
+			eventlog.value="["+event.index+"]"+event.triggerType+" "+Date.now();
 			console.info(event);
 		})
 		ok(true);

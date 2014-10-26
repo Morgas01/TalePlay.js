@@ -147,6 +147,7 @@
 						triggerType:"step",
 						image:stepTrigger[i],
 						cursor:cursor,
+						index:index,
 						distance:distance
 					});
 				}
@@ -207,7 +208,7 @@
 				if(data.direction8!==0&&cursor)
 				{
 					var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
-					this.moveCursor(data.direction.clone().mul((timeDiff)/1000),index);
+					this.moveCursor(data.direction.clone().mul((timeDiff)/1000),undefined,index);
 					data.lastTime=time;
 					
 					//move map
@@ -282,7 +283,8 @@
 								this.fire("trigger",{
 									triggerType:"activate",
 									image:activateTrigger[t],
-									cursor:this.cursors[i]
+									cursor:this.cursors[i],
+									index:i
 								});
 							}
 						}
@@ -299,7 +301,7 @@
     		this.domElement.classList.add("cursor");
     		this.offset=new SC.point();
     		this.setOffset(offset);
-    		this.speed=new SC.point(100);
+    		this.speed=new SC.point(200);
     		this.setSpeed(speed);
     	},
         update:function()
