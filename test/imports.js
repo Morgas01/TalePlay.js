@@ -13,6 +13,7 @@
 	morgasDir=srcDir+"Morgas/src/";
 	cssDir=srcDir+"css/";
 	gameDir=srcDir+"minigames/";
+	imagesDir=srcDir+"Images/";
 	
 
 	WR(morgasDir+"Morgas.js");
