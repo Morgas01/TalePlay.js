@@ -1,9 +1,9 @@
 (function(µ,SMOD,GMOD){
 
-    var RECT=GMOD("Math.Rect"),
-    SC=GMOD("shortcut")({
+    var SC=GMOD("shortcut")({
         find:"find",
-        point:"Math.Point"
+        point:"Math.Point",
+        RECT:"Math.Rect"
     });
     var MAP=µ.Map=µ.Class(
     {
@@ -11,13 +11,18 @@
         {
         	param=param||{};
             this.images=[];
+            this.position=new SC.point();
+            this.size=new SC.point(param.size);
             this.domElement=param.domElement||document.createElement("div");
             this.domElement.classList.add("Map");
             this.stage=document.createElement("div");
             this.stage.classList.add("stage");
             this.domElement.appendChild(this.stage);
             this.add(param.images);
-            this.position=new SC.point();
+            if(this.size.equals(0))
+            {
+            	this.calcSize();
+            }
             this.setPosition(param.position);
         },
         add:function(images)
@@ -60,7 +65,7 @@
             this.position.add(numberOrPoint,y);
             var b=this.domElement.getBoundingClientRect(),
             bP={x:-b.width/2,y:-b.height/2};
-            this.position.doMath(Math.max,bP).doMath(Math.min,this.getSize().add(bP));
+            this.position.doMath(Math.max,bP).doMath(Math.min,this.getSize().clone().add(bP));
             this.update(true);
         },
         update:function(noimages)
@@ -78,38 +83,88 @@
         },
         getSize:function()
         {
-        	var size=new SC.point();
+        	return this.size;
+        },
+        setSize:function(numberOrPoint,y)
+        {
+        	this.size.set(numberOrPoint,y);
+        },
+        calcSize:function(filter)
+        {
+        	this.size.set(0);
         	for(var i=0;i<this.images.length;i++)
         	{
-        		size.doMath(Math.max,this.images[i].position.clone().add(this.images[i].size));
+        		if(!filter||filter(this.images[i]))
+        		{
+        			this.size.doMath(Math.max,this.images[i].rect.position.clone().add(this.images[i].rect.size));
+        		}
         	}
-        	return size;
+        },
+        collide:function(rect)
+        {
+        	var rtn=[],
+        	cImages=SC.find(this.images,{collision:true},true);
+        	for(var i=0;i<cImages.length;i++)
+        	{
+        		if(cImages[i].rect.collide(rect))
+        		{
+        			rtn.push(cImages[i]);
+        		}
+        	}
+        	return rtn;
+        },
+        trigger:function(numberOrPoint,y)
+        {
+        	var rtn=[],
+        	tImages=SC.find(this.images,{trigger:µ.constantFunctions.boolean},true);
+        	for(var i=0;i<tImages.length;i++)
+        	{
+        		if(tImages[i].rect.contains(numberOrPoint,y))
+        		{
+        			rtn.push(tImages[i]);
+        		}
+        	}
+        	return rtn;
         }
     });
-    MAP.Image= µ.Class(RECT,
+    MAP.Image= µ.Class(
     {
-        init:function(url,position,size,name)
+        init:function(url,position,size,name,collision,trigger)
         {
-            this.superInit(RECT,position,size);
+        	this.rect=new SC.RECT(position,size);
             this.domElement=document.createElement("img");
-            this.domElement.src=url;
-            this.name=name;
+            Object.defineProperty(this,"url",{
+            	enumerable:true,
+            	get:function(){return this.domElement.src;},
+            	set:function(url){this.domElement.src=url;}
+            });
+            this.url=url;
+            Object.defineProperty(this,"name",{
+            	enumerable:true,
+            	get:function(){return this.domElement.dataset.name;},
+            	set:function(name){this.domElement.dataset.name=name;}
+            });
+            this.name=name||"";
+            this.collision=!!collision;
+            this.trigger=trigger||null;
         },
         update:function()
         {
-            this.domElement.style.top=this.position.y+"px";
-            this.domElement.style.left=this.position.x+"px";
-            this.domElement.style.height=this.size.y+"px";
-            this.domElement.style.width=this.size.x+"px";
+            this.domElement.style.top=this.rect.position.y+"px";
+            this.domElement.style.left=this.rect.position.x+"px";
+            this.domElement.style.height=this.rect.size.y+"px";
+            this.domElement.style.width=this.rect.size.x+"px";
+            
+            this.domElement.style.zIndex=Math.floor(this.rect.position.y);
         },
         setPosition:function(numberOrPoint,y)
         {
-            this.position.set(numberOrPoint,y);
+        	this.rect.setPosition(numberOrPoint,y);
             this.update();
         },
         move:function(numberOrPoint,y)
         {
-            this.position.add(numberOrPoint,y);
+            this.rect.position.add(numberOrPoint,y);
             this.update();
         }
     });

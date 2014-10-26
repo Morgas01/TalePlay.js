@@ -1,10 +1,10 @@
 (function(µ,SMOD,GMOD){
 
 	var GUI=GMOD("GUIElement"),
-	
+	MAP=GMOD("Map"),
 	SC=GMOD("shortcut")({
-		MAP:"Map",
 		rescope:"rescope",
+		find:"find",
 		proxy:"proxy",
 		point:"Math.Point"
 	});
@@ -14,9 +14,10 @@
 		{
 			param=param||{};
 			
-			this.superInit(GUI,param.styleClass)
+			this.superInit(GUI,param.styleClass);
+			this.createListener("trigger");
 			SC.rescope.all(["_animateCursor"],this);
-			this.map=new SC.MAP({
+			this.map=new MAP({
 				domElement:this.domElement,
 				images:param.images,
 				position:param.position
@@ -28,121 +29,134 @@
 				getImages:"getImages",
 				getSize:"getSize"
 			},this);
-            this.offset=new SC.point();
-            this._negOffset=new SC.point();
             this.threshold=new SC.point();
             this.speed=new SC.point(100);
-            this.cursor=null;
-            this.setOffset(param.offset);
+            this.cursors=[];
+            this.movingCursors=new Map();
             this.setThreshold(param.threshold);
             this.setSpeed(param.speed);
-            this.setCursor(param.cursor);
-
+            this.addCursors(param.cursors);
+            this.assignFilter=param.assignFilter||null;
+            /*
 			this.direction=new SC.point(0,0);
+			this.direction8=0;
 			this.lastTime=null;
+			*/
+            this.animationRquest=null;
 		},
-		setCursor:function(cursor)
+		addCursors:function(cursors)
 		{
-			if(this.cursor)
-			{
-				this.map.stage.removeChild(this.cursor.domElement);
-			}
-			this.map.stage.appendChild(cursor.domElement);
-			this.cursor=cursor;
-			this.cursor.move(this._negOffset);
-			this.updateCursor();
+			cursors=[].concat(cursors);
+            for(var i=0;i<cursors.length;i++)
+            {
+                if(this.cursors.indexOf(cursors[i])===-1)
+                {
+    				this.addImages(cursors[i]);
+                    this.cursors.push(cursors[i]);
+                }
+            }
 		},
-		getCursor:function()
+		getCursors:function(pattern)
 		{
-			return this.cursor;
+			return SC.find(this.cursors,pattern,true);
 		},
-		setOffset:function(numberOrPoint,y)
+		setCursorPosition:function(numberOrPoint,y,index)
 		{
-			if(this.cursor)
+			index=index||0;
+			var cursor=this.cursors[index];
+			if(cursor)
 			{
-				this.cursor.move(this.offset);
-			}
-			this.offset.set(numberOrPoint,y);
-			this._negOffset.set(this.offset).negate();
-			if(this.cursor)
-			{
-				this.cursor.move(this._negOffset);
-			}
-		},
-		setCursorPosition:function(numberOrPoint,y)
-		{
-			if(this.cursor)
-			{
-				this.cursor.setPosition(this._negOffset.clone().add(numberOrPoint,y));
-				this.updateCursor();
+				this.moveCursor(cursor.position.clone().negate().add(cursor.offset).add(numberOrPoint,y), null, index);
 			}
 		},
-		moveCursor:function(numberOrPoint,y)
+		moveCursor:function(numberOrPoint,y,index)
 		{
-			if(this.cursor)
+			index=index||0;
+			var cursor=this.cursors[index];
+			var distance=new SC.point();
+			if(cursor)
 			{
-				this.cursor.move(numberOrPoint,y);
-				this.updateCursor();
+				var size=this.map.getSize();
+				distance.set(numberOrPoint,y);
+				//map boundary
+				var pos=cursor.rect.position.clone().add(cursor.offset);
+				if(pos.x+distance.x<0)
+				{
+					distance.x=-pos.x;
+				}
+				else if (pos.x+distance.x>size.x)
+				{
+					distance.x=size.x-pos.x;
+				}
+				if(pos.y+distance.y<0)
+				{
+					distance.y=-pos.y;
+				}
+				else if (pos.y+distance.y>size.y)
+				{
+					distance.y=size.y-pos.y;
+				}
+				//collision
+				if(cursor.collision)
+				{
+					var progress=1;
+					var rect=cursor.rect.clone();
+					rect.position.add(numberOrPoint,y);
+					var collisions=this.map.collide(rect);
+					for(var i=0;i<collisions.length;i++)
+					{
+						var cImage=collisions[i];
+						var p=null;
+						if(cImage===cursor||cursor.rect.contains(cImage.rect)||cImage.rect.contains(cursor.rect))
+						{//is self or inside
+							continue;
+						}
+						
+						if(distance.x>0&&cursor.rect.position.x+cursor.rect.size.x<=cImage.rect.position.x)
+						{
+							p=Math.max(p,(cImage.rect.position.x-cursor.rect.position.x-cursor.rect.size.x)/distance.x);
+						}
+						else if (distance.x<0&&cursor.rect.position.x>=cImage.rect.position.x+cImage.rect.size.x)
+						{
+							p=Math.max(p,(cImage.rect.position.x+cImage.rect.size.x-cursor.rect.position.x)/distance.x);
+						}
+						
+						if(distance.y>0&&cursor.rect.position.y+cursor.rect.size.y<=cImage.rect.position.y)
+						{
+							p=Math.max(p,(cImage.rect.position.y-cursor.rect.position.y-cursor.rect.size.y)/distance.y);
+						}
+						else if (distance.y<0&&cursor.rect.position.y>=cImage.rect.position.y+cImage.rect.size.y)
+						{
+							p=Math.max(p,(cImage.rect.position.y+cImage.rect.size.y-cursor.rect.position.y)/distance.y);
+						}
+						
+						if(p!==null)
+						{
+							progress=Math.min(progress,p);
+						}
+					}
+					distance.mul(progress);
+				}
+				cursor.move(distance);
+
+				//step trigger
+				var stepTrigger=SC.find(this.map.trigger(cursor.getPosition()),{trigger:{type:"step"}},true);
+				for(var i=0;i<stepTrigger.length;i++)
+				{
+					this.fire("trigger",{
+						triggerType:"step",
+						image:stepTrigger[i],
+						cursor:cursor,
+						index:index,
+						distance:distance
+					});
+				}
 			}
-		},
-		getCursorPosition:function()
-		{
-			if(this.cursor)
-			{
-				return this.cursor.position.clone().add(this.offset);
-			}
-			return undefined
+			return distance;
 		},
 		update:function(noImages)
 		{
-			this.updateCursor();
 			this.map.update(noImages);
-		},
-		updateCursor:function()
-		{
-			if(this.cursor)
-			{
-				var size=this.map.getSize(),
-				pos=this.cursor.position;
-				if(pos.x+this.offset.x<0)
-				{
-					pos.x=this._negOffset.x;
-				}
-				if(pos.x+this.offset.x>size.x)
-				{
-					pos.x=size.x+this._negOffset.x;
-				}
-				if(pos.y+this.offset.y<0)
-				{
-					pos.y=this._negOffset.y;
-				}
-				if(pos.y+this.offset.y>size.y)
-				{
-					pos.y=size.y+this._negOffset.y;
-				}
-				this.cursor.update();
-
-				var distance=this.getCursorPosition().sub(this.map.getPosition()),
-				moveX=0,
-				moveY=0;
-				if(distance.x<-this.threshold.x)
-				{
-					moveX=this.threshold.x+distance.x;
-				}
-				else if (distance.x>this.threshold.x)
-				{
-					moveX=distance.x-this.threshold.y;
-				}
-				if(distance.y<-this.threshold.y)
-				{
-					moveY=this.threshold.y+distance.y;
-				}
-				else if (distance.y>this.threshold.y)
-				{
-					moveY=distance.y-this.threshold.y;
-				}
-				this.map.move(moveX,moveY);
-			}
 		},
 		setSpeed:function(numberOrPoint,y)
 		{
@@ -154,22 +168,169 @@
 		},
 		onAnalogStick:function(event)
 		{
+			for(var i=0;i<this.cursors.length;i++)
+			{
+				if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
+				{
+					var data=this.movingCursors.get(i);
+					if(!data)
+					{
+						data={
+							direction:new SC.point(),
+							direction8:0,
+							lastTime:Date.now()-performance.timing.navigationStart
+						};
+						this.movingCursors.set(i,data);
+					}
+					data.direction.set(event.analogStick).mul(1,-1).mul(this.cursors[i].speed);
+					data.direction8=event.analogStick.getDirection8();
+				}
+			}
+			if(this.animationRquest===null)
+			{
+				this.animationRquest=requestAnimationFrame(this._animateCursor);
+			}
+			/*
 			this.direction.set(event.analogStick).mul(1,-1).mul(this.speed);
+            this.direction8=event.analogStick.getDirection8();
 			this.lastTime=Date.now()-performance.timing.navigationStart;
 			
 			requestAnimationFrame(this._animateCursor);
+			*/
 		},
 		_animateCursor:function(time)
 		{
-			if(!this.direction.equals(0)&&this.cursor)
+			for(move of this.movingCursors)
 			{
-				requestAnimationFrame(this._animateCursor);
-				this.moveCursor(this.direction.clone().mul((time-this.lastTime)/1000));
-				this.lastTime=time;
+				var index=move[0];
+				var cursor=this.cursors[index];
+				var data=move[1];
+				if(data.direction8!==0&&cursor)
+				{
+					var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
+					this.moveCursor(data.direction.clone().mul((timeDiff)/1000),undefined,index);
+					data.lastTime=time;
+					
+					//move map
+					var pos=cursor.getPosition();
+					var mapPos=this.map.getPosition();
+					if(pos.x<mapPos.x-this.threshold.x)
+					{
+						this.move(pos.x-mapPos.x+this.threshold.x,0);
+					}
+					else if(pos.x>mapPos.x+this.threshold.x)
+					{
+						this.move(pos.x-mapPos.x-this.threshold.x,0);
+					}
+					if(pos.y<mapPos.y-this.threshold.y)
+					{
+						this.move(0,pos.y-mapPos.y+this.threshold.y);
+					}
+					else if(pos.y>mapPos.y+this.threshold.y)
+					{
+						this.move(0,pos.y-mapPos.y-this.threshold.y);
+					}
+	
+					//set classes
+	                cursor.domElement.classList.add("moving");
+	                cursor.domElement.classList.remove("up","right","down","left");
+	
+	                if(data.direction8>=1&&(data.direction8<=2||data.direction8===8))
+	                {
+	                    cursor.domElement.classList.add("up");
+	                }
+	                if(data.direction8>=2&&data.direction8<=4)
+	                {
+	                    cursor.domElement.classList.add("right");
+	                }
+	                if(data.direction8>=4&&data.direction8<=6)
+	                {
+	                    cursor.domElement.classList.add("down");
+	                }
+	                if(data.direction8>=6&&data.direction8<=8)
+	                {
+	                    cursor.domElement.classList.add("left");
+	                }
+				}
+	            else
+	            {
+	                cursor.domElement.classList.remove("moving");
+	                this.movingCursors["delete"](index);
+	            }
+			}
+			if(this.movingCursors.size>0)
+			{
+				this.animationRquest=requestAnimationFrame(this._animateCursor);
+			}
+			else
+			{
+				this.animationRquest=null;
+			}
+		},
+		onButton:function(event)
+		{
+			if(event.value===1)
+			{
+				for(var i=0;i<this.cursors.length;i++)
+				{
+					if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
+					{
+						var activateTrigger=SC.find(this.map.trigger(this.cursors[i].getPosition()),{trigger:{type:"activate"}},true);
+						for(var t=0;t<activateTrigger.length;t++)
+						{
+							if(activateTrigger[t].trigger.type==="activate")
+							{
+								this.fire("trigger",{
+									triggerType:"activate",
+									image:activateTrigger[t],
+									cursor:this.cursors[i],
+									index:i
+								});
+							}
+						}
+					}
+				}
 			}
 		}
 	});
-	
+	GUI.Map.MAX_TIME_DELAY=250;
+    GUI.Map.Cursor=µ.Class(MAP.Image,{
+    	init:function(url,position,size,offset,name,colision,trigger,speed)
+    	{
+    		this.superInit(MAP.Image,url,position,size,name,colision,trigger);
+    		this.domElement.classList.add("cursor");
+    		this.offset=new SC.point();
+    		this.setOffset(offset);
+    		this.speed=new SC.point(200);
+    		this.setSpeed(speed);
+    	},
+        update:function()
+        {
+        	MAP.Image.prototype.update.call(this);
+            this.domElement.style.zIndex=Math.floor(this.rect.position.y+GUI.Map.Cursor.zIndexOffset);
+        },
+    	setOffset:function(numberOrPoint,y)
+    	{
+    		this.rect.position.add(this.offset);
+    		this.offset.set(numberOrPoint,y);
+    		this.rect.position.sub(this.offset);
+    		this.update();
+    	},
+    	setPosition:function(numberOrPoint,y)
+    	{
+            this.rect.position.set(numberOrPoint,y).sub(this.offset);
+            this.update();
+    	},
+    	getPosition:function()
+    	{
+    		return this.rect.position.clone().add(this.offset);
+    	},
+    	setSpeed:function(numberOrPoint,y)
+    	{
+            this.speed.set(numberOrPoint,y);
+    	}
+    });
+    GUI.Map.Cursor.zIndexOffset=100;
 	SMOD("GUI.Map",GUI.Map);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);
