@@ -1,0 +1,50 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<title>Map Maker</title>
+		<meta charset="UTF-8">
+		<script src="../Morgas/src/Morgas.js"></script>
+		<script src="../Morgas/src/Morgas.Detached.js"></script>
+		<script src="../Morgas/src/Morgas.util.object.js"></script>
+		<script src="../Morgas/src/Morgas.NodePatch.js"></script>
+		<script src="../Morgas/src/DB/Morgas.DB.js"></script>
+		
+		<script src="../Morgas.Menu.js"></script>
+		<script src="../Morgas.Board.js"></script>
+		<script src="../Morgas.Board.Layer.js"></script>
+		<script src="../Morgas.Controller.js"></script>
+		<script src="../Morgas.Controller.Mapping.js"></script>
+		<script src="../Morgas.Controller.Keyboard.js"></script>
+		<script src="../Morgas.Controller.Gamepad.js"></script>
+		
+		<script src="../GUI/Morgas.Board.GUIElement.js"></script>
+		
+		
+		<link rel="stylesheet" href="../css/structure/core.css">
+		
+		<link rel="stylesheet" href="../css/themes/TalePlay-classic.css">
+		
+		
+		<link rel="stylesheet" href="mapMaker.css">
+		<script src="mapMaker.js"></script>
+		
+	</head>
+	<body>
+		<div id="bordContainer"></div>
+		<div class="controlPanel">
+			<div>
+				<button data-action="save">save</button>
+				<button data-action="load">load</button>
+			</div>
+			<div>
+				<button data-action="addImage">add Image</button>
+			</div>
+			<div id="Images"></div>
+		</div>
+		<div id="addImageDialog" class="hidden">
+			<label>Files:<input type="file" multiple="multiple"></label>
+			<div><span>Urls:</span><textarea rows="3" cols="50"></textarea></div>
+			<button data-action="putImages">OK</button>
+		</div>
+	</body>
+</html>
