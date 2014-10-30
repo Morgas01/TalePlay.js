@@ -43,4 +43,5 @@
 			}
 		}
 	});
+	SMOD("Controller.Gamepad",GP);
 })(Morgas,Morgas.setModule,Morgas.getModule);

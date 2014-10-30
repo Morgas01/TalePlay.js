@@ -30,18 +30,11 @@
 				getSize:"getSize"
 			},this);
             this.threshold=new SC.point();
-            this.speed=new SC.point(100);
             this.cursors=[];
             this.movingCursors=new Map();
             this.setThreshold(param.threshold);
-            this.setSpeed(param.speed);
-            this.addCursors(param.cursors);
+            param.cursors&&this.addCursors(param.cursors);
             this.assignFilter=param.assignFilter||null;
-            /*
-			this.direction=new SC.point(0,0);
-			this.direction8=0;
-			this.lastTime=null;
-			*/
             this.animationRquest=null;
 		},
 		addCursors:function(cursors)
@@ -158,10 +151,6 @@
 		{
 			this.map.update(noImages);
 		},
-		setSpeed:function(numberOrPoint,y)
-		{
-			this.speed.set(numberOrPoint,y);
-		},
 		setThreshold:function(numberOrPoint,y)
 		{
 			this.threshold.set(numberOrPoint,y);
@@ -190,13 +179,6 @@
 			{
 				this.animationRquest=requestAnimationFrame(this._animateCursor);
 			}
-			/*
-			this.direction.set(event.analogStick).mul(1,-1).mul(this.speed);
-            this.direction8=event.analogStick.getDirection8();
-			this.lastTime=Date.now()-performance.timing.navigationStart;
-			
-			requestAnimationFrame(this._animateCursor);
-			*/
 		},
 		_animateCursor:function(time)
 		{

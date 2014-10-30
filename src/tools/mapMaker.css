@@ -16,6 +16,10 @@ body {
 #bordContainer {
 	width: calc(100% - 300px);
 }
+#bordContainer .Map {
+	height: 100%;
+	width: 100%;
+}
 
 .controlPanel {
 	width: 300px;
@@ -35,6 +39,7 @@ body {
 }
 
 #addImageDialog {
+	background-color: #FFFFFF;
 	border:2px solid #767676;
 	border-radius:5px;
 	box-shadow:2px 2px 5px #000000;

@@ -1,7 +1,12 @@
 window.addEventListener("load", function()
 {
 	var SC=µ.getModule("shortcut")({
-		find:"find"
+		find:"find",
+		Board:"Board",
+		kCon:"Controller.Keyboard",
+		padCon:"Controller.Gamepad",
+		Layer:"Layer",
+		Map:"GUI.Map",
 	});
 	var images=[];
 	var updateImages=function()
@@ -67,4 +72,26 @@ window.addEventListener("load", function()
 			}
 		}
 	}, false);
+	
+	var board=new SC.Board(document.querySelector("#bordContainer"));
+	var kCon=new SC.kCon({
+		"buttons": {
+			" ": "0"
+		},
+		"buttonAxis": {
+			"Up": "3",
+			"Right": "2",
+			"Down": "-3",
+			"Left": "-2"
+		}
+	});
+	board.addController(kCon);
+	
+	var layer=new SC.Layer();
+	var map=new SC.Map({
+		cursors:new SC.Map.Cursor("../Images/cursor_target.svg",0,{x:100,y:100},{x:50,y:50})
+	});
+	board.addLayer(layer);
+	layer.add(map);
+	map.setPosition(0);
 }, false);

@@ -90,7 +90,7 @@
 			"Left": "-2"
 		},
 		"axes": {}
-	}
+	};
 	SMOD("Controller.Keyboard",CTRL.Keyboard)
 
 })(Morgas,Morgas.setModule,Morgas.getModule);

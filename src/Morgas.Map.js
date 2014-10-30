@@ -18,7 +18,7 @@
             this.stage=document.createElement("div");
             this.stage.classList.add("stage");
             this.domElement.appendChild(this.stage);
-            this.add(param.images);
+            param.images&&this.add(param.images);
             if(this.size.equals(0))
             {
             	this.calcSize();
