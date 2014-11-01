@@ -9,33 +9,16 @@ html,body {
 	white-space: nowrap;
 }
 body {
-	display:flex;
-	align-items:stretch;
-}
-
-#bordContainer {
-	width: calc(100% - 300px);
-}
-#bordContainer .Map {
-	height: 100%;
-	width: 100%;
-}
-
-.controlPanel {
-	width: 300px;
 	display: flex;
 	flex-direction:column;
 }
-.controlPanel > :nth-child( -n + 2 ) {
-	flex-shrink:0;
-}
-#Images {
+#bordContainer {
 	flex-grow:1;
-	overflow-y: auto;
 }
-#Images img {
-	height: 100px;
-	display: block;
+.controlPanel {
+	vertical-align:middle;
+	text-align: center;
+	padding: 10px;
 }
 
 #addImageDialog {

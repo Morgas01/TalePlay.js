@@ -6,19 +6,29 @@ window.addEventListener("load", function()
 		kCon:"Controller.Keyboard",
 		padCon:"Controller.Gamepad",
 		Layer:"Layer",
-		Map:"GUI.Map",
+		MapMaker:"MapMaker",
 	});
-	var images=[];
-	var updateImages=function()
-	{
-		var container=document.querySelector("#Images");
-		for(var i=container.children.length;i<images.length;i++)
-		{
-			var img=document.createElement("img");
-			img.src=images[i].url;
-			container.appendChild(img);
+	
+	var board=new SC.Board(document.querySelector("#bordContainer"));
+	var kCon=new SC.kCon({
+		"buttons": {
+			" ": "0",
+			"Enter": "1"
+		},
+		"buttonAxis": {
+			"w": "1",
+			"d": "0",
+			"s": "-1",
+			"a": "-0",
+			"Up": "3",
+			"Right": "2",
+			"Down": "-3",
+			"Left": "-2"
 		}
-	}
+	});
+	board.addController(kCon);
+	var mapMaker=new SC.MapMaker({board:board});
+	
 	var actions={
 		save:function()
 		{
@@ -35,11 +45,12 @@ window.addEventListener("load", function()
 		putImages:function()
 		{
 			var dialog=document.querySelector("#addImageDialog");
+			var images=[]
 			
 			var input=dialog.querySelector("input");
 			for(var i=0;i<input.files.length;i++)
 			{
-				images.push({file:input.files[i],url:URL.createObjectURL(input.files[i])});
+				images.push(input.files[i]);
 			}
 			input.value="";
 			
@@ -48,17 +59,19 @@ window.addEventListener("load", function()
 			{
 				images=images.concat(textArea.value.split("\n").map(function(val)
 				{
-					return {url:val.trim()};
+					return val.trim();
 				}));
 			}
 			textArea.value="";
 			
 			dialog.classList.add("hidden");
-			updateImages();
+			mapMaker.addImages(images);
 		}
 	};
+	
 	window.addEventListener("click", function(e)
 	{
+		//execute actions
 		var action=e.target.dataset.action;
 		if(action)
 		{
@@ -72,26 +85,4 @@ window.addEventListener("load", function()
 			}
 		}
 	}, false);
-	
-	var board=new SC.Board(document.querySelector("#bordContainer"));
-	var kCon=new SC.kCon({
-		"buttons": {
-			" ": "0"
-		},
-		"buttonAxis": {
-			"Up": "3",
-			"Right": "2",
-			"Down": "-3",
-			"Left": "-2"
-		}
-	});
-	board.addController(kCon);
-	
-	var layer=new SC.Layer();
-	var map=new SC.Map({
-		cursors:new SC.Map.Cursor("../Images/cursor_target.svg",0,{x:100,y:100},{x:50,y:50})
-	});
-	board.addLayer(layer);
-	layer.add(map);
-	map.setPosition(0);
 }, false);

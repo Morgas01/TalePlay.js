@@ -257,7 +257,7 @@
 		{
 			var converted=this.converter(item,index,this.menu.selectedIndexs.indexOf(index)!==-1);
 			item=document.createElement("span");
-			if(Array.isArray&&typeof converted !=="string")
+			if(Array.isArray(converted))
 			{
 				converted="<span>"+converted.join("</span><span>")+"</span>";
 			}

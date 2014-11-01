@@ -21,6 +21,8 @@
 		<script src="../Math/Morgas.Math.Rect.js"></script>
 		<script src="../Morgas.Map.js"></script>
 		<script src="../GUI/Morgas.Board.GUIElement.Map.js"></script>
+		<script src="../Morgas.Menu.js"></script>
+		<script src="../GUI/Morgas.Board.GUIElement.Menu.js"></script>
 		
 		
 		<link rel="stylesheet" href="../css/structure/core.css">
@@ -31,23 +33,22 @@
 		
 		<link rel="stylesheet" href="../css/themes/TalePlay-classic.css">
 		
+		<link rel="stylesheet" href="../css/structure/Layer.MapMaker.css">
+		<script src="../Morgas.Board.Layer.MapMaker.js"></script>
 		
 		<link rel="stylesheet" href="mapMaker.css">
 		<script src="mapMaker.js"></script>
 		
 	</head>
 	<body>
-		<div id="bordContainer"></div>
 		<div class="controlPanel">
 			<div>
 				<button data-action="save">save</button>
 				<button data-action="load">load</button>
-			</div>
-			<div>
 				<button data-action="addImage">add Image</button>
 			</div>
-			<div id="Images"></div>
 		</div>
+		<div id="bordContainer"></div>
 		<div id="addImageDialog" class="hidden">
 			<label>Files:<input type="file" multiple="multiple"></label>
 			<div><span>Urls:</span><textarea rows="3" cols="50"></textarea></div>
