@@ -28,7 +28,6 @@
 			this.columns=param.columns||null;
 			
 			this.axisState={index:null,player:null,value:0};
-			this.buttonState={index:null,player:null};
 			
 			this.stepID=null;
 			this.stepDelay=param.stepDelay||500;
@@ -179,15 +178,9 @@
 		},
 		onButton:function(event)
 		{
-			if(event.value===0&&this.buttonState.index===event.index&&this.buttonState.player===event.player)
+			console.dir(event);
+			if (event.value===1)
 			{
-				this.buttonState.index=this.buttonState.player=null;
-			}
-			else if (this.buttonState.index===null&&event.value===1)
-			{
-				this.buttonState.index=event.index;
-				this.buttonState.player=event.player;
-				
 				if(this.menu.active!==-1)
 				{
 					this.toggleSelect(this.menu.active)
@@ -257,7 +250,7 @@
 		{
 			var converted=this.converter(item,index,this.menu.selectedIndexs.indexOf(index)!==-1);
 			item=document.createElement("span");
-			if(Array.isArray&&typeof converted !=="string")
+			if(Array.isArray(converted))
 			{
 				converted="<span>"+converted.join("</span><span>")+"</span>";
 			}

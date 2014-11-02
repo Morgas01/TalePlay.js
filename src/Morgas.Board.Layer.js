@@ -57,5 +57,5 @@
 			return false;
 		}
 	});
-	
+	SMOD("Layer",LAYER);
 })(Morgas,Morgas.setModule,Morgas.getModule)

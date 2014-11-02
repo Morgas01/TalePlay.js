@@ -24,7 +24,6 @@
 			SC.rs.all(["_ctrlCallback","focus"],this);
 			
 			this.domElement=document.createElement("div");
-			this.domElement.style.position="relative";
 			this.domElement.classList.add("Board");
 			
 			this.keyTrigger=document.createElement("textarea");
@@ -109,7 +108,7 @@
 		},
 		removeLayer:function(layer)
 		{
-			if(this.nodePatch.removeChild)
+			if(this.nodePatch.removeChild(layer))
 			{
 				layer.domElement.remove();
 				return true;
