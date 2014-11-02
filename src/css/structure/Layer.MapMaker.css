@@ -13,3 +13,9 @@
 .MapMaker .images img {
 	width: 200px;
 }
+
+.imageLayer .panel {
+	top:50%;
+	left:50%;
+	transform:translatex(-50%) translatey(-50%);
+}

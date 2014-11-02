@@ -151,6 +151,13 @@
 		{
 			this.map.update(noImages);
 		},
+		updateSize:function()
+		{
+			this.map.calcSize(function(img)
+			{
+				return !img.domElement.classList.contains("cursor");
+			});
+		},
 		setThreshold:function(numberOrPoint,y)
 		{
 			this.threshold.set(numberOrPoint,y);

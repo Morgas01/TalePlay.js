@@ -108,7 +108,7 @@
 		},
 		removeLayer:function(layer)
 		{
-			if(this.nodePatch.removeChild)
+			if(this.nodePatch.removeChild(layer))
 			{
 				layer.domElement.remove();
 				return true;

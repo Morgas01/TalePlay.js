@@ -41,6 +41,7 @@ window.addEventListener("load", function()
 		addImage:function()
 		{
 			document.querySelector("#addImageDialog").classList.remove("hidden");
+			document.querySelector("#addImageDialog textarea").focus();
 		},
 		putImages:function()
 		{
@@ -66,6 +67,7 @@ window.addEventListener("load", function()
 			
 			dialog.classList.add("hidden");
 			mapMaker.addImages(images);
+			board.focus();
 		}
 	};
 	
@@ -85,4 +87,7 @@ window.addEventListener("load", function()
 			}
 		}
 	}, false);
+	
+
+	board.focus();
 }, false);

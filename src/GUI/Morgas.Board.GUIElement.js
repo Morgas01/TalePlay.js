@@ -24,9 +24,9 @@
 		addStyleClass:function(styleClass)
 		{
 			var list=this.domElement.classList;
-			if(!Array.isArray(styleClass))
+			if(Array.isArray(styleClass))
 			{
-				list.add.apply(list,arguments);
+				list.add.apply(list,styleClass);
 			}
 			else
 			{
@@ -36,9 +36,9 @@
 		removeStyleClass:function(styleClass)
 		{
 			var list=this.domElement.classList;
-			if(!Array.isArray(styleClass))
+			if(Array.isArray(styleClass))
 			{
-				list.remove.apply(list,arguments);
+				list.remove.apply(list,styleClass);
 			}
 			else
 			{
