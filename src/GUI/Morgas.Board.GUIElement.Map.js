@@ -69,7 +69,6 @@
 			var distance=new SC.point();
 			if(cursor)
 			{
->>>>>>> master
 				var size=this.map.getSize();
 				distance.set(numberOrPoint,y);
 				//map boundary
@@ -83,7 +82,6 @@
 					distance.x=size.x-pos.x;
 				}
 				if(pos.y+distance.y<0)
-<<<<<<< HEAD
 				{
 					distance.y=-pos.y;
 				}
@@ -132,56 +130,6 @@
 					}
 					distance.mul(progress);
 				}
-=======
-				{
-					distance.y=-pos.y;
-				}
-				else if (pos.y+distance.y>size.y)
-				{
-					distance.y=size.y-pos.y;
-				}
-				//collision
-				if(cursor.collision)
-				{
-					var progress=1;
-					var rect=cursor.rect.clone();
-					rect.position.add(numberOrPoint,y);
-					var collisions=this.map.collide(rect);
-					for(var i=0;i<collisions.length;i++)
-					{
-						var cImage=collisions[i];
-						var p=null;
-						if(cImage===cursor||cursor.rect.contains(cImage.rect)||cImage.rect.contains(cursor.rect))
-						{//is self or inside
-							continue;
-						}
-						
-						if(distance.x>0&&cursor.rect.position.x+cursor.rect.size.x<=cImage.rect.position.x)
-						{
-							p=Math.max(p,(cImage.rect.position.x-cursor.rect.position.x-cursor.rect.size.x)/distance.x);
-						}
-						else if (distance.x<0&&cursor.rect.position.x>=cImage.rect.position.x+cImage.rect.size.x)
-						{
-							p=Math.max(p,(cImage.rect.position.x+cImage.rect.size.x-cursor.rect.position.x)/distance.x);
-						}
-						
-						if(distance.y>0&&cursor.rect.position.y+cursor.rect.size.y<=cImage.rect.position.y)
-						{
-							p=Math.max(p,(cImage.rect.position.y-cursor.rect.position.y-cursor.rect.size.y)/distance.y);
-						}
-						else if (distance.y<0&&cursor.rect.position.y>=cImage.rect.position.y+cImage.rect.size.y)
-						{
-							p=Math.max(p,(cImage.rect.position.y+cImage.rect.size.y-cursor.rect.position.y)/distance.y);
-						}
-						
-						if(p!==null)
-						{
-							progress=Math.min(progress,p);
-						}
-					}
-					distance.mul(progress);
-				}
->>>>>>> master
 				cursor.move(distance);
 
 				//step trigger
@@ -198,13 +146,6 @@
 				}
 			}
 			return distance;
-<<<<<<< HEAD
-		},
-		update:function(noImages)
-		{
-			this.map.update(noImages);
-=======
->>>>>>> master
 		},
 		update:function(noImages)
 		{
@@ -245,16 +186,6 @@
 			{
 				this.animationRquest=requestAnimationFrame(this._animateCursor);
 			}
-<<<<<<< HEAD
-			/*
-			this.direction.set(event.analogStick).mul(1,-1).mul(this.speed);
-            this.direction8=event.analogStick.getDirection8();
-			this.lastTime=Date.now()-performance.timing.navigationStart;
-			
-			requestAnimationFrame(this._animateCursor);
-			*/
-=======
->>>>>>> master
 		},
 		_animateCursor:function(time)
 		{
