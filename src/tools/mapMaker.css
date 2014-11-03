@@ -12,9 +12,28 @@ body {
 	display: flex;
 	flex-direction:column;
 }
+[data-action] {
+    cursor: pointer;
+}
 #bordContainer {
 	flex-grow:1;
+    position: relative;
 }
+#bordContainer #hover-panel {
+    font-size: 50px;
+    position: absolute;
+    top: calc(100% - 100px);
+    right: 0;
+    transition: top 1s;
+
+    background-color: #FFAA00;
+    padding: 2px;
+}
+#bordContainer:hover #hover-panel,
+#bordContainer #hover-panel:hover {
+    top: 100%;
+}
+
 .controlPanel {
 	vertical-align:middle;
 	text-align: center;
@@ -37,4 +56,8 @@ body {
 }
 #addImageDialog button {
 	float: right;
+}
+.info {
+    display: flex;
+    justify-content: center;
 }

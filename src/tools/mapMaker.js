@@ -68,7 +68,11 @@ window.addEventListener("load", function()
 			dialog.classList.add("hidden");
 			mapMaker.addImages(images);
 			board.focus();
-		}
+		},
+        showControllerManager:function()
+        {
+            //todo
+        }
 	};
 	
 	window.addEventListener("click", function(e)
