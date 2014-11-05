@@ -49,11 +49,7 @@
 		},
 		equals:function(x,y)
 		{
-			if(this.x===x&&this.y===y||(typeof x==="object"&&this.x===x.x&&this.y===x.y))
-			{
-				return true;
-			}
-			return false;
+			return (this.x===x&&this.y===y||(typeof x==="object"&&this.x===x.x&&this.y===x.y));
 		},
 		getForce:function()
 		{

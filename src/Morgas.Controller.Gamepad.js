@@ -13,7 +13,7 @@
 			
 			this.superInit(CTRL,map);
 			
-			SC.rescope.all(["update"],this)
+			SC.rescope.all(["update"],this);
 			
 			this.pollKey=null;
 			

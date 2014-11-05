@@ -1,7 +1,6 @@
 (function(µ,SMOD,GMOD){
 
-	var GUI=GMOD("GUIElement"),
-	ORG=GMOD("Organizer");
+	var GUI=GMOD("GUIElement");
 	
 	var SC=GMOD("shortcut")({
 		rs:"rescope",
@@ -49,7 +48,7 @@
 			this.controllers=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
 				selectionType:SC.Menu.SelectionTypes.single,
-				converter:MANAGER.controllerConverter,
+				converter:MANAGER.controllerConverter
 			});
 			this.controllers.addListener("select",this._MenuSelect);
 
@@ -210,7 +209,7 @@
 					}
 					_self.update("controllers");
 					event.source.destroy();
-				})
+				});
 				return true;
 			}
 			return false;
@@ -231,7 +230,7 @@
 			((item.controller.mapping&&item.controller.mapping.getValueOf("name"))||"None"),
 			'<input type="number" min="1" value="'+item.player+'" data-controllerindex="'+index+'" >'
 	    ];
-	}
+	};
 	MANAGER.mappingConverter=function(item,index,selected)
 	{
 		if(!item)
@@ -245,7 +244,7 @@
 			        item.getValueOf("type")
 		    ];
 		}
-	}
+	};
 	SMOD("GUI.ControllerManager",MANAGER);
 	
-})(Morgas,Morgas.setModule,Morgas.getModule)
+})(Morgas,Morgas.setModule,Morgas.getModule);

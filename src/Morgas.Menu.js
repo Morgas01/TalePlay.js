@@ -106,7 +106,7 @@
 			{
 				index=item;
 			}
-			index=this.selectedIndexs.indexOf(index)
+			index=this.selectedIndexs.indexOf(index);
 			if(index!==-1)
 			{
 				this.selectedIndexs.splice(index,1);
@@ -225,4 +225,4 @@
 	
 	SMOD("Menu",MENU);
 	
-})(Morgas,Morgas.setModule,Morgas.getModule)
+})(Morgas,Morgas.setModule,Morgas.getModule);

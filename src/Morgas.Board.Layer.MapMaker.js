@@ -1,6 +1,6 @@
 (function(µ,SMOD,GMOD){
 	
-	var Layer=GMOD("Layer")
+	var Layer=GMOD("Layer");
 
 	var SC=µ.getModule("shortcut")({
 		rs:"rescope",
@@ -39,7 +39,7 @@
 			SC.setIn(this.domElement.querySelectorAll("[data-field]"),this.image);
 			
 			this.domElement.addEventListener("click",this.onClick,false);
-			board.addLayer(this)
+			board.addLayer(this);
 			//this.domElement.querySelector('[data-field="name"]').focus();
 		},
 		onClick:function(e)
@@ -62,7 +62,7 @@
 		init:function(param)
 		{
 			param=param||{};
-			this.superInit(Layer)
+			this.superInit(Layer);
 			SC.rs.all(["placeImage"],this);
 			this.domElement.classList.add("MapMaker");
 			if(param.board)
