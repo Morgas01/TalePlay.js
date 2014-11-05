@@ -14,13 +14,16 @@ window.addEventListener("load",function(){
         {
             var resolved=TalePlay.dependencies.resolve(values);
             var prefix=document.getElementById("prefix").value;
+            resolved.sort(function(a,b){
+               return a.endsWith(".css")-b.endsWith(".css");
+            });
             document.getElementById("result").value=resolved.map(function(v)
             {
-                if(v.endsWith("css"))
+                if(v.endsWith(".css"))
                 {
                     return '<link rel="stylesheet" href="'+prefix+v+'">'
                 }
-                return '<script src="'+prefix+v+'></script>';
+                return '<script src="'+prefix+v+'"></script>';
             }).join("\n");
         }
         else
