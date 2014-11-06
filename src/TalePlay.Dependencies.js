@@ -68,9 +68,10 @@
             uses:[MORGAS_PATH+"Morgas.util.object.js","Math/Morgas.Math.Point.js"]
         },
 
-        "Morgas.Board.MapMaker.js":{
+        "Morgas.Board.Layer.MapMaker.js":{
             deps:[MORGAS_PATH+"Morgas.js","Morgas.Board.Layer.js"],
-            uses:["Morgas.Map.js","GUI/Morgas.Board.GUIElement.Map.js","Morgas.Menu.js","GUI/Morgas.Board.GUIElement.Menu.js",MORGAS_PATH+"Morgas.util.object.js"]
+            uses:["Morgas.Map.js","GUI/Morgas.Board.GUIElement.Map.js","Morgas.Menu.js","GUI/Morgas.Board.GUIElement.Menu.js",MORGAS_PATH+"Morgas.util.object.js",
+                  "css/structure/Layer.MapMaker.css"]
         }
     });
 
