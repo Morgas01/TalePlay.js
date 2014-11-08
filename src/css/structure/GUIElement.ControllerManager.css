@@ -1,6 +1,11 @@
+.GUIElement.ControllerManager .DeviceActions,
 .GUIElement.ControllerManager .MappingActions {
 	white-space: nowrap;
 }
-.GUIElement.ControllerManager .mappings .Menu {
+.GUIElement.ControllerManager .controllers,
+.GUIElement.ControllerManager .mappings {
+    vertical-align: top;
+}
+.GUIElement.ControllerManager .Menu {
     width: 100%;
 }

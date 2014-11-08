@@ -6,7 +6,9 @@ window.addEventListener("load", function()
 		kCon:"Controller.Keyboard",
 		padCon:"Controller.Gamepad",
 		Layer:"Layer",
+		ControllerManager:"GUI.ControllerManager",
 		MapMaker:"MapMaker",
+		Idb:"IDBConn"
 	});
 	
 	var board=new SC.Board(document.querySelector("#bordContainer"));
@@ -27,6 +29,16 @@ window.addEventListener("load", function()
 		}
 	});
 	board.addController(kCon);
+	var controllerLayer=new SC.Layer();
+	controllerLayer.domElement.classList.add("overlay");
+	var manager=new SC.ControllerManager({
+		styleClass:["panel","center"],
+		buttons:2,
+		analogSticks:2,
+		mappings:[kCon.getMapping()],
+		dbConn:new SC.Idb("mapMaker")
+	});
+	controllerLayer.add(manager);
 	var mapMaker=new SC.MapMaker({board:board});
 	
 	var actions={
@@ -69,9 +81,17 @@ window.addEventListener("load", function()
 			mapMaker.addImages(images);
 			board.focus();
 		},
-        showControllerManager:function()
+		toggleControllerManager:function()
         {
-            //todo
+			if(board.hasLayer(controllerLayer))
+			{
+				board.removeLayer(controllerLayer);
+			}
+			else
+			{
+	            board.addLayer(controllerLayer);
+	            manager.update();
+			}
         }
 	};
 	

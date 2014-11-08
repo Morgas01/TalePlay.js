@@ -14,7 +14,7 @@
 	var template=
 	'<table>'+
 		'<tr>'+
-			'<td>'+
+			'<td class="DeviceActions">'+
 				'<select class="devices"></select>'+
 				'<button data-action="addDevice">add Device</button>'+
 				'<button data-action="removeController">remove Controller</button>'+
@@ -39,7 +39,7 @@
 			
 			this.superInit(GUI,param.styleClass);
 			this.addStyleClass("ControllerManager");
-			SC.rs.all(["_Click","_MenuSelect","_playerChanged"],this);
+			SC.rs.all(["_Click","_MenuSelect","_playerChanged","_mappingsLoaded"],this);
 			this.domElement.addEventListener("click",this._Click);
 
 			this.buttons=param.buttons!==undefined ? param.buttons : 10;
@@ -61,6 +61,12 @@
 				items:param.mappings
 			});
 			this.mappings.addListener("select",this._MenuSelect);
+			
+			this.dbConn=param.dbConn||null;
+			if(this.dbConn)
+			{
+				this.dbConn.load(SC.mapping,{}).complete(this._mappingsLoaded);
+			}
 			
 			this.domElement.innerHTML=template;
 
@@ -84,7 +90,10 @@
 				var gamepads=navigator.getGamepads();
 				for(var i=0;i<gamepads.length;i++)
 				{
-					html+='<option>'+gamepads[i].id+'</option>';
+					if(gamepads[i])
+					{
+						html+='<option>'+gamepads[i].id+'</option>';
+					}
 				}
 				this.domElement.querySelector(".devices").innerHTML=html;
 			}
@@ -106,11 +115,16 @@
 				this.domElement.querySelector('[data-action="deleteMapping"]').disabled=!mapping;
 			}
 		},
+		_mappingsLoaded:function(mappings)
+		{
+			this.mappings.addAll(mappings);
+		},
 		_Click:function(event)
 		{
 			var action=event.target.dataset.action;
 			if(action!==undefined)
 			{
+				event.stopPropagation();
 				this[action]();
 			}
 		},
@@ -160,6 +174,10 @@
 			if(mapping&&mapping.value!==null)
 			{
 				this.mappings.removeItem(mapping.value);
+				if(this.dbConn&&mapping.value.getID()!==undefined)
+				{
+					this.dbConn.delete(SC.mapping,mapping.value);
+				}
 			}
 		},
 		addController:function(controller)
@@ -203,6 +221,10 @@
 							else//update mapping
 							{
 								mapping.setValueOf("data",event.source.getData());
+							}
+							if(_self.dbConn&&(isNew||mapping.getID()!==undefined))
+							{
+								_self.dbConn.save(mapping);
 							}
 						case !!isNew://reset old mapping or set new
 							controller.setMapping(mapping);

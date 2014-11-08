@@ -150,7 +150,7 @@
 			{
 				return ;
 			}
-			while(target&&!target.classList.contains("menuitem"))
+			while(target&&target!==document&&!target.classList.contains("menuitem"))
 			{
 				target=target.parentNode;
 			}
@@ -270,7 +270,7 @@
 		addItem:function(item)
 		{
 			this.menu.addItem(item);
-			this.domElement.appendChild(this.convertItem(item));
+			this.domElement.appendChild(this.convertItem(item,this.menu.items.length));
 			return this;
 		},
 		addAll:function(items)

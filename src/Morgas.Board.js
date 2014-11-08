@@ -12,7 +12,8 @@
 		{
 			this.controllers=[];
 			this.nodePatch=new SC.node(this,{
-				children:"layers"
+				children:"layers",
+				hasChild:"hasLayer"
 			});
 			//this.layers=[];
 			
