@@ -1,9 +1,10 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>Map Maker</title>
 		<meta charset="UTF-8">
 		<script src="../Morgas/src/Morgas.js"></script>
+		<script src="../Morgas/src/Morgas.util.download.js"></script>
 		<script src="../Morgas/src/DB/Morgas.DB.js"></script>
 		<script src="../Morgas/src/DB/Morgas.DB.IndexedDBConnector.js"></script>
 		<script src="../Morgas.Board.js"></script>
@@ -43,6 +44,7 @@
 			<div>
 				<button data-action="save">save</button>
 				<button data-action="load">load</button>
+				<input id="loadInput" type="file" accept="application/json">
 				<button data-action="addImage">add Image</button>
 			</div>
 		</div>

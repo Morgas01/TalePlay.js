@@ -1,6 +1,7 @@
 window.addEventListener("load", function()
 {
 	var SC=µ.getModule("shortcut")({
+		download:"download",
 		find:"find",
 		Board:"Board",
 		kCon:"Controller.Keyboard",
@@ -44,11 +45,11 @@ window.addEventListener("load", function()
 	var actions={
 		save:function()
 		{
-			//todo
+			SC.download(JSON.stringify(mapMaker),"map.js","application/json");
 		},
-		load:function()
+		load:function(e)
 		{
-			//todo
+			e.target.nextElementSibling.click();
 		},
 		addImage:function()
 		{
@@ -112,6 +113,15 @@ window.addEventListener("load", function()
 		}
 	}, false);
 	
+	document.getElementById("loadInput").addEventListener("change", function(e)
+	{
+		var reader=new FileReader();
+		reader.onload=function()
+		{
+			mapMaker.fromJSON(JSON.parse(reader.result));
+		};
+		reader.readAsText(e.target.files[0]);
+	}, false)
 
 	board.focus();
 }, false);

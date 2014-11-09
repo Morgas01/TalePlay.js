@@ -41,6 +41,10 @@ body {
 	padding: 10px;
 }
 
+[data-action="load"]+input {
+	display: none;
+}
+
 .center {
 	position: fixed;
 	top: 50%;
