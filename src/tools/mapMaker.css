@@ -12,29 +12,59 @@ body {
 	display: flex;
 	flex-direction:column;
 }
+[data-action] {
+    cursor: pointer;
+}
 #bordContainer {
 	flex-grow:1;
+    position: relative;
 }
+#bordContainer #hover-panel {
+    font-size: 50px;
+    position: absolute;
+    top: calc(100% - 100px);
+    right: 0;
+    transition: top 1s 1s;
+
+    background-color: #FFAA00;
+    padding: 2px;
+}
+#bordContainer:hover #hover-panel,
+#bordContainer #hover-panel:hover {
+    top: 100%;
+    transition-delay:0s
+}
+
 .controlPanel {
 	vertical-align:middle;
 	text-align: center;
 	padding: 10px;
 }
 
+[data-action="load"]+input {
+	display: none;
+}
+
+.center {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translatey(-50%);
+}
 #addImageDialog {
 	background-color: #FFFFFF;
 	border:2px solid #767676;
 	border-radius:5px;
 	box-shadow:2px 2px 5px #000000;
 	padding:10px;
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translateX(-50%) translatey(-50%);
 }
 #addImageDialog.hidden {
 	display: none;
 }
 #addImageDialog button {
 	float: right;
+}
+.info {
+    display: flex;
+    justify-content: center;
 }

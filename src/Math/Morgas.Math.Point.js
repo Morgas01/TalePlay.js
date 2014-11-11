@@ -161,7 +161,7 @@
 				this.y=fn(this.y,y);
 			}
 			return this;
-		},
+		}
 	});
 	
 	SMOD("Math.Point",µ.Math.Point);

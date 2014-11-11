@@ -280,6 +280,29 @@
 					}
 				}
 			}
+		},
+		toJSON:function()
+		{
+			var json={
+				map:this.map.toJSON(),
+				threshold:this.threshold.clone,
+				cursors:this.cursors.slice()
+			};
+			for(var i=0;i<this.cursors.length;i++)
+			{
+				json.map.images.splice(json.map.images.indexOf(this.cursors[i]),1);
+			}
+			return json;
+		},
+		fromJSON:function(json)
+		{
+			this.map.fromJSON(json.map);
+			this.cursors.length=0;
+			for(var i=0;i<json.cursors.length;i++)
+			{
+				this.addCursors(new GUI.Map.Cursor().fromJSON(json.cursors[i]));
+			}
+			this.threshold.set(json.threshold);
 		}
 	});
 	GUI.Map.MAX_TIME_DELAY=250;
@@ -317,7 +340,22 @@
     	setSpeed:function(numberOrPoint,y)
     	{
             this.speed.set(numberOrPoint,y);
-    	}
+    	},
+		toJSON:function()
+		{
+			var json=MAP.Image.prototype.toJSON.call(this);
+			json.offset=this.offset;
+			json.speed=this.speed;
+			return json;
+		},
+		fromJSON:function(json)
+		{
+			MAP.Image.prototype.fromJSON.call(this,json);
+			this.offset.set(json.offset);
+			this.speed.set(json.speed);
+			
+			return this;
+		}
     });
     GUI.Map.Cursor.zIndexOffset=100;
 	SMOD("GUI.Map",GUI.Map);

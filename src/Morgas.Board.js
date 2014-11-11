@@ -2,18 +2,18 @@
 	
 	var SC=GMOD("shortcut")({
 		rs:"rescope",
-		ctrl:"Controller"
+		ctrl:"Controller",
+        node:"NodePatch"
 	});
-	
-	var NODE=GMOD("NodePatch");
 	
 	var CTRL_EVENTS="analogStickChanged buttonChanged";
 	var BOARD=µ.Board=µ.Class({
 		init:function(container)
 		{
 			this.controllers=[];
-			this.nodePatch=new NODE(this,{
-				children:"layers"
+			this.nodePatch=new SC.node(this,{
+				children:"layers",
+				hasChild:"hasLayer"
 			});
 			//this.layers=[];
 			
@@ -124,4 +124,4 @@
 		}
 	});
 	SMOD("Board",BOARD);
-})(Morgas,Morgas.setModule,Morgas.getModule)
+})(Morgas,Morgas.setModule,Morgas.getModule);

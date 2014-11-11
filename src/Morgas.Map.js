@@ -43,7 +43,7 @@
         	var index=this.images.indexOf(image);
         	if(index!==-1)
         	{
-        		this.domElement.removeChild(image.domElement);
+        		this.stage.removeChild(image.domElement);
         		this.images.splice(index, 1);
         	}
         },
@@ -125,7 +125,33 @@
         		}
         	}
         	return rtn;
-        }
+        },
+		toJSON:function()
+		{
+			return {
+				images:this.images.slice(),
+				position:this.position.clone(),
+				size:this.size.clone()
+			};
+		},
+		fromJSON:function(json)
+		{
+			while(this.images.length>0)
+			{
+				this.remove(this.images[0]);
+			}
+			for(var i=0;i<json.images.length;i++)
+			{
+				this.add(new MAP.Image().fromJSON(json.images[i]));
+			}
+			this.position.set(json.position);
+			this.size.set(json.size);
+			if(this.size.equals(0))
+            {
+            	this.calcSize();
+            }
+			return this;
+		}
     });
     MAP.Image= µ.Class(
     {
@@ -166,7 +192,29 @@
         {
             this.rect.position.add(numberOrPoint,y);
             this.update();
-        }
+        },
+		toJSON:function()
+		{
+			return {
+				url:this.url,
+				position:this.rect.position,
+				size:this.rect.size,
+				name:this.name,
+				collision:this.collision,
+				trigger:this.trigger
+			};
+		},
+		fromJSON:function(json)
+		{
+			this.url=json.url;
+			this.rect.setPosition(json.position);
+			this.rect.setSize(json.size);
+			this.name=json.name;
+			this.collision=json.collision;
+			this.trigger=json.trigger;
+			
+			return this;
+		}
     });
     SMOD("Map",MAP);
 })(Morgas,Morgas.setModule,Morgas.getModule);

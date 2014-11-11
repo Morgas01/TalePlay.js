@@ -1,12 +1,15 @@
 window.addEventListener("load", function()
 {
 	var SC=µ.getModule("shortcut")({
+		download:"download",
 		find:"find",
 		Board:"Board",
 		kCon:"Controller.Keyboard",
 		padCon:"Controller.Gamepad",
 		Layer:"Layer",
+		ControllerManager:"GUI.ControllerManager",
 		MapMaker:"MapMaker",
+		Idb:"IDBConn"
 	});
 	
 	var board=new SC.Board(document.querySelector("#bordContainer"));
@@ -27,16 +30,28 @@ window.addEventListener("load", function()
 		}
 	});
 	board.addController(kCon);
+	var controllerLayer=new SC.Layer();
+	controllerLayer.domElement.classList.add("overlay");
+	var manager=new SC.ControllerManager({
+		styleClass:["panel","center"],
+		buttons:2,
+		analogSticks:2,
+		mappings:[kCon.getMapping()],
+		dbConn:new SC.Idb("mapMaker")
+	});
+	controllerLayer.add(manager);
 	var mapMaker=new SC.MapMaker({board:board});
 	
 	var actions={
 		save:function()
 		{
-			//todo
+			SC.download(JSON.stringify(mapMaker),"map.js","application/json");
+			board.focus();
 		},
-		load:function()
+		load:function(e)
 		{
-			//todo
+			e.target.nextElementSibling.click();
+			board.focus();
 		},
 		addImage:function()
 		{
@@ -68,7 +83,19 @@ window.addEventListener("load", function()
 			dialog.classList.add("hidden");
 			mapMaker.addImages(images);
 			board.focus();
-		}
+		},
+		toggleControllerManager:function()
+        {
+			if(board.hasLayer(controllerLayer))
+			{
+				board.removeLayer(controllerLayer);
+			}
+			else
+			{
+	            board.addLayer(controllerLayer);
+	            manager.update();
+			}
+        }
 	};
 	
 	window.addEventListener("click", function(e)
@@ -88,6 +115,16 @@ window.addEventListener("load", function()
 		}
 	}, false);
 	
+	document.getElementById("loadInput").addEventListener("change", function(e)
+	{
+		var reader=new FileReader();
+		reader.onload=function()
+		{
+			mapMaker.fromJSON(JSON.parse(reader.result));
+		};
+		reader.readAsText(e.target.files[0]);
+		board.focus();
+	}, false)
 
 	board.focus();
 }, false);

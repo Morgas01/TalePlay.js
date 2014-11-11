@@ -1,6 +1,6 @@
 (function(µ,SMOD,GMOD){
 	
-	var Layer=GMOD("Layer")
+	var Layer=GMOD("Layer");
 
 	var SC=µ.getModule("shortcut")({
 		rs:"rescope",
@@ -39,7 +39,7 @@
 			SC.setIn(this.domElement.querySelectorAll("[data-field]"),this.image);
 			
 			this.domElement.addEventListener("click",this.onClick,false);
-			board.addLayer(this)
+			board.addLayer(this);
 			//this.domElement.querySelector('[data-field="name"]').focus();
 		},
 		onClick:function(e)
@@ -62,7 +62,7 @@
 		init:function(param)
 		{
 			param=param||{};
-			this.superInit(Layer)
+			this.superInit(Layer);
 			SC.rs.all(["placeImage"],this);
 			this.domElement.classList.add("MapMaker");
 			if(param.board)
@@ -106,7 +106,23 @@
 			{
 				var images=[].concat(imageSrc).map(function(val)
 				{
-					return (val instanceof File ? {file:val,url:URL.createObjectURL(val)} : {url:val});
+					var rtn={url:undefined};
+					if(val instanceof File)
+					{
+						rtn.url=URL.createObjectURL(val);
+						rtn.fileType=val.type;
+						var reader=new FileReader();
+						reader.onload=function(e)
+						{
+							rtn.file=Array.slice(new Uint8Array(e.target.result,0,e.target.result.byteLength));
+						}
+						reader.readAsArrayBuffer(val);
+					}
+					else
+					{
+						rtn.url=val;
+					}
+					return rtn;
 				});
 				this.images.addAll(images);
 			}
@@ -124,11 +140,33 @@
 		},
 		toJSON:function()
 		{
-			//TODO
+			return {
+				map:this.map,
+				images:this.images.menu.items
+			};
 		},
-		fromJSON:function()
+		fromJSON:function(json)
 		{
-			//TODO
+			for(var i=0;i<json.images.length;i++)
+			{
+				if(json.images[i].file)
+				{
+					var oldUrl=json.images[i].url;
+					json.images[i].url=URL.createObjectURL(new Blob([new Uint8Array(json.images[i].file)],{type:json.images[i].fileType}));
+					var mapImages=json.map.map.images;
+					for(var l=0;l<mapImages.length;l++)
+					{
+						if(mapImages[l].url===oldUrl)
+						{
+							mapImages[l].url=json.images[i].url;
+						}
+					}
+				}
+			}
+			this.map.fromJSON(json.map);
+			this.images.clear();
+			this.images.addAll(json.images);
+			return this;
 		}
 	});
 	SMOD("MapMaker",MapMaker);

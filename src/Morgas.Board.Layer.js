@@ -1,16 +1,17 @@
 (function(µ,SMOD,GMOD){
 
-	var BOARD=GMOD("Board"),
-	LST=GMOD("Listeners"),
-	NODE=GMOD("NodePatch");
+	var BOARD=GMOD("Board");
+    var SC=GMOD("shortcut")({
+	    node:"NodePatch"
+    });
 	
 	var LAYER=BOARD.Layer=µ.Class({
 		init:function()
 		{
 
-			this.nodePatch=new NODE(this,{
+			this.nodePatch=new SC.node(this,{
 				parent:"board",
-				children:"GUIElements",
+				children:"GUIElements"
 			});
 			//this.board=null;
 			//this.GUIElements=[];
@@ -58,4 +59,4 @@
 		}
 	});
 	SMOD("Layer",LAYER);
-})(Morgas,Morgas.setModule,Morgas.getModule)
+})(Morgas,Morgas.setModule,Morgas.getModule);
