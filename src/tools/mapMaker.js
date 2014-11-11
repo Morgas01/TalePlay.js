@@ -46,10 +46,12 @@ window.addEventListener("load", function()
 		save:function()
 		{
 			SC.download(JSON.stringify(mapMaker),"map.js","application/json");
+			board.focus();
 		},
 		load:function(e)
 		{
 			e.target.nextElementSibling.click();
+			board.focus();
 		},
 		addImage:function()
 		{
@@ -121,6 +123,7 @@ window.addEventListener("load", function()
 			mapMaker.fromJSON(JSON.parse(reader.result));
 		};
 		reader.readAsText(e.target.files[0]);
+		board.focus();
 	}, false)
 
 	board.focus();
