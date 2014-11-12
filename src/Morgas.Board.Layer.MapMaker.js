@@ -15,7 +15,7 @@
 	var imageLayer=µ.Class(Layer,{
 		init:function(board,image,callback,scope)
 		{
-			this.image=image||{name:"",rect:{position:{x:0,y:0},size:{x:0,y:0}}};
+			this.image=image||{name:"",rect:{position:{x:0,y:0},size:{x:100,y:100}}};
 			this.callback=callback;
 			this.scope=scope||this;
 			this.image.trigger=this.image.trigger||{value:""};
@@ -40,7 +40,7 @@
 			
 			this.domElement.addEventListener("click",this.onClick,false);
 			board.addLayer(this);
-			//this.domElement.querySelector('[data-field="name"]').focus();
+			this.domElement.querySelector('[data-field="name"]').focus();
 		},
 		onClick:function(e)
 		{
@@ -80,7 +80,8 @@
 				columns:1,
 				converter:function(item,index,selected){
 					return '<img src="'+item.url+'">';
-				}
+				},
+                items:param.images
 			});
 			this.add(this.images);
 			this.images.addListener("select",this.placeImage);
@@ -96,7 +97,14 @@
 					this.GUIElements[i].onAnalogStick(event);
 					break;
 				case "buttonChanged":
-					this.GUIElements[i].onButton(event);
+                    if(i===0)
+                    {
+                        this.selectImage(event);
+                    }
+                    else
+                    {
+                        this.GUIElements[1].onButton(event);
+                    }
 					break;
 			}
 		},
@@ -115,7 +123,7 @@
 						reader.onload=function(e)
 						{
 							rtn.file=Array.slice(new Uint8Array(e.target.result,0,e.target.result.byteLength));
-						}
+						};
 						reader.readAsArrayBuffer(val);
 					}
 					else
@@ -127,8 +135,9 @@
 				this.images.addAll(images);
 			}
 		},
-		placeImage:function(e){
-			new imageLayer(this.board,new SC._map.Image(e.value.url),function(image,action){
+		placeImage:function(e)
+        {
+			new imageLayer(this.board,new SC._map.Image(e.value.url,0,100),function(image,action){
 				if(action==="ok")
 				{
 					this.map.addImages(image);
@@ -138,6 +147,22 @@
 				this.board.focus();
 			},this);
 		},
+        selectImage:function()
+        {
+            var pos=this.map.getCursorPosition(0);
+            var image=this.map.getImages(function(val)
+            {
+                return !(val instanceof SC.Map.Cursor)&&val.rect.contains(pos);
+            })[0];
+            if(image)
+            {
+                new imageLayer(this.board,image,function(image)
+                {
+                    image.update();
+                    this.board.focus();
+                },this);
+            }
+        },
 		toJSON:function()
 		{
 			return {

@@ -27,7 +27,8 @@
 				setPosition:"setPosition",
 				move:"move",
 				getImages:"getImages",
-				getSize:"getSize"
+				getSize:"getSize",
+                collide:"collide"
 			},this);
             this.threshold=new SC.point();
             this.cursors=[];
@@ -53,13 +54,24 @@
 		{
 			return SC.find(this.cursors,pattern,true);
 		},
+		getCursorPosition:function(index)
+        {
+            var cursor=this.cursors[index];
+            if(cursor)
+            {
+                return cursor.getPosition();
+            }
+            else
+            {
+                return null;
+            }
+        },
 		setCursorPosition:function(numberOrPoint,y,index)
 		{
-			index=index||0;
 			var cursor=this.cursors[index];
 			if(cursor)
 			{
-				this.moveCursor(cursor.position.clone().negate().add(cursor.offset).add(numberOrPoint,y), null, index);
+				this.moveCursor(cursor.getPosition().negate().add(numberOrPoint,y), null, index);
 			}
 		},
 		moveCursor:function(numberOrPoint,y,index)

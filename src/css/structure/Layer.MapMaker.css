@@ -6,12 +6,12 @@
 	flex-shrink:1;
 }
 .MapMaker .images {
-	width:300px;
+	width:200px;
 	height: 100%;
 	overflow-y:auto;
 }
 .MapMaker .images img {
-	width: 200px;
+	width: 100px;
 }
 
 .imageLayer .panel {

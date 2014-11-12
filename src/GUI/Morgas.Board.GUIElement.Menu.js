@@ -178,7 +178,6 @@
 		},
 		onButton:function(event)
 		{
-			console.dir(event);
 			if (event.value===1)
 			{
 				if(this.menu.active!==-1)
@@ -328,6 +327,10 @@
 			}
 			return this;
 		},
+        getActive:function()
+        {
+            return this.getItem(this.menu.active);
+        },
 		setActive:function(index)
 		{
 			this.menu.setActive(index);
