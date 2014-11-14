@@ -19,7 +19,7 @@
 		board.addLayer(layer);
 		layer.add(config);
 		
-		config.addListener("submit",function(event)
+		config.addListener("submit",config,function(event)
 		{
 			document.getElementById("logger").value=JSON.stringify(event,function(key,value){if(key!=="source")return value})+"\n"+JSON.stringify(this.getMapping(),null,"\t");
 		});

@@ -20,7 +20,7 @@
 			
 			this.domElement.addEventListener("click",this.onClick,false);
 			
-			this.createListener("activeChanged select")
+			this.createListener("activeChanged select");
 
 			this.type=param.type||MENU.Types.VERTICAL;
 			this.converter=param.converter||MENU.defaultConverter;

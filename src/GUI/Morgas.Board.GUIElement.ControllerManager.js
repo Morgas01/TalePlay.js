@@ -39,7 +39,7 @@
 			
 			this.superInit(GUI,param.styleClass);
 			this.addStyleClass("ControllerManager");
-			SC.rs.all(["_Click","_MenuSelect","_playerChanged","_mappingsLoaded"],this);
+			SC.rs.all(["_Click","_playerChanged","_mappingsLoaded"],this);
 			this.domElement.addEventListener("click",this._Click);
 
 			this.buttons=param.buttons!==undefined ? param.buttons : 10;
@@ -50,7 +50,7 @@
 				selectionType:SC.Menu.SelectionTypes.single,
 				converter:MANAGER.controllerConverter
 			});
-			this.controllers.addListener("select",this._MenuSelect);
+			this.controllers.addListener("select",this,this._MenuSelect);
 
 			param.mappings=param.mappings||[];
 			param.mappings.unshift(null);
@@ -60,7 +60,7 @@
 				converter:MANAGER.mappingConverter,
 				items:param.mappings
 			});
-			this.mappings.addListener("select",this._MenuSelect);
+			this.mappings.addListener("select",this,this._MenuSelect);
 			
 			this.dbConn=param.dbConn||null;
 			if(this.dbConn)
@@ -208,7 +208,7 @@
 				}
 				config.addStyleClass("panel","overlay");
 				this.layer.add(config);
-				config.addListener("submit:once",function(event)
+				config.addListener("submit:once",config,function(event)
 				{
 					switch(true)
 					{

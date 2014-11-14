@@ -76,13 +76,13 @@
 				board.focus();
 				layer.add(game);
 				
-				game.addListener("finish",function(event)
+				game.addListener("finish",game,function(event)
 				{
 					var message="finish";
 					alert(message);
 				});
 				var score={hit:0,miss:0};
-				game.addListener("hit miss",function(event)
+				game.addListener("hit miss",game,function(event)
 				{
 					document.querySelector("#"+event.type).textContent=++score[event.type];
 					//fillItems(game); //endless mode

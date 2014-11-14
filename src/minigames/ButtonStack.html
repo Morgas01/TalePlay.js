@@ -82,13 +82,13 @@
 				board.focus();
 				layer.add(game);
 				
-				game.addListener("finish",function(event)
+				game.addListener("finish",game,function(event)
 				{
 					var message="finish";
 					alert(message);
 				});
 				var score={hit:0,miss:0};
-				game.addListener("hit miss",function(event)
+				game.addListener("hit miss",game,function(event)
 				{
 					document.querySelector("#"+event.type).textContent=++score[event.type];
 					//fillItems(game); //endless mode
@@ -114,28 +114,6 @@
 		</script>
 	</head>
 	<body>
-		<table>
-            <thead>
-                <tr>
-                    <th>Button</th>
-                    <th>Key</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>0</td>
-                    <td>space</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>shift</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>0</td>
-                </tr>
-            </tbody>
-		</table>
 		<table id="score">
 			<tr>
 				<td>

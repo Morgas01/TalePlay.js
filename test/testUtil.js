@@ -20,7 +20,7 @@ function getContainer(name)
 function getBoard(name)
 {
 	var Kcon=new Morgas.Controller.Keyboard();
-	Kcon.addListener("changed",logController);
+	Kcon.addListener("changed",Kcon,logController);
 	
 	var container=getContainer(name);
 	var board=new µ.Board(container);

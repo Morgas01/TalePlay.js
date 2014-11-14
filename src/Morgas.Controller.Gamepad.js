@@ -1,9 +1,5 @@
 (function(µ,SMOD,GMOD){
 
-	var SC=µ.shortcut({
-		rescope:"rescope"
-	});
-
 	var CTRL=GMOD("Controller");
 	
 	var GP=CTRL.Gamepad=µ.Class(CTRL,{
@@ -13,11 +9,9 @@
 			
 			this.superInit(CTRL,map);
 			
-			SC.rescope.all(["update"],this);
-			
 			this.pollKey=null;
 			
-			this.addListener(".created",this.update);
+			this.addListener(".created:once",this,this.update);
 		},
 		update:function()
 		{

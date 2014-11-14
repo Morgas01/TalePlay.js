@@ -63,7 +63,7 @@
 				board.focus();
 				layer.add(game);
 				
-				game.addListener("finish",function(event)
+				game.addListener("finish",game,function(event)
 				{
 					var message="";
 					if(event.winner===0)

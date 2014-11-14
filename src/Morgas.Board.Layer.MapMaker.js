@@ -63,7 +63,6 @@
 		{
 			param=param||{};
 			this.superInit(Layer);
-			SC.rs.all(["placeImage"],this);
 			this.domElement.classList.add("MapMaker");
 			if(param.board)
 			{
@@ -84,7 +83,7 @@
                 items:param.images
 			});
 			this.add(this.images);
-			this.images.addListener("select",this.placeImage);
+			this.images.addListener("select",this,this.placeImage);
 			
 			this.map.setPosition(0);
 		},

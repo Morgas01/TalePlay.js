@@ -21,7 +21,7 @@
 			this.playerDisabled={};
 			
 
-			SC.rs.all(["_ctrlCallback","focus"],this);
+			SC.rs.all(["focus"],this);
 			
 			this.domElement=document.createElement("div");
 			this.domElement.classList.add("Board");
@@ -51,7 +51,7 @@
 		{
 			this.removeController(controller);
 			this.controllers.push({controller:controller,player:player||1});
-			controller.addListener(CTRL_EVENTS,this._ctrlCallback);
+			controller.addListener(CTRL_EVENTS,this,this._ctrlCallback);
 			//TODO no key events on a div
 			/**/
 			if(controller instanceof SC.ctrl.Keyboard)
@@ -66,7 +66,7 @@
 			{
 				if(this.controllers[i].controller===controller)
 				{
-					controller.removeListener(CTRL_EVENTS,this._ctrlCallback);
+					controller.removeListener(CTRL_EVENTS,this,this._ctrlCallback);
 					if(controller instanceof SC.ctrl.Keyboard)
 					{
 						controller.setDomElement();

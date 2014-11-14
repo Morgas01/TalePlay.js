@@ -65,11 +65,11 @@
 		var eventlog=document.createElement("textarea");
 		board.domElement.parentNode.appendChild(eventlog)
 		
-		map.addListener("trigger",function(event)
+		map.addListener("trigger",map,function(event)
 		{
 			eventlog.value="["+event.index+"]"+event.triggerType+" "+Date.now();
 			console.info(event);
-		})
+		});
 		ok(true);
 	});
 })();

@@ -41,7 +41,7 @@
 			}
 			
 			controller=new Morgas.Controller.Keyboard();
-			controller.addListener("changed",logController);
+			controller.addListener("changed",controller,logController);
 			
 			window.addEventListener("load", function()
 			{
