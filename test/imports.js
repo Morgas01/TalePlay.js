@@ -79,6 +79,12 @@
     WR(testDir+"test.Morgas.Board.GUIElement.Map.js");
 
     CSS(cssDir+"structure/arrow_animation.css");
+    
+    //TextBox
+    WR(guiDir+"Morgas.Board.GUIElement.TextBox.js");
+    WR(testDir+"test.Morgas.Board.GUIElement.TextBox.js");
+
+    CSS(cssDir+"structure/GUIElement.TextBox.css");
 
 	// Theme
 	CSS(cssDir+"themes/TalePlay-classic.css");

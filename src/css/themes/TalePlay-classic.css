@@ -56,3 +56,14 @@
 	height:calc(100% - 10px);
 	position: relative;
 }
+
+.TextBox :last-child:after {
+	display: inline-block;
+	padding:0 10px;
+}
+.TextBox.stop :last-child:after {
+  content: "□";
+}
+.TextBox.complete :last-child:after {
+  content: "■";
+}
