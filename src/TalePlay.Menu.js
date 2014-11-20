@@ -1,6 +1,8 @@
 (function(µ,SMOD,GMOD){
+
+    var TALE=window.TalePlay=window.TalePlay||{};
 	
-	var MENU=µ.Menu=µ.Class({
+	var MENU=TALE.Menu=µ.Class({
 		init:function(param)
 		{	
 			param=param||{};

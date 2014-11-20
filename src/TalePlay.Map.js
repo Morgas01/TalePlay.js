@@ -1,16 +1,29 @@
 (function(µ,SMOD,GMOD){
 
+    var TALE=window.TalePlay=window.TalePlay||{};
+
     var SC=GMOD("shortcut")({
         find:"find",
+        Node:"NodePatch",
+        Org:"Organizer",
         point:"Math.Point",
         RECT:"Math.Rect"
     });
-    var MAP=µ.Map=µ.Class(
+    var MAP=TALE.Map=µ.Class(
     {
         init:function(param)
         {
+        	this.nodePatch=new SC.Node(this,{
+        		children:"images",
+        		addChild:"add",
+        		removeChild:"remove",
+        	});
+        	this.organizer=new SC.Org()
+        	.filter("collision","collision")
+        	.group("trigger","trigger.type");
+        	
         	param=param||{};
-            this.images=[];
+        	
             this.position=new SC.point();
             this.size=new SC.point(param.size);
             this.domElement=param.domElement||document.createElement("div");
@@ -18,33 +31,36 @@
             this.stage=document.createElement("div");
             this.stage.classList.add("stage");
             this.domElement.appendChild(this.stage);
-            param.images&&this.add(param.images);
+            param.images&&this.addAll(param.images);
             if(this.size.equals(0))
             {
             	this.calcSize();
             }
             this.setPosition(param.position);
         },
-        add:function(images)
+        addAll:function(images)
         {
-            images=[].concat(images);
+        	images=[].concat(images);
             for(var i=0;i<images.length;i++)
             {
-                if(this.images.indexOf(images[i])===-1)
-                {
-                    this.images.push(images[i]);
-                    this.stage.appendChild(images[i].domElement);
-                    images[i].update();
-                }
+                this.add(images[i]);
+            }
+        },
+        add:function(image)
+        {
+            if(this.nodePatch.addChild(image))
+            {
+                this.stage.appendChild(image.domElement);
+                image.update();
+                this.organizer.add([image]);
             }
         },
         remove:function(image)
         {
-        	var index=this.images.indexOf(image);
-        	if(index!==-1)
+        	if(this.nodePatch.removeChild(image))
         	{
         		this.stage.removeChild(image.domElement);
-        		this.images.splice(index, 1);
+        		this.organizer.remove(image);
         	}
         },
         setPosition:function(position,y)
@@ -103,7 +119,7 @@
         collide:function(rect)
         {
         	var rtn=[],
-        	cImages=SC.find(this.images,{collision:true},true);
+        	cImages=this.organizer.getFilter("collision");
         	for(var i=0;i<cImages.length;i++)
         	{
         		if(cImages[i].rect.collide(rect))
@@ -113,10 +129,10 @@
         	}
         	return rtn;
         },
-        trigger:function(numberOrPoint,y)
+        trigger:function(type,numberOrPoint,y)
         {
         	var rtn=[],
-        	tImages=SC.find(this.images,{trigger:µ.constantFunctions.boolean},true);
+        	tImages=this.organizer.getGroupValue("trigger",type);
         	for(var i=0;i<tImages.length;i++)
         	{
         		if(tImages[i].rect.contains(numberOrPoint,y))
@@ -157,6 +173,10 @@
     {
         init:function(url,position,size,name,collision,trigger)
         {
+        	new SC.Node(this,{
+        		parent:"map"
+        	});
+        	
         	this.rect=new SC.RECT(position,size);
             this.domElement=document.createElement("img");
             Object.defineProperty(this,"url",{
@@ -183,9 +203,13 @@
             
             this.domElement.style.zIndex=Math.floor(this.rect.position.y);
         },
+    	getPosition:function()
+    	{
+    		return this.rect.position.clone();
+    	},
         setPosition:function(numberOrPoint,y)
         {
-        	this.rect.setPosition(numberOrPoint,y);
+        	this.move(this.getPosition().negate().add(numberOrPoint,y));
             this.update();
         },
         move:function(numberOrPoint,y)

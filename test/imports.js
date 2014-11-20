@@ -16,75 +16,75 @@
 	imagesDir=srcDir+"Images/";
 	
 
-	WR(morgasDir+"Morgas.js");
-	WR(morgasDir+"DB/Morgas.DB.js");
-	
-	WR(srcDir+"Morgas.Controller.js");
-	WR(srcDir+"Morgas.Controller.Mapping.js");
-	WR(srcDir+"Morgas.Controller.Keyboard.js");
-	WR(srcDir+"Morgas.Controller.Gamepad.js");
-	
-	WR(morgasDir+"Morgas.NodePatch.js");
-	WR(srcDir+"Morgas.Board.js");
-	WR(srcDir+"Morgas.Board.Layer.js");
-	WR(guiDir+"Morgas.Board.GUIElement.js");
 
-    WR(morgasDir+"Morgas.util.object.js");
+	
+	WR(morgasDir+"Morgas.js");
+	WR(morgasDir+"Morgas.Patch.js");
+	WR(morgasDir+"Morgas.Listeners.js");
+	WR(morgasDir+"Morgas.util.function.bind.js");
+	WR(morgasDir+"Morgas.util.function.rescope.js");
+	WR(morgasDir+"Morgas.util.function.proxy.js");
+	WR(morgasDir+"Morgas.NodePatch.js");
+	WR(morgasDir+"Morgas.util.object.goPath.js");
+	WR(morgasDir+"Morgas.util.object.equals.js");
+	WR(morgasDir+"Morgas.util.object.find.js");
+	WR(morgasDir+"Morgas.util.object.iterate.js");
+	WR(morgasDir+"Morgas.Organizer.js");
+	WR(morgasDir+"Morgas.Detached.js");
+	WR(morgasDir+"DB/Morgas.DB.js");
+
+	WR(srcDir+"TalePlay.Board.js");
+	WR(srcDir+"TalePlay.Layer.js");
+	WR(srcDir+"TalePlay.Controller.js");
+	WR(srcDir+"TalePlay.Controller.Mapping.js");
+	WR(srcDir+"TalePlay.Controller.Keyboard.js");
+	WR(srcDir+"TalePlay.Controller.Gamepad.js");
+
+	WR(MathDir+"TalePlay.Math.Point.js");
+	WR(MathDir+"TalePlay.Math.Rect.js");
+
+	WR(srcDir+"TalePlay.Map.js");
+	WR(srcDir+"TalePlay.Menu.js");
+
+	WR(guiDir+"TalePlay.GUIElement.js");
+	WR(guiDir+"TalePlay.GUIElement.Menu.js");
+	WR(guiDir+"TalePlay.GUIElement.ControllerConfig.js");
+	WR(guiDir+"TalePlay.GUIElement.ControllerManager.js");
+	WR(guiDir+"TalePlay.GUIElement.Map.js");
+	WR(guiDir+"TalePlay.GUIElement.TextBox.js");
+
+	CSS(cssDir+"structure/core.css");
+	CSS(cssDir+"structure/Map.css");
+	CSS(cssDir+"structure/GUIElement.Menu.css");
+	CSS(cssDir+"structure/GUIElement.ControllerConfig.css");
+	CSS(cssDir+"structure/GUIElement.ControllerManager.css");
+	CSS(cssDir+"structure/GUIElement.TextBox.css");
 	
 	WR("testUtil.js");
 	CSS("test.css");
 	
-	CSS(cssDir+"structure/core.css");
-	
 	//Math
-	WR(MathDir+"Morgas.Math.Point.js");
 	WR(testDir+"test.Morgas.Math.Point.js");
-
-	WR(MathDir+"Morgas.Math.Rect.js");
 	//TODO WR(testDir+"test.Morgas.Math.Rect.js");
 	
 	// MENU
-	WR(srcDir+"Morgas.Menu.js");
-	WR(guiDir+"Morgas.Board.GUIElement.Menu.js");
-	CSS(cssDir+"structure/GUIElement.Menu.css");
-	
 	WR(testDir+"test.Morgas.Board.GUIElement.Menu.js");
 	
 	// ControllerConfig
-	WR(guiDir+"Morgas.Board.GUIElement.ControllerConfig.js");
-	CSS(cssDir+"structure/GUIElement.ControllerConfig.css");
-	
 	WR(testDir+"test.Morgas.Board.GUIElement.ControllerConfig.js");
 	
 	// ControllerManager
-	WR(morgasDir+"Morgas.Organizer.js");
-	WR(guiDir+"Morgas.Board.GUIElement.ControllerManager.js");
-	CSS(cssDir+"structure/GUIElement.ControllerManager.css");
-	
 	WR(testDir+"test.Morgas.Board.GUIElement.ControllerManager.js");
 	
-	// TicTacToe
-	WR(gameDir+"TicTacToe.js");
-	CSS(gameDir+"TicTacToe.css");
-	
-	WR(testDir+"test.TicTacToe.js");
-
     // Morgas.Map
-    WR(srcDir+"Morgas.Map.js");
     WR(testDir+"test.Morgas.Map.js");
-    CSS(cssDir+"structure/Map.css");
 
     // Map
-    WR(guiDir+"Morgas.Board.GUIElement.Map.js");
     WR(testDir+"test.Morgas.Board.GUIElement.Map.js");
-
     CSS(cssDir+"structure/arrow_animation.css");
     
     //TextBox
-    WR(guiDir+"Morgas.Board.GUIElement.TextBox.js");
     WR(testDir+"test.Morgas.Board.GUIElement.TextBox.js");
-
-    CSS(cssDir+"structure/GUIElement.TextBox.css");
 
 	// Theme
 	CSS(cssDir+"themes/TalePlay-classic.css");

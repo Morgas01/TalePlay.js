@@ -2,13 +2,14 @@
 	var name="Map";
 	var SC=µ.getModule("shortcut")({
 		Board:"Board",
+		Layer:"Layer",
 		gMap:"GUI.Map",
 		map:"Map"
 	});
 	module(name);
 	test(name, function() {
 		var board = getBoard(name),
-		layer=new SC.Board.Layer(),
+		layer=new SC.Layer(),
 		map=new SC.gMap({
         	images:[
 	            new SC.map.Image(imagesDir+"/1.png",{x:0,y:0},{x:100,y:100}),
@@ -54,7 +55,7 @@
 		var move=new SC.map.Image(imagesDir+"/empty.png",{x:25,y:325},{x:50,y:50},"trigger_move",true,{type:"move",value:"move"});
 		move.domElement.style.backgroundColor="blue";
 		
-		map.addImages([collide,activate,step,move]);
+		map.addAll([collide,activate,step,move]);
 		
 		layer.add(map);
 		

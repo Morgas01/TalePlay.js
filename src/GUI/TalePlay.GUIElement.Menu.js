@@ -113,17 +113,8 @@
 		{
 			if(this.axisState.value!==0)
 			{
-				if(this.menu.active!==-1)
-				{
-					this.getItemDomElement(this.menu.active).classList.remove("active");
-				}
-				
 				this.menu.moveActive(this.axisState.value);
-				
-				if(this.menu.active!==-1)
-				{
-					this.getItemDomElement(this.menu.active).classList.add("active");
-				}
+				this._updateActive();
 				this.fire("activeChanged")
 				
 				if(this.stepID===null)
@@ -140,6 +131,18 @@
 			{
 				clearTimeout(this.stepID);
 				this.stepID=null;
+			}
+		},
+		_updateActive:function()
+		{
+			for(var i=0,actives=this.domElement.querySelectorAll(".menuitem.active");i<actives.length;i++)
+			{
+				actives[i].classList.remove("active");
+			}
+			
+			if(this.menu.active!==-1)
+			{
+				this.getItemDomElement(this.menu.active).classList.add("active");
 			}
 		},
 		onClick:function(event)
@@ -174,7 +177,6 @@
 					this.layer.board.focus();
 				}
 			}
-			
 		},
 		onButton:function(event)
 		{
@@ -334,6 +336,7 @@
 		setActive:function(index)
 		{
 			this.menu.setActive(index);
+			this._updateActive();
 		}
 	});
 	MENU.Types={

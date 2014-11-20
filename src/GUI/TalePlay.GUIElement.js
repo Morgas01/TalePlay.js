@@ -1,15 +1,17 @@
 (function(µ,SMOD,GMOD){
 
-	var BOARD=GMOD("Board"),LST=GMOD("Listeners");
+    var TALE=window.TalePlay=window.TalePlay||{};
+
+	var LST=GMOD("Listeners");
 	var SC=GMOD("shortcut")({
         node:"NodePatch"
     });
 	
-	var GE=BOARD.GUIElement=µ.Class(LST,{
+	var GE=TALE.GUIElement=µ.Class(LST,{
 		init:function(styleClass)
 		{
 			this.superInit(LST);
-			new SC.node(this,{
+			this.nodePatch=new SC.node(this,{
 				parent:"layer"
 			});
 			//this.layer=null;
@@ -48,19 +50,15 @@
 		},
 		onAnalogStick:function(event)
 		{
-			
+			//overwrite when needed
 		},
 		onButton:function(event)
 		{
-			
+			//overwrite when needed
 		},
 		destroy:function()
 		{
-			if(this.layer)
-			{
-				this.layer.remove(this);
-			}
-			this.domElement.remove();
+			this.nodePatch.remove();
 		}
 	});
 	

@@ -2,7 +2,7 @@
 	
 	var SC=GMOD("shortcut")({
 		rs:"rescope",
-		mapping:"ControllerMapping",
+		mapping:"Controller.Mapping",
 		ctrl:"Controller"
 	});
 	

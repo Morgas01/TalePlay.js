@@ -10,11 +10,11 @@
 }
 .TicTacToe[data-turn="1"]:not(:hover) .menuitem.active,
 .TicTacToe[data-turn="1"] .menuitem:hover {
-    box-shadow: 0 0 5px 1px blue;
+    box-shadow: 0 0 5px 1px red;
 }
 .TicTacToe[data-turn="2"]:not(:hover) .menuitem.active,
 .TicTacToe[data-turn="2"] .menuitem:hover {
-    box-shadow: 0 0 5px 1px red;
+    box-shadow: 0 0 5px 1px blue;
 }
 
 .TicTacToe.GUIElement.Menu:not(:hover):not([data-type="TABLE"]) .menuitem.active:before,

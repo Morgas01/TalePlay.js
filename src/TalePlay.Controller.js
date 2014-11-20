@@ -1,16 +1,15 @@
 (function(µ,SMOD,GMOD){
-	/**
-	 * Defines a Controller with buttons and axes
-	 */
-	var SC=µ.shortcut({
-		rescope:"rescope",
-		mapping:"ControllerMapping"
-	});
+
+    var TALE=window.TalePlay=window.TalePlay||{};
 	
 	var LST=GMOD("Listeners");
 	
+	var SC=µ.shortcut({
+		mapping:"Controller.Mapping"
+	});
 	
-	var CTRL=µ.Controller=µ.Class(LST);
+	var CTRL=TALE.Controller=µ.Class(LST);
+	//TODO use Math.Point
 	CTRL.AnalogStick=µ.Class({
 		init:function(x,y)
 		{

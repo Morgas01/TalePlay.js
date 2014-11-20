@@ -3,7 +3,6 @@
 	var MENU=GMOD("GUI.Menu"),
 	
 	SC=GMOD("shortcut")({
-		rescope:"rescope",
 		menu:"Menu"
 	});
 	var TicTacToe=µ.Class(MENU,{

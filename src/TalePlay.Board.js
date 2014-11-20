@@ -1,18 +1,22 @@
-(function(µ,SMOD,GMOD){
-	
+(function(µ,SMOD,GMOD,HMOD){
+
+    var TALE=window.TalePlay=window.TalePlay||{};
+    
 	var SC=GMOD("shortcut")({
 		rs:"rescope",
-		ctrl:"Controller",
+		ctrlK:"Controller.Keyboard",
         node:"NodePatch"
 	});
 	
 	var CTRL_EVENTS="analogStickChanged buttonChanged";
-	var BOARD=µ.Board=µ.Class({
+	var BOARD=TALE.Board=µ.Class({
 		init:function(container)
 		{
 			this.controllers=[];
 			this.nodePatch=new SC.node(this,{
 				children:"layers",
+				addChild:"addLayer",
+				removeChild:"removeLayer",
 				hasChild:"hasLayer"
 			});
 			//this.layers=[];
@@ -54,7 +58,7 @@
 			controller.addListener(CTRL_EVENTS,this,this._ctrlCallback);
 			//TODO no key events on a div
 			/**/
-			if(controller instanceof SC.ctrl.Keyboard)
+			if(HMOD("Controller.Keyboard")&&controller instanceof GMOD("Controller.Keyboard"))
 			{
 				controller.setDomElement(this.keyTrigger);
 			}
@@ -67,7 +71,7 @@
 				if(this.controllers[i].controller===controller)
 				{
 					controller.removeListener(CTRL_EVENTS,this,this._ctrlCallback);
-					if(controller instanceof SC.ctrl.Keyboard)
+					if(HMOD("Controller.Keyboard")&&controller instanceof GMOD("Controller.Keyboard"))
 					{
 						controller.setDomElement();
 					}
@@ -103,8 +107,12 @@
 		},
 		addLayer:function(layer)
 		{
-			this.nodePatch.addChild(layer);
-			this.domElement.appendChild(layer.domElement);
+			if(HMOD("Layer")&&layer instanceof GMOD("Layer")&&this.nodePatch.addChild(layer))
+			{
+				this.domElement.appendChild(layer.domElement);
+				return true;
+			}
+			return false;
 		},
 		removeLayer:function(layer)
 		{
@@ -124,4 +132,4 @@
 		}
 	});
 	SMOD("Board",BOARD);
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);

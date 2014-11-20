@@ -1,9 +1,6 @@
 (function(µ,SMOD,GMOD){
 
-    var GUI=GMOD("GUIElement"),
-        SC=GMOD("shortcut")({
-            rescope:"rescope",
-        });
+    var GUI=GMOD("GUIElement");
 
     ButtonStack=µ.Class(GUI,{
         init:function(param)
