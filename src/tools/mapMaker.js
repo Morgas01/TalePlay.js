@@ -1,4 +1,4 @@
-window.addEventListener("load", function()
+﻿window.addEventListener("load", function()
 {
 	var SC=µ.getModule("shortcut")({
 		download:"download",
