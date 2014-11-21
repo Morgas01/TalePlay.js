@@ -68,6 +68,8 @@
 			{
 				this.dbConn.load(SC.mapping,{}).complete(this._mappingsLoaded);
 			}
+
+            this.config=null;
 			
 			this.domElement.innerHTML=template;
 
@@ -193,10 +195,11 @@
 		_openControllerConfig:function(isNew)
 		{
 			var controller=this.controllers.getSelectedItems()[0];
-			if(controller)
+			if(controller&&!this.config)
 			{
 				controller=controller.value.controller;
-				var mapping=controller.getMapping(), config=new SC.config({
+				var mapping=controller.getMapping();
+                this.config=new SC.config({
 					buttons:this.buttons,
 					analogSticks:this.analogSticks,
 					controller:controller,
@@ -210,9 +213,9 @@
 				{
 					return false;
 				}
-				config.addStyleClass("panel","overlay");
-				this.layer.add(config);
-				config.addListener("submit:once",this,function(event)
+				this.config.addStyleClass("panel","overlay");
+				this.layer.add(this.config);
+				this.config.addListener("submit:once",this,function(event)
 				{
 					switch(true)
 					{
@@ -235,6 +238,7 @@
 					}
 					this.update("controllers");
 					event.source.destroy();
+                    this.config=null;
 				});
 				return true;
 			}
