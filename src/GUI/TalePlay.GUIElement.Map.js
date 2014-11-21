@@ -177,7 +177,7 @@
 				{
 					if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
 					{
-						var activateTrigger=SC.find(this.map.trigger(this.cursors[i].getPosition()),{trigger:{type:"activate"}},true);
+						var activateTrigger=this.map.trigger("activate",this.cursors[i].getPosition());
 						for(var t=0;t<activateTrigger.length;t++)
 						{
 							if(activateTrigger[t].trigger.type==="activate")
