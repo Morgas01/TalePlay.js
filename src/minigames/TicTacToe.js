@@ -3,7 +3,6 @@
 	var MENU=GMOD("GUI.Menu"),
 	
 	SC=GMOD("shortcut")({
-		rescope:"rescope",
 		menu:"Menu"
 	});
 	var TicTacToe=µ.Class(MENU,{
@@ -23,7 +22,7 @@
 			this.player=param.player||["manual","manual"];
 			
 			this.setTurn(param.turn);
-			this.addListener("select",this._select)
+			this.addListener("select",this,this._select)
 		},
 		setTurn:function(turn)
 		{

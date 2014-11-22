@@ -128,5 +128,5 @@
 		}
 		
 	});
-	SMOD("ControllerMapping",MAPPING);
+	SMOD("Controller.Mapping",MAPPING);
 })(Morgas,Morgas.setModule,Morgas.getModule);

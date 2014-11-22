@@ -1,8 +1,9 @@
 (function(µ,SMOD,GMOD){
+
+    var TALE=window.TalePlay=window.TalePlay||{};	
+	TALE.Math=TALE.Math||{};
 	
-	µ.Math=µ.Math||{};
-	
-	µ.Math.Point=µ.Class({
+	var POINT=TALE.Math.Point=µ.Class({
 		init:function(numberOrPoint,y)
 		{
 			this.x=0;
@@ -29,7 +30,7 @@
 		},
 		clone:function()
 		{
-			return new µ.Math.Point(this);
+			return new POINT(this);
 		},
 		equals:function(numberOrPoint,y)
 		{
@@ -164,6 +165,6 @@
 		}
 	});
 	
-	SMOD("Math.Point",µ.Math.Point);
+	SMOD("Math.Point",POINT);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);

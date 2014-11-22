@@ -1,4 +1,4 @@
-window.addEventListener("load", function()
+﻿window.addEventListener("load", function()
 {
 	var SC=µ.getModule("shortcut")({
 		download:"download",
@@ -40,7 +40,15 @@ window.addEventListener("load", function()
 		dbConn:new SC.Idb("mapMaker")
 	});
 	controllerLayer.add(manager);
-	var mapMaker=new SC.MapMaker({board:board});
+	var mapMaker=new SC.MapMaker({
+        board:board,
+        images:[
+            {url:"../Images/empty.png"},
+            {url:"../Images/1.png"},
+            {url:"../Images/2.png"},
+            {url:"../Images/3.png"}
+        ]
+    });
 	
 	var actions={
 		save:function()
@@ -84,6 +92,11 @@ window.addEventListener("load", function()
 			mapMaker.addImages(images);
 			board.focus();
 		},
+        removeImage:function()
+        {
+            mapMaker.GUIElements[1].removeItem(mapMaker.GUIElements[1].getActive().value);
+            board.focus();
+        },
 		toggleControllerManager:function()
         {
 			if(board.hasLayer(controllerLayer))

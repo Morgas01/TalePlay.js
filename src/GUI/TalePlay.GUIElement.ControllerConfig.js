@@ -2,7 +2,7 @@
 	
 	var SC=GMOD("shortcut")({
 		rs:"rescope",
-		mapping:"ControllerMapping",
+		mapping:"Controller.Mapping",
 		ctrl:"Controller"
 	});
 	
@@ -133,7 +133,7 @@
 		{
 			param=param||{};
 			this.superInit(GUI,param.styleClass);
-			SC.rs.all(["onInputChange","onClick","controllerChanged"],this);
+			SC.rs.all(["onInputChange","onClick"],this);
 			this.createListener("submit");
 			
 			this.addStyleClass("ControllerConfig");
@@ -153,7 +153,7 @@
 				if(this.controller)
 				{
 					this.controller.setMapping(this.oldMapping);
-					this.controller.removeListener("analogStickChanged buttonChanged",this.controllerChanged);
+					this.controller.removeListener("analogStickChanged buttonChanged",this,this.controllerChanged);
 					
 					this.controllerType=0;
 					this.domElement.classList.remove("Keyboard");
@@ -174,7 +174,7 @@
 				{
 					this.controllerType=controllerTypes.Gamepad;
 					this.domElement.classList.add("Gamepad");
-					this.controller.addListener("analogStickChanged buttonChanged",this.controllerChanged);
+					this.controller.addListener("analogStickChanged buttonChanged",this,this.controllerChanged);
 				}
 				this.oldMapping=this.controller.getMapping();
 				this.controller.setMapping(null);

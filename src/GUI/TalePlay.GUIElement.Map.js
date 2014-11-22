@@ -3,11 +3,15 @@
 	var GUI=GMOD("GUIElement"),
 	MAP=GMOD("Map"),
 	SC=GMOD("shortcut")({
-		rescope:"rescope",
 		find:"find",
+		goPath:"goPath",//for Map.cursors shortcut
+		rescope:"rescope",
 		proxy:"proxy",
 		point:"Math.Point"
 	});
+	
+	var cursorFilter=function(image){return image instanceof GUI.Map.Cursor};
+	var cursorGetter=function(GuiMap){return GuiMap.map.organizer.getFilter("cursors")};
 	
 	GUI.Map=µ.Class(GUI,{
 		init:function(param)
@@ -22,130 +26,27 @@
 				images:param.images,
 				position:param.position
 			});
+			this.map.organizer.filter("cursors",cursorFilter);
 			SC.proxy("map",{
-				add:"addImages",
+				add:"add",
+				addAll:"addAll",
 				setPosition:"setPosition",
 				move:"move",
 				getImages:"getImages",
-				getSize:"getSize"
+				getSize:"getSize",
+                collide:"collide"
 			},this);
             this.threshold=new SC.point();
-            this.cursors=[];
+            GMOD("shortcut")({cursors:cursorGetter},this,this,true);
             this.movingCursors=new Map();
             this.setThreshold(param.threshold);
-            param.cursors&&this.addCursors(param.cursors);
+            param.cursors&&this.addAll(param.cursors);
             this.assignFilter=param.assignFilter||null;
             this.animationRquest=null;
-		},
-		addCursors:function(cursors)
-		{
-			cursors=[].concat(cursors);
-            for(var i=0;i<cursors.length;i++)
-            {
-                if(this.cursors.indexOf(cursors[i])===-1)
-                {
-    				this.addImages(cursors[i]);
-                    this.cursors.push(cursors[i]);
-                }
-            }
 		},
 		getCursors:function(pattern)
 		{
 			return SC.find(this.cursors,pattern,true);
-		},
-		setCursorPosition:function(numberOrPoint,y,index)
-		{
-			index=index||0;
-			var cursor=this.cursors[index];
-			if(cursor)
-			{
-				this.moveCursor(cursor.position.clone().negate().add(cursor.offset).add(numberOrPoint,y), null, index);
-			}
-		},
-		moveCursor:function(numberOrPoint,y,index)
-		{
-			index=index||0;
-			var cursor=this.cursors[index];
-			var distance=new SC.point();
-			if(cursor)
-			{
-				var size=this.map.getSize();
-				distance.set(numberOrPoint,y);
-				//map boundary
-				var pos=cursor.rect.position.clone().add(cursor.offset);
-				if(pos.x+distance.x<0)
-				{
-					distance.x=-pos.x;
-				}
-				else if (pos.x+distance.x>size.x)
-				{
-					distance.x=size.x-pos.x;
-				}
-				if(pos.y+distance.y<0)
-				{
-					distance.y=-pos.y;
-				}
-				else if (pos.y+distance.y>size.y)
-				{
-					distance.y=size.y-pos.y;
-				}
-				//collision
-				if(cursor.collision)
-				{
-					var progress=1;
-					var rect=cursor.rect.clone();
-					rect.position.add(numberOrPoint,y);
-					var collisions=this.map.collide(rect);
-					for(var i=0;i<collisions.length;i++)
-					{
-						var cImage=collisions[i];
-						var p=null;
-						if(cImage===cursor||cursor.rect.contains(cImage.rect)||cImage.rect.contains(cursor.rect))
-						{//is self or inside
-							continue;
-						}
-						
-						if(distance.x>0&&cursor.rect.position.x+cursor.rect.size.x<=cImage.rect.position.x)
-						{
-							p=Math.max(p,(cImage.rect.position.x-cursor.rect.position.x-cursor.rect.size.x)/distance.x);
-						}
-						else if (distance.x<0&&cursor.rect.position.x>=cImage.rect.position.x+cImage.rect.size.x)
-						{
-							p=Math.max(p,(cImage.rect.position.x+cImage.rect.size.x-cursor.rect.position.x)/distance.x);
-						}
-						
-						if(distance.y>0&&cursor.rect.position.y+cursor.rect.size.y<=cImage.rect.position.y)
-						{
-							p=Math.max(p,(cImage.rect.position.y-cursor.rect.position.y-cursor.rect.size.y)/distance.y);
-						}
-						else if (distance.y<0&&cursor.rect.position.y>=cImage.rect.position.y+cImage.rect.size.y)
-						{
-							p=Math.max(p,(cImage.rect.position.y+cImage.rect.size.y-cursor.rect.position.y)/distance.y);
-						}
-						
-						if(p!==null)
-						{
-							progress=Math.min(progress,p);
-						}
-					}
-					distance.mul(progress);
-				}
-				cursor.move(distance);
-
-				//step trigger
-				var stepTrigger=SC.find(this.map.trigger(cursor.getPosition()),{trigger:{type:"step"}},true);
-				for(var i=0;i<stepTrigger.length;i++)
-				{
-					this.fire("trigger",{
-						triggerType:"step",
-						image:stepTrigger[i],
-						cursor:cursor,
-						index:index,
-						distance:distance
-					});
-				}
-			}
-			return distance;
 		},
 		update:function(noImages)
 		{
@@ -155,7 +56,7 @@
 		{
 			this.map.calcSize(function(img)
 			{
-				return !img.domElement.classList.contains("cursor");
+				return !(img instanceof GUI.Map.Cursor)
 			});
 		},
 		setThreshold:function(numberOrPoint,y)
@@ -178,7 +79,7 @@
 						};
 						this.movingCursors.set(i,data);
 					}
-					data.direction.set(event.analogStick).mul(1,-1).mul(this.cursors[i].speed);
+					data.direction.set(event.analogStick).mul(1,-1);
 					data.direction8=event.analogStick.getDirection8();
 				}
 			}
@@ -189,15 +90,27 @@
 		},
 		_animateCursor:function(time)
 		{
-			for(move of this.movingCursors)
+			for([index, data] of this.movingCursors)
 			{
-				var index=move[0];
 				var cursor=this.cursors[index];
-				var data=move[1];
 				if(data.direction8!==0&&cursor)
 				{
 					var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
-					this.moveCursor(data.direction.clone().mul((timeDiff)/1000),undefined,index);
+					var distance=cursor.move(data.direction.clone().mul(cursor.speed).mul(timeDiff/1000));
+
+					//step trigger
+					var stepTrigger=this.map.trigger("step",cursor.getPosition());
+					for(var i=0;i<stepTrigger.length;i++)
+					{
+						this.fire("trigger",{
+							triggerType:"step",
+							image:stepTrigger[i],
+							cursor:cursor,
+							index:index,
+							distance:distance
+						});
+					}
+					
 					data.lastTime=time;
 					
 					//move map
@@ -264,7 +177,7 @@
 				{
 					if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
 					{
-						var activateTrigger=SC.find(this.map.trigger(this.cursors[i].getPosition()),{trigger:{type:"activate"}},true);
+						var activateTrigger=this.map.trigger("activate",this.cursors[i].getPosition());
 						for(var t=0;t<activateTrigger.length;t++)
 						{
 							if(activateTrigger[t].trigger.type==="activate")
@@ -340,6 +253,76 @@
     	setSpeed:function(numberOrPoint,y)
     	{
             this.speed.set(numberOrPoint,y);
+    	},
+    	move:function(numberOrPoint,y)
+    	{
+    		var distance=new SC.point();
+			if(this.map)
+			{
+				var size=this.map.getSize();
+				distance.set(numberOrPoint,y);
+				//map boundary
+				var pos=this.rect.position.clone().add(this.offset);
+				if(pos.x+distance.x<0)
+				{
+					distance.x=-pos.x;
+				}
+				else if (pos.x+distance.x>size.x)
+				{
+					distance.x=size.x-pos.x;
+				}
+				if(pos.y+distance.y<0)
+				{
+					distance.y=-pos.y;
+				}
+				else if (pos.y+distance.y>size.y)
+				{
+					distance.y=size.y-pos.y;
+				}
+				//collision
+				if(this.collision)
+				{
+					var progress=1;
+					var rect=this.rect.clone();
+					rect.position.add(numberOrPoint,y);
+					var collisions=this.map.collide(rect);
+					for(var i=0;i<collisions.length;i++)
+					{
+						var cImage=collisions[i];
+						var p=null;
+						if(cImage===this||this.rect.contains(cImage.rect)||cImage.rect.contains(this.rect))
+						{//is self or inside
+							continue;
+						}
+						
+						if(distance.x>0&&this.rect.position.x+this.rect.size.x<=cImage.rect.position.x)
+						{
+							p=Math.max(p,(cImage.rect.position.x-this.rect.position.x-this.rect.size.x)/distance.x);
+						}
+						else if (distance.x<0&&this.rect.position.x>=cImage.rect.position.x+cImage.rect.size.x)
+						{
+							p=Math.max(p,(cImage.rect.position.x+cImage.rect.size.x-this.rect.position.x)/distance.x);
+						}
+						
+						if(distance.y>0&&this.rect.position.y+this.rect.size.y<=cImage.rect.position.y)
+						{
+							p=Math.max(p,(cImage.rect.position.y-this.rect.position.y-this.rect.size.y)/distance.y);
+						}
+						else if (distance.y<0&&this.rect.position.y>=cImage.rect.position.y+cImage.rect.size.y)
+						{
+							p=Math.max(p,(cImage.rect.position.y+cImage.rect.size.y-this.rect.position.y)/distance.y);
+						}
+						
+						if(p!==null)
+						{
+							progress=Math.min(progress,p);
+						}
+					}
+					distance.mul(progress);
+				}
+				MAP.Image.prototype.move.call(this,distance);
+			}
+			return distance;
     	},
 		toJSON:function()
 		{

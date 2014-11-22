@@ -2,13 +2,14 @@
 	var name="Menu";
 	var SC=µ.getModule("shortcut")({
 		Board:"Board",
+		Layer:"Layer",
 		gMenu:"GUI.Menu",
 		menu:"Menu"
 	});
 	module(name);
 	test(name, function() {
 		var board = getBoard(name),
-		layer=new SC.Board.Layer(),
+		layer=new SC.Layer(),
 		vMenu=new SC.gMenu({
 			type:SC.gMenu.Types.VERTICAL,
 			items:[

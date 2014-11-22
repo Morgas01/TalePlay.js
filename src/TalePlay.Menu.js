@@ -1,6 +1,8 @@
 (function(µ,SMOD,GMOD){
+
+    var TALE=window.TalePlay=window.TalePlay||{};
 	
-	var MENU=µ.Menu=µ.Class({
+	var MENU=TALE.Menu=µ.Class({
 		init:function(param)
 		{	
 			param=param||{};
@@ -149,10 +151,14 @@
 			}
 			return null;
 		},
+        getActive:function()
+        {
+            return this.getItem(this.active);
+        },
 		setActive:function(index)
 		{
 			var min=-1,max=this.items.length-1;
-			index=min>index?min:(max<index?max:index);
+			index=!(min<=index)?min:(max<index?max:index);
 			if(this.active!==index)
 			{
 				this.active=index;

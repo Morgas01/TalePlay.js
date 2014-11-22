@@ -1,17 +1,20 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD){
 
-	var BOARD=GMOD("Board");
+    var TALE=window.TalePlay=window.TalePlay||{};
+
     var SC=GMOD("shortcut")({
-	    node:"NodePatch"
+	    node:"NodePatch",
     });
 	
-	var LAYER=BOARD.Layer=µ.Class({
+	var LAYER=TALE.Layer=µ.Class({
 		init:function()
 		{
 
 			this.nodePatch=new SC.node(this,{
 				parent:"board",
-				children:"GUIElements"
+				children:"GUIElements",
+				addChild:"add",
+				removeChild:"remove",
 			});
 			//this.board=null;
 			//this.GUIElements=[];
@@ -36,17 +39,20 @@
 		},
 		add:function(guiElement,target)
 		{
-			this.nodePatch.addChild(guiElement);
-			
-			if(typeof target==="string")
+			if(HMOD("GUIElement")&&guiElement instanceof GMOD("GUIElement")&&this.nodePatch.addChild(guiElement))
 			{
-				target=this.domElement.querySelector(target);
+				if(typeof target==="string")
+				{
+					target=this.domElement.querySelector(target);
+				}
+				if(!target)
+				{
+					target=this.domElement;
+				}
+				target.appendChild(guiElement.domElement);
+				return true;
 			}
-			if(!target)
-			{
-				target=this.domElement;
-			}
-			target.appendChild(guiElement.domElement);
+			return false;
 		},
 		remove:function(guiElement)
 		{
@@ -56,7 +62,17 @@
 				return true;
 			}
 			return false;
+		},
+		destroy:function()
+		{
+			//TODO
+			this.nodePatch.remove();
+			var c=this.GUIElements.slice();
+			for(var i=0;i<c.lenth;i++)
+			{
+				c[i].destroy();
+			}
 		}
 	});
 	SMOD("Layer",LAYER);
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);

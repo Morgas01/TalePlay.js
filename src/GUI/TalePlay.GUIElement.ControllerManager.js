@@ -4,8 +4,9 @@
 	
 	var SC=GMOD("shortcut")({
 		rs:"rescope",
-		mapping:"ControllerMapping",
-		ctrl:"Controller",
+		mapping:"Controller.Mapping",
+		ctrlK:"Controller.Keyboard",
+		ctrlG:"Controller.GamePad",
 		GMenu:"GUI.Menu",
 		Menu:"Menu",
 		config:"GUI.ControllerConfig"
@@ -39,7 +40,7 @@
 			
 			this.superInit(GUI,param.styleClass);
 			this.addStyleClass("ControllerManager");
-			SC.rs.all(["_Click","_MenuSelect","_playerChanged","_mappingsLoaded"],this);
+			SC.rs.all(["_Click","_playerChanged","_mappingsLoaded"],this);
 			this.domElement.addEventListener("click",this._Click);
 
 			this.buttons=param.buttons!==undefined ? param.buttons : 10;
@@ -50,7 +51,7 @@
 				selectionType:SC.Menu.SelectionTypes.single,
 				converter:MANAGER.controllerConverter
 			});
-			this.controllers.addListener("select",this._MenuSelect);
+			this.controllers.addListener("select",this,this._MenuSelect);
 
 			param.mappings=param.mappings||[];
 			param.mappings.unshift(null);
@@ -60,13 +61,15 @@
 				converter:MANAGER.mappingConverter,
 				items:param.mappings
 			});
-			this.mappings.addListener("select",this._MenuSelect);
+			this.mappings.addListener("select",this,this._MenuSelect);
 			
 			this.dbConn=param.dbConn||null;
 			if(this.dbConn)
 			{
 				this.dbConn.load(SC.mapping,{}).complete(this._mappingsLoaded);
 			}
+
+            this.config=null;
 			
 			this.domElement.innerHTML=template;
 
@@ -133,12 +136,12 @@
 			var index=this.domElement.querySelector(".devices").selectedIndex;
 			if(index===0)
 			{
-				this.addController(new SC.ctrl.Keyboard());
+				this.addController(new SC.ctrlK());
 			}
 			else
 			{
 				var gamepad=navigator.getGamepads()[--index];
-				this.addController(new SC.ctrl.Gamepad(gamepad));
+				this.addController(new SC.ctrlG(gamepad));
 			}
 		},
 		removeController:function()
@@ -192,12 +195,16 @@
 		_openControllerConfig:function(isNew)
 		{
 			var controller=this.controllers.getSelectedItems()[0];
-			if(controller)
+			if(controller&&!this.config)
 			{
 				controller=controller.value.controller;
-				var _self=this,
-				mapping=controller.getMapping(),
-				config=new SC.config({buttons:this.buttons,analogSticks:this.analogSticks,controller:controller,name:!!isNew});
+				var mapping=controller.getMapping();
+                this.config=new SC.config({
+					buttons:this.buttons,
+					analogSticks:this.analogSticks,
+					controller:controller,
+					name:!!isNew
+				});
 				if(isNew)
 				{
 					controller.setMapping(null);
@@ -206,9 +213,9 @@
 				{
 					return false;
 				}
-				config.addStyleClass("panel","overlay");
-				this.layer.add(config);
-				config.addListener("submit:once",function(event)
+				this.config.addStyleClass("panel","overlay");
+				this.layer.add(this.config);
+				this.config.addListener("submit:once",this,function(event)
 				{
 					switch(true)
 					{
@@ -216,21 +223,22 @@
 							if(isNew)//make new mapping
 							{
 								mapping=event.source.getMapping();
-								_self.mappings.addItem(mapping);
+								this.mappings.addItem(mapping);
 							}
 							else//update mapping
 							{
 								mapping.setValueOf("data",event.source.getData());
 							}
-							if(_self.dbConn&&(isNew||mapping.getID()!==undefined))
+							if(this.dbConn&&(isNew||mapping.getID()!==undefined))
 							{
-								_self.dbConn.save(mapping);
+								this.dbConn.save(mapping);
 							}
 						case !!isNew://reset old mapping or set new
 							controller.setMapping(mapping);
 					}
-					_self.update("controllers");
+					this.update("controllers");
 					event.source.destroy();
+                    this.config=null;
 				});
 				return true;
 			}
@@ -248,7 +256,7 @@
 	{
 		return [
 			index,
-			(item.controller instanceof SC.ctrl.Keyboard)?"Keyboard":item.controller.gamepad.id,
+			(item.controller instanceof SC.ctrlK)?"Keyboard":item.controller.gamepad.id,
 			((item.controller.mapping&&item.controller.mapping.getValueOf("name"))||"None"),
 			'<input type="number" min="1" value="'+item.player+'" data-controllerindex="'+index+'" >'
 	    ];

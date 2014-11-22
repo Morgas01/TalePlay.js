@@ -1,9 +1,11 @@
 (function(µ,SMOD,GMOD){
 
+	var CTRL=GMOD("Controller");
+	
 	var SC=µ.shortcut({
 		rescope:"rescope"
 	});
-	var CTRL=GMOD("Controller");
+	
 	CTRL.Keyboard=µ.Class(CTRL,{
 		init:function(mapping,mappingName,domElement)
 		{

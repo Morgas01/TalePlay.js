@@ -1,6 +1,6 @@
 function logController()
 {
-	var type=this instanceof Morgas.Controller.Keyboard?"Keyboard":"Gamepad"
+	var type=this instanceof µ.getModule("Controller.Keyboard")?"Keyboard":"Gamepad"
 	document.getElementById("logger").value=type+": "+this;
 }
 
@@ -19,11 +19,11 @@ function getContainer(name)
 }
 function getBoard(name)
 {
-	var Kcon=new Morgas.Controller.Keyboard();
-	Kcon.addListener("changed",logController);
+	var Kcon=new (µ.getModule("Controller.Keyboard"))();
+	Kcon.addListener("changed",Kcon,logController);
 	
 	var container=getContainer(name);
-	var board=new µ.Board(container);
+	var board=new (µ.getModule("Board"))(container);
 	board.addController(Kcon);
 
 	return board;

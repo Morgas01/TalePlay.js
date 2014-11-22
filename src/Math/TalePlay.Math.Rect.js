@@ -1,13 +1,18 @@
 (function(µ,SMOD,GMOD){
+
+    var TALE=window.TalePlay=window.TalePlay||{};	
+	TALE.Math=TALE.Math||{};
 	
-	var POINT=GMOD("Math.Point");
+	var SC=GMOD("shortcut")({
+		POINT:"Math.Point"
+	});
 	
-	var RECT=µ.Math.Rect=µ.Class(
+	var RECT=TALE.Rect=µ.Class(
 	{
 		init:function(position,size)
 		{
-			this.position=new POINT();
-			this.size=new POINT();
+			this.position=new SC.POINT();
+			this.size=new SC.POINT();
 			
 			this.setPosition(position);
 			this.setSize(size);
@@ -61,7 +66,7 @@
 		},
         contains:function(numberOrPoint,y)
         {
-            var p=new POINT(numberOrPoint,y);
+            var p=new SC.POINT(numberOrPoint,y);
             return (this.position.x <= p.x && this.position.x+this.size.x > p.x &&
                     this.position.y <= p.y && this.position.y+this.size.y > p.y);
         }
