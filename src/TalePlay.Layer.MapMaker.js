@@ -15,7 +15,7 @@
 	var imageLayer=µ.Class(Layer,{
 		init:function(board,image,callback,scope)
 		{
-			this.image=image||{name:"",rect:{position:{x:0,y:0},size:{x:100,y:100}}};
+			this.image=image;
 			this.callback=callback;
 			this.scope=scope||this;
 			this.image.trigger=this.image.trigger||{value:""};
@@ -34,7 +34,7 @@
 						'<option value="activate">activate</option><option value="step">step</option><option value="move" disabled>move</option></select></td></tr>'+
 					'<tr><td>Trigger value</td><td><input type="text" data-path="trigger" name="value"></td></tr>'+
 					'</table>'+
-				'<button data-action="ok">OK</button><button data-action="cancel">cancel</button>'+
+				'<button data-action="ok">OK</button><button data-action="cancel">cancel</button>'+(image.map ? '<button data-action="remove">remove</button>':'')+
 			'</div>';
 			SC.setIn(this.domElement.querySelectorAll("[name]"),this.image);
 			
@@ -44,17 +44,30 @@
 		},
 		onClick:function(e)
 		{
-			e.stopPropagation();
-			switch(e.target.dataset.action)
+			var action=e.target.dataset.action;
+			if(action)
 			{
-				case "ok":
-					SC.getIn(this.domElement.querySelectorAll("[name]"),this.image);
-				case "cancel":
-					this.board.removeLayer(this);
-					this.callback.call(this.scope,this.image,e.target.dataset.action);
-					this.image=this.callback=this.scope=undefined;
-					break;
+				e.stopPropagation();
+				switch(e.target.dataset.action)
+				{
+					case "ok":
+						SC.getIn(this.domElement.querySelectorAll("[name]"),this.image);
+						break;
+					case "cancel":
+						//does nothing
+						break;
+					case "remove":
+						//does nothing
+						break;
+				}
+				this.callback.call(this.scope,this.image,e.target.dataset.action);
+				this.destroy();
 			}
+		},
+		destroy:function()
+		{
+			this.image=this.callback=this.scope=undefined;
+			Layer.prototype.destroy.call(this);
 		}
 	});
 	
@@ -139,7 +152,7 @@
 			new imageLayer(this.board,new SC._map.Image(e.value.url,0,100),function(image,action){
 				if(action==="ok")
 				{
-					this.map.addImages(image);
+					this.map.add(image);
 					image.update();
 					this.map.updateSize();
 				}
@@ -149,12 +162,23 @@
         selectImage:function()
         {
             var pos=this.map.cursors[0].getPosition();
-            var image=this.map.getCursors(val => val.rect.contains(pos))[0];
+            var image=this.map.getImages(val => val!==this.map.cursors[0]&&val.rect.contains(pos))[0];
             if(image)
             {
-                new imageLayer(this.board,image,function(image)
+                new imageLayer(this.board,image,function(image,action)
                 {
-                    image.update();
+                	if(action==="ok")
+                	{
+	                    image.update();
+                	}
+                    else if(action==="remove")
+    				{
+    					image.remove();
+    				}
+                	if(action!=="cancel")
+                	{
+    					this.map.updateSize();
+                	}
                     this.board.focus();
                 },this);
             }

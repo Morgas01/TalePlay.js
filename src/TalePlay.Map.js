@@ -174,7 +174,8 @@
         init:function(url,position,size,name,collision,trigger)
         {
         	new SC.Node(this,{
-        		parent:"map"
+        		parent:"map",
+        		remove:"remove"
         	});
         	
         	this.rect=new SC.RECT(position,size);

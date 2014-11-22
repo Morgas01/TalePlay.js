@@ -68,7 +68,7 @@
 			//TODO
 			this.nodePatch.remove();
 			var c=this.GUIElements.slice();
-			for(var i=0;iyc.lenth;i++)
+			for(var i=0;i<c.lenth;i++)
 			{
 				c[i].destroy();
 			}
