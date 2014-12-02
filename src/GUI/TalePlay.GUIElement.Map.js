@@ -7,11 +7,12 @@
 		goPath:"goPath",//for Map.cursors shortcut
 		rescope:"rescope",
 		proxy:"proxy",
+        Org:"Organizer",
 		point:"Math.Point"
 	});
 	
 	var cursorFilter=function(image){return image instanceof GUI.Map.Cursor};
-	var cursorGetter=function(GuiMap){return GuiMap.map.organizer.getFilter("cursors")};
+	var cursorGetter=function(GuiMap){return GuiMap.organizer.getFilter("cursors")};
 	
 	GUI.Map=µ.Class(GUI,{
 		init:function(param)
@@ -21,21 +22,26 @@
 			this.superInit(GUI,param.styleClass);
 			this.createListener("trigger");
 			SC.rescope.all(["_animateCursor"],this);
+			
 			this.map=new MAP({
 				domElement:this.domElement,
 				images:param.images,
 				position:param.position
 			});
-			this.map.organizer.filter("cursors",cursorFilter);
-			SC.proxy("map",{
-				add:"add",
-				addAll:"addAll",
-				setPosition:"setPosition",
-				move:"move",
-				getImages:"getImages",
-				getSize:"getSize",
-                collide:"collide"
-			},this);
+			this.map.gui=this;
+			SC.proxy("map",[
+				"setPosition",
+				"move",
+				"getImages",
+				"getSize",
+				"update"
+			],this);
+			
+        	this.organizer=new SC.Org()
+        	.filter("cursors",cursorFilter)
+        	.filter("collision","collision")
+        	.group("trigger","trigger.type");
+			
             this.threshold=new SC.point();
             GMOD("shortcut")({cursors:cursorGetter},this,this,true);
             this.movingCursors=new Map();
@@ -44,13 +50,31 @@
             this.assignFilter=param.assignFilter||null;
             this.animationRquest=null;
 		},
+        addAll:function(images)
+        {
+        	images=[].concat(images);
+            for(var i=0;i<images.length;i++)
+            {
+                this.add(images[i]);
+            }
+        },
+        add:function(image)
+        {
+            if(this.map.add(image))
+            {
+                this.organizer.add([image]);
+            }
+        },
+        remove:function(image)
+        {
+        	if(this.map.remove(image))
+        	{
+        		this.organizer.remove(image);
+        	}
+        },
 		getCursors:function(pattern)
 		{
 			return SC.find(this.cursors,pattern,true);
-		},
-		update:function(noImages)
-		{
-			this.map.update(noImages);
 		},
 		updateSize:function()
 		{
@@ -63,6 +87,32 @@
 		{
 			this.threshold.set(numberOrPoint,y);
 		},
+        collide:function(rect)
+        {
+        	var rtn=[],
+        	cImages=this.organizer.getFilter("collision");
+        	for(var i=0;i<cImages.length;i++)
+        	{
+        		if(cImages[i].rect.collide(rect))
+        		{
+        			rtn.push(cImages[i]);
+        		}
+        	}
+        	return rtn;
+        },
+        trigger:function(type,numberOrPoint,y)
+        {
+        	var rtn=[],
+        	tImages=this.organizer.getGroupValue("trigger",type);
+        	for(var i=0;i<tImages.length;i++)
+        	{
+        		if(tImages[i].rect.contains(numberOrPoint,y))
+        		{
+        			rtn.push(tImages[i]);
+        		}
+        	}
+        	return rtn;
+        },
 		onAnalogStick:function(event)
 		{
 			for(var i=0;i<this.cursors.length;i++)
@@ -99,7 +149,7 @@
 					var distance=cursor.move(data.direction.clone().mul(cursor.speed).mul(timeDiff/1000));
 
 					//step trigger
-					var stepTrigger=this.map.trigger("step",cursor.getPosition());
+					var stepTrigger=this.trigger("step",cursor.getPosition());
 					for(var i=0;i<stepTrigger.length;i++)
 					{
 						this.fire("trigger",{
@@ -177,7 +227,7 @@
 				{
 					if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
 					{
-						var activateTrigger=this.map.trigger("activate",this.cursors[i].getPosition());
+						var activateTrigger=this.trigger("activate",this.cursors[i].getPosition());
 						for(var t=0;t<activateTrigger.length;t++)
 						{
 							if(activateTrigger[t].trigger.type==="activate")
@@ -219,11 +269,43 @@
 		}
 	});
 	GUI.Map.MAX_TIME_DELAY=250;
-    GUI.Map.Cursor=µ.Class(MAP.Image,{
+    GUI.Map.Image=µ.Class(MAP.Image,{
+    	init:function(url,position,size,name,collision,trigger){
+    		this.superInit(MAP.Image,url,position,size,name);
+
+            this.collision=!!collision;
+            this.trigger={
+            	type:null,
+            	value:null
+            };
+            if(trigger)
+            {
+            	this.trigger.type=trigger.type||null;
+            	this.trigger.value=trigger.value||null;
+            }
+    	},
+		toJSON:function()
+		{
+			var json=MAP.Image.prototype.toJson.call(this);
+			json.collision=this.collision;
+			json.trigger=this.trigger;
+			return json;
+		},
+		fromJSON:function(json)
+		{
+			MAP.Image.prototype.fromJSON.call(this,json);
+			this.collision=json.collision;
+			this.trigger=json.trigger;
+			
+			return this;
+		}
+    });
+	GUI.Map.Cursor=µ.Class(GUI.Map.Image,{
     	init:function(url,position,size,offset,name,colision,trigger,speed)
     	{
-    		this.superInit(MAP.Image,url,position,size,name,colision,trigger);
+    		this.superInit(GUI.Map.Image,url,position,size,name,colision,trigger);
     		this.domElement.classList.add("cursor");
+            this.domElement.style.zIndex=GUI.Map.Cursor.zIndexOffset;
     		this.offset=new SC.point();
     		this.setOffset(offset);
     		this.speed=new SC.point(200);
@@ -231,8 +313,7 @@
     	},
         update:function()
         {
-        	MAP.Image.prototype.update.call(this);
-            this.domElement.style.zIndex=Math.floor(this.rect.position.y+GUI.Map.Cursor.zIndexOffset);
+        	GUI.Map.Image.prototype.update.call(this);
         },
     	setOffset:function(numberOrPoint,y)
     	{
@@ -285,7 +366,7 @@
 					var progress=1;
 					var rect=this.rect.clone();
 					rect.position.add(numberOrPoint,y);
-					var collisions=this.map.collide(rect);
+					var collisions=this.map.gui.collide(rect);
 					for(var i=0;i<collisions.length;i++)
 					{
 						var cImage=collisions[i];
@@ -320,20 +401,20 @@
 					}
 					distance.mul(progress);
 				}
-				MAP.Image.prototype.move.call(this,distance);
+				GUI.Map.Image.prototype.move.call(this,distance);
 			}
 			return distance;
     	},
 		toJSON:function()
 		{
-			var json=MAP.Image.prototype.toJSON.call(this);
+			var json=GUI.Map.Image.prototype.toJSON.call(this);
 			json.offset=this.offset;
 			json.speed=this.speed;
 			return json;
 		},
 		fromJSON:function(json)
 		{
-			MAP.Image.prototype.fromJSON.call(this,json);
+			GUI.Map.Image.prototype.fromJSON.call(this,json);
 			this.offset.set(json.offset);
 			this.speed.set(json.speed);
 			

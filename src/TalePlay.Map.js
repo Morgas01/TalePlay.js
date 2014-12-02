@@ -5,7 +5,6 @@
     var SC=GMOD("shortcut")({
         find:"find",
         Node:"NodePatch",
-        Org:"Organizer",
         point:"Math.Point",
         RECT:"Math.Rect"
     });
@@ -18,24 +17,25 @@
         		addChild:"add",
         		removeChild:"remove",
         	});
-        	this.organizer=new SC.Org()
-        	.filter("collision","collision")
-        	.group("trigger","trigger.type");
         	
         	param=param||{};
         	
             this.position=new SC.point();
             this.size=new SC.point(param.size);
+            
             this.domElement=param.domElement||document.createElement("div");
             this.domElement.classList.add("Map");
             this.stage=document.createElement("div");
             this.stage.classList.add("stage");
             this.domElement.appendChild(this.stage);
+            
             param.images&&this.addAll(param.images);
+            
             if(this.size.equals(0))
             {
             	this.calcSize();
             }
+            
             this.setPosition(param.position);
         },
         addAll:function(images)
@@ -52,16 +52,18 @@
             {
                 this.stage.appendChild(image.domElement);
                 image.update();
-                this.organizer.add([image]);
+                return true;
             }
+            return false;
         },
         remove:function(image)
         {
         	if(this.nodePatch.removeChild(image))
         	{
         		this.stage.removeChild(image.domElement);
-        		this.organizer.remove(image);
+        		return true;
         	}
+        	return false;
         },
         setPosition:function(position,y)
         {
@@ -116,32 +118,6 @@
         		}
         	}
         },
-        collide:function(rect)
-        {
-        	var rtn=[],
-        	cImages=this.organizer.getFilter("collision");
-        	for(var i=0;i<cImages.length;i++)
-        	{
-        		if(cImages[i].rect.collide(rect))
-        		{
-        			rtn.push(cImages[i]);
-        		}
-        	}
-        	return rtn;
-        },
-        trigger:function(type,numberOrPoint,y)
-        {
-        	var rtn=[],
-        	tImages=this.organizer.getGroupValue("trigger",type);
-        	for(var i=0;i<tImages.length;i++)
-        	{
-        		if(tImages[i].rect.contains(numberOrPoint,y))
-        		{
-        			rtn.push(tImages[i]);
-        		}
-        	}
-        	return rtn;
-        },
 		toJSON:function()
 		{
 			return {
@@ -171,7 +147,7 @@
     });
     MAP.Image= µ.Class(
     {
-        init:function(url,position,size,name,collision,trigger)
+        init:function(url,position,size,name)
         {
         	new SC.Node(this,{
         		parent:"map",
@@ -192,8 +168,6 @@
             	set:function(name){this.domElement.dataset.name=name;}
             });
             this.name=name||"";
-            this.collision=!!collision;
-            this.trigger=trigger||null;
         },
         update:function()
         {
@@ -201,8 +175,6 @@
             this.domElement.style.left=this.rect.position.x+"px";
             this.domElement.style.height=this.rect.size.y+"px";
             this.domElement.style.width=this.rect.size.x+"px";
-            
-            this.domElement.style.zIndex=Math.floor(this.rect.position.y);
         },
     	getPosition:function()
     	{
@@ -224,9 +196,7 @@
 				url:this.url,
 				position:this.rect.position,
 				size:this.rect.size,
-				name:this.name,
-				collision:this.collision,
-				trigger:this.trigger
+				name:this.name
 			};
 		},
 		fromJSON:function(json)
@@ -235,8 +205,8 @@
 			this.rect.setPosition(json.position);
 			this.rect.setSize(json.size);
 			this.name=json.name;
-			this.collision=json.collision;
-			this.trigger=json.trigger;
+			
+			this.update();
 			
 			return this;
 		}

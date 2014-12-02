@@ -1,8 +1,8 @@
 (function(µ,SMOD,GMOD){
 	
-	var GUI=GMOD("GUIElement"),
+	var GUI=GMOD("GUIElement");
 	
-	SC=GMOD("shortcut")({
+	var SC=GMOD("shortcut")({
 		MENU:"Menu",
 		rescope:"rescope"
 	});
@@ -339,6 +339,7 @@
 			this._updateActive();
 		}
 	});
+	GMOD("shortcut")({SelectionTypes:function(){return GMOD("Menu").SelectionTypes}},MENU);
 	MENU.Types={
 		VERTICAL:1,
 		HORIZONTAL:2,

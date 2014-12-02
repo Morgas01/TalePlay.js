@@ -7,9 +7,7 @@
 		setIn:"setInputValues",
 		getIn:"getInputValues",
 		Map:"GUI.Map",
-		_map:"Map",
 		Menu:"GUI.Menu",
-		_menu:"Menu"
 	});
 	
 	var imageLayer=µ.Class(Layer,{
@@ -88,7 +86,7 @@
 			this.images=new SC.Menu({
 				styleClass:["images","panel"],
 				type:SC.Menu.Types.VERTICAL,
-				selectionType:SC._menu.SelectionTypes.none,
+				selectionType:SC.Menu.SelectionTypes.none,
 				columns:1,
 				converter:function(item,index,selected){
 					return '<img src="'+item.url+'">';
@@ -149,7 +147,7 @@
 		},
 		placeImage:function(e)
         {
-			new imageLayer(this.board,new SC._map.Image(e.value.url,0,100),function(image,action){
+			new imageLayer(this.board,new SC.Map.Image(e.value.url,0,100),function(image,action){
 				if(action==="ok")
 				{
 					this.map.add(image);
