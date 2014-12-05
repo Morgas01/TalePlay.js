@@ -70,6 +70,7 @@
         	if(this.map.remove(image))
         	{
         		this.organizer.remove(image);
+        		this.movingCursors["delete"](image);
         	}
         },
 		getCursors:function(pattern)
@@ -123,14 +124,13 @@
 					if(!data)
 					{
 						data={
-							direction:new SC.point(),
-							direction8:0,
+							direction:null,
 							lastTime:Date.now()-performance.timing.navigationStart
 						};
-						this.movingCursors.set(i,data);
+						this.movingCursors.set(this.cursors[i],data);
 					}
-					data.direction.set(event.analogStick).mul(1,-1);
-					data.direction8=event.analogStick.getDirection8();
+					data.direction=event.analogStick.clone();
+					data.lastTime=Date.now()-performance.timing.navigationStart;
 				}
 			}
 			if(this.animationRquest===null)
@@ -140,13 +140,13 @@
 		},
 		_animateCursor:function(time)
 		{
-			for([index, data] of this.movingCursors)
+			for([cursor, data] of this.movingCursors)
 			{
-				var cursor=this.cursors[index];
-				if(data.direction8!==0&&cursor)
+				if(!data.direction.equals(0)&&cursor)
 				{
 					var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
-					var distance=cursor.move(data.direction.clone().mul(cursor.speed).mul(timeDiff/1000));
+		            cursor.domElement.classList.add("moving");
+					var distance=cursor.move(data.direction,timeDiff);
 
 					//step trigger
 					var stepTrigger=this.trigger("step",cursor.getPosition());
@@ -156,7 +156,6 @@
 							triggerType:"step",
 							image:stepTrigger[i],
 							cursor:cursor,
-							index:index,
 							distance:distance
 						});
 					}
@@ -182,32 +181,11 @@
 					{
 						this.move(0,pos.y-mapPos.y-this.threshold.y);
 					}
-	
-					//set classes
-	                cursor.domElement.classList.add("moving");
-	                cursor.domElement.classList.remove("up","right","down","left");
-	
-	                if(data.direction8>=1&&(data.direction8<=2||data.direction8===8))
-	                {
-	                    cursor.domElement.classList.add("up");
-	                }
-	                if(data.direction8>=2&&data.direction8<=4)
-	                {
-	                    cursor.domElement.classList.add("right");
-	                }
-	                if(data.direction8>=4&&data.direction8<=6)
-	                {
-	                    cursor.domElement.classList.add("down");
-	                }
-	                if(data.direction8>=6&&data.direction8<=8)
-	                {
-	                    cursor.domElement.classList.add("left");
-	                }
 				}
 	            else
 	            {
 	                cursor.domElement.classList.remove("moving");
-	                this.movingCursors["delete"](index);
+	                this.movingCursors["delete"](cursor);
 	            }
 			}
 			if(this.movingCursors.size>0)
@@ -225,9 +203,19 @@
 			{
 				for(var i=0;i<this.cursors.length;i++)
 				{
-					if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
+					var cursor=this.cursors[i]
+					if(!this.assignFilter||this.assignFilter(event,cursor,i))
 					{
-						var activateTrigger=this.trigger("activate",this.cursors[i].getPosition());
+						var activateTrigger=this.trigger("activate",cursor.getPosition());
+						if(activateTrigger.length===0&&cursor.direction)
+						{
+							var dir=cursor.direction;
+							var pos=new SC.point(
+								cursor.rect.position.x+(dir.x===0 ? cursor.offset.x : dir.x>0 ? cursor.rect.size.x : 0),
+								cursor.rect.position.y+(dir.y===0 ? cursor.offset.y : dir.y<0 ? cursor.rect.size.y : 0)
+							);
+							activateTrigger=this.trigger("activate",pos);
+						}
 						for(var t=0;t<activateTrigger.length;t++)
 						{
 							if(activateTrigger[t].trigger.type==="activate")
@@ -306,14 +294,40 @@
     		this.superInit(GUI.Map.Image,url,position,size,name,colision,trigger);
     		this.domElement.classList.add("cursor");
             this.domElement.style.zIndex=GUI.Map.Cursor.zIndexOffset;
-    		this.offset=new SC.point();
+    		this.offset=new SC.point(this.rect.size).div(2);
     		this.setOffset(offset);
     		this.speed=new SC.point(200);
     		this.setSpeed(speed);
+    		this.direction=null;
+    		this.updateDirection();
     	},
         update:function()
         {
         	GUI.Map.Image.prototype.update.call(this);
+        },
+        updateDirection:function()
+        {
+        	this.domElement.classList.remove("up","right","down","left");
+        	if(this.direction)
+        	{
+	            var direction8=this.direction.getDirection8();
+	            if(direction8>=1&&(direction8<=2||direction8===8))
+	            {
+	                this.domElement.classList.add("up");
+	            }
+	            if(direction8>=2&&direction8<=4)
+	            {
+	            	this.domElement.classList.add("right");
+	            }
+	            if(direction8>=4&&direction8<=6)
+	            {
+	            	this.domElement.classList.add("down");
+	            }
+	            if(direction8>=6&&direction8<=8)
+	            {
+	            	this.domElement.classList.add("left");
+	            }
+            }
         },
     	setOffset:function(numberOrPoint,y)
     	{
@@ -335,13 +349,15 @@
     	{
             this.speed.set(numberOrPoint,y);
     	},
-    	move:function(numberOrPoint,y)
+    	move:function(direction,timediff)
     	{
+    		this.direction=direction;
     		var distance=new SC.point();
 			if(this.map)
 			{
 				var size=this.map.getSize();
-				distance.set(numberOrPoint,y);
+				distance.set(this.direction).mul(this.speed).mul(timediff/1000)
+				.mul(1,-1);//negate y for screen coordinates
 				//map boundary
 				var pos=this.rect.position.clone().add(this.offset);
 				if(pos.x+distance.x<0)
@@ -365,7 +381,7 @@
 				{
 					var progress=1;
 					var rect=this.rect.clone();
-					rect.position.add(numberOrPoint,y);
+					rect.position.add(distance);
 					var collisions=this.map.gui.collide(rect);
 					for(var i=0;i<collisions.length;i++)
 					{
@@ -403,6 +419,7 @@
 				}
 				GUI.Map.Image.prototype.move.call(this,distance);
 			}
+			this.updateDirection();
 			return distance;
     	},
 		toJSON:function()
