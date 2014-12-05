@@ -65,7 +65,9 @@
 			       "item11",
 			       "item12",
 			       "item13"
-			]
+			],
+			stepAcceleration:0.9,
+			minStepDelay:40
 		});
 
 		layer.add(vMenu);

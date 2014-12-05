@@ -27,11 +27,11 @@
 			this.rows=param.rows||null;
 			this.columns=param.columns||null;
 			
-			this.axisState={index:null,player:null,value:0};
-			
+			this.stepDirection=null;
 			this.stepID=null;
 			this.stepDelay=param.stepDelay||500;
 			this.stepAcceleration=Math.min(1/param.stepAcceleration,param.stepAcceleration)||0.75;
+			this.minStepDelay=param.minStepDelay||50;
 			this.currentStepDelay=null;
 			
 			this.domElement.dataset.type = reverseTypes[this.type];
@@ -40,80 +40,73 @@
 		},
 		onAnalogStick:function(event)
 		{
-			var value=0;
+			if(this.stepID)
+			{
+				clearTimeout(this.stepID);
+				this.stepID=null;
+			}
+			this.stepDirection=event.analogStick;
+			var step=this._stepActive();
+		},
+		_stepActive:function()
+		{
+			var step=0;
 			switch(this.type)
 			{
 				case MENU.Types.VERTICAL:
 				case MENU.Types.TABLE:
-					if(event.analogStick.y>=0.5)
+					if(this.stepDirection.y>=0.5)
 					{
-						value=-1;
+						step=-1;
 					}
-					else if (event.analogStick.y<=-0.5)
+					else if (this.stepDirection.y<=-0.5)
 					{
-						value=1;
+						step=1;
 					}
 					break;
 				case MENU.Types.HORIZONTAL:
-					if(event.analogStick.x>=0.5)
+					if(this.stepDirection.x>=0.5)
 					{
-						value=1;
+						step=1;
 					}
-					else if (event.analogStick.x<=-0.5)
+					else if (this.stepDirection.x<=-0.5)
 					{
-						value=-1;
+						step=-1;
 					}
 					break;
 				case MENU.Types.GRID:
 					var gridLayout=this.getGridLayout();
-					if(event.analogStick.x>=0.5)
+					if(this.stepDirection.x>=0.5)
 					{
-						value=1;
+						step=1;
 					}
-					else if (event.analogStick.x<=-0.5)
+					else if (this.stepDirection.x<=-0.5)
 					{
-						value=-1;
+						step=-1;
 					}
-					else if(event.analogStick.y>=0.5)
+					else if(this.stepDirection.y>=0.5)
 					{
-						value=-gridLayout.columns;
-						if(this.menu.active+value>=this.menu.items.length)
+						step=-gridLayout.columns;
+						if(this.menu.active+step<0)
 						{
-							value=this.menu.active%gridLayout.columns;
-							value=this.menu.items.length-this.menu.active+value;
+							var r=this.menu.items.length%gridLayout.columns
+							step=(r===0||r>this.menu.active) ? -r : step-r;
 						}
 					}
-					else if (event.analogStick.y<=-0.5)
+					else if (this.stepDirection.y<=-0.5)
 					{
-						value=gridLayout.columns;
-						if(this.menu.active+value>=this.menu.items.length)
+						step=gridLayout.columns;
+						if(this.menu.active+step>=this.menu.items.length)
 						{
-							value=this.menu.active%gridLayout.columns;
-							value=this.menu.items.length-this.menu.active+value;
+							step=this.menu.active%gridLayout.columns;
+							step=this.menu.items.length-this.menu.active+step;
 						}
 					}
 					break;
 			}
-			if (value===0&&this.axisState.index===event.index&&this.axisState.player===event.player)
+			if(step!==0)
 			{
-				this.axisState.index=this.axisState.player=null;
-				this.axisState.value=0;
-				clearTimeout(this.stepID);
-				this.stepID=null;
-			}
-			else if (this.axisState.index===null&&value!==0)
-			{
-				this.axisState.index=event.index;
-				this.axisState.player=event.player;
-				this.axisState.value=value;
-				this._stepActive();
-			}
-		},
-		_stepActive:function()
-		{
-			if(this.axisState.value!==0)
-			{
-				this.menu.moveActive(this.axisState.value);
+				this.menu.moveActive(step);
 				this._updateActive();
 				this.fire("activeChanged")
 				
@@ -121,16 +114,16 @@
 				{
 					this.currentStepDelay=this.stepDelay;
 				}
-				else if (this.currentStepDelay!==50)
+				else if (this.currentStepDelay!==this.minStepDelay)
 				{
-					this.currentStepDelay=Math.max(50,this.currentStepDelay*this.stepAcceleration);
+					this.currentStepDelay=Math.max(this.minStepDelay,this.currentStepDelay*this.stepAcceleration);
 				}
 				this.stepID=setTimeout(this._stepActive, this.currentStepDelay);
 			}
 			else
 			{
 				clearTimeout(this.stepID);
-				this.stepID=null;
+				this.stepDirection=this.stepID=null;
 			}
 		},
 		_updateActive:function()
