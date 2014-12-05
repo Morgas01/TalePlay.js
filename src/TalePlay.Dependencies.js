@@ -12,7 +12,7 @@
             uses:[MORGAS_PATH+"Morgas.NodePatch.js"]
         },
         "TalePlay.Controller.js":{
-            deps:[MORGAS_PATH+"Morgas.js",MORGAS_PATH+"Morgas.Listeners.js"],
+            deps:[MORGAS_PATH+"Morgas.js",MORGAS_PATH+"Morgas.Listeners.js","Math/TalePlay.Math.Point.js"],
             uses:["TalePlay.Controller.Mapping.js"]
         },
         "TalePlay.Controller.Mapping.js":{

@@ -28,9 +28,14 @@
 			}
 			return this;
 		},
-		clone:function()
+		clone:function(cloning)
 		{
-			return new POINT(this);
+			if(!cloning)
+			{
+				cloning=new POINT();
+			}
+			cloning.set(this.x,this.y);
+			return cloning;
 		},
 		equals:function(numberOrPoint,y)
 		{
@@ -144,6 +149,23 @@
 				this.div(l);
 			}
 			return this;
+		},
+		getAngle:function()
+		{
+			if(this.y!==0||this.x!==0)
+			{
+				var a=Math.asin(this.y/this.length());
+				if(this.x>=0)
+				{
+					a=Math.PI/2-a;
+				}
+				else
+				{
+					a+=Math.PI*1.5;
+				}
+				return a;
+			}
+			return 0;
 		},
 		doMath:function(fn,numberOrPoint,y)
 		{

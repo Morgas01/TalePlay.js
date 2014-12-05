@@ -35,12 +35,12 @@
 
 	WR(srcDir+"TalePlay.Board.js");
 	WR(srcDir+"TalePlay.Layer.js");
+	WR(srcDir+"Math/TalePlay.Math.Point.js");
 	WR(srcDir+"TalePlay.Controller.js");
 	WR(srcDir+"TalePlay.Controller.Mapping.js");
 	WR(srcDir+"TalePlay.Controller.Keyboard.js");
 	WR(srcDir+"TalePlay.Controller.Gamepad.js");
 
-	WR(MathDir+"TalePlay.Math.Point.js");
 	WR(MathDir+"TalePlay.Math.Rect.js");
 
 	WR(srcDir+"TalePlay.Map.js");
