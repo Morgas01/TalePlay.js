@@ -1,0 +1,236 @@
+{
+	"images": [
+		{
+			"url": "1.png",
+			"position": {
+				"x": 0,
+				"y": 0
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 100,
+				"y": 0
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "1.png",
+			"position": {
+				"x": 200,
+				"y": 0
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 300,
+				"y": 0
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 0,
+				"y": 100
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "1.png",
+			"position": {
+				"x": 100,
+				"y": 100
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 200,
+				"y": 100
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "1.png",
+			"position": {
+				"x": 300,
+				"y": 100
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "1.png",
+			"position": {
+				"x": 0,
+				"y": 200
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 100,
+				"y": 200
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "1.png",
+			"position": {
+				"x": 200,
+				"y": 200
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 300,
+				"y": 200
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 0,
+				"y": 300
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "1.png",
+			"position": {
+				"x": 100,
+				"y": 300
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 200,
+				"y": 300
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "1.png",
+			"position": {
+				"x": 300,
+				"y": 300
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "empty.png",
+			"position": {
+				"x": 187,
+				"y": 62
+			},
+			"size": {
+				"x": 26,
+				"y": 176
+			},
+			"name": "collide black",
+			"collision": true
+		},
+		{
+			"url": "empty.png",
+			"position": {
+				"x": 25,
+				"y": 125
+			},
+			"size": {
+				"x": 50,
+				"y": 50
+			},
+			"name": "quest_1 blue",
+			"trigger": {
+				"type": "step",
+				"value": {
+					"type": "RESOLVE_QUEST",
+					"questName": "Quest 1"
+				}
+			}
+		},
+		{
+			"url": "empty.png",
+			"position": {
+				"x": 325	,
+				"y": 125
+			},
+			"size": {
+				"x": 50,
+				"y": 50
+			},
+			"name": "quest_2 orange",
+			"trigger": {
+				"type": "step",
+				"value": {
+					"type": "RESOLVE_QUEST",
+					"questName": "Quest 2"
+				}
+			}
+		}
+	],
+	"size": {
+		"x": 400,
+		"y": 400
+	},
+	"cursors": []
+}

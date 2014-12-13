@@ -68,28 +68,28 @@
         setPosition:function(position,y)
         {
             this.position.set(position,y);
-            var b=this.domElement.getBoundingClientRect();
             this.position.doMath(Math.max,0).doMath(Math.min,this.getSize());
-            this.position.sub(b.width/2,b.height/2);
             this.update(true);
         },
         getPosition:function()
         {
-            var b=this.domElement.getBoundingClientRect();
-            return this.position.clone().add(b.width/2, b.height/2);
+            return this.position;
         },
         move:function(numberOrPoint,y)
         {
             this.position.add(numberOrPoint,y);
-            var b=this.domElement.getBoundingClientRect(),
-            bP={x:-b.width/2,y:-b.height/2};
-            this.position.doMath(Math.max,bP).doMath(Math.min,this.getSize().clone().add(bP));
+            this.position.doMath(Math.max,0).doMath(Math.min,this.getSize());
             this.update(true);
         },
         update:function(noimages)
         {
-            this.stage.style.top=-this.position.y+"px";
-            this.stage.style.left=-this.position.x+"px";
+        	var pos=this.position.clone();
+            var b=this.domElement.getBoundingClientRect();
+            
+            pos.sub(b.width/2,b.height/2);
+            
+            this.stage.style.top=-pos.y+"px";
+            this.stage.style.left=-pos.x+"px";
             for(var i=0;!noimages&&i<this.images.length;i++)
             {
                 this.images[i].update();
@@ -118,6 +118,13 @@
         		}
         	}
         },
+        empty:function()
+        {
+        	while(this.images.length>0)
+			{
+				this.remove(this.images[0]);
+			}
+        },
 		toJSON:function()
 		{
 			return {
@@ -128,20 +135,22 @@
 		},
 		fromJSON:function(json)
 		{
-			while(this.images.length>0)
-			{
-				this.remove(this.images[0]);
-			}
+			this.empty();
 			for(var i=0;i<json.images.length;i++)
 			{
-				this.add(new MAP.Image().fromJSON(json.images[i]));
+				var image=json.images[i];
+				if(!(image instanceof MAP.Image))
+				{
+					image=new MAP.Image().fromJSON(image);
+				}
+				this.add(image);
 			}
-			this.position.set(json.position);
 			this.size.set(json.size);
 			if(this.size.equals(0))
             {
             	this.calcSize();
             }
+			this.setPosition(json.position);
 			return this;
 		}
     });

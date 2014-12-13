@@ -156,6 +156,7 @@
 							triggerType:"step",
 							image:stepTrigger[i],
 							cursor:cursor,
+							value:stepTrigger[i].trigger.value,
 							distance:distance
 						});
 					}
@@ -224,7 +225,7 @@
 									triggerType:"activate",
 									image:activateTrigger[t],
 									cursor:this.cursors[i],
-									index:i
+									value:activateTrigger[t].trigger.value
 								});
 							}
 						}
@@ -234,11 +235,9 @@
 		},
 		toJSON:function()
 		{
-			var json={
-				map:this.map.toJSON(),
-				threshold:this.threshold.clone,
-				cursors:this.cursors.slice()
-			};
+			var json=this.map.toJSON();
+			json.cursors=this.cursors.slice();
+			json.threshold=this.threshold.clone;
 			for(var i=0;i<this.cursors.length;i++)
 			{
 				json.map.images.splice(json.map.images.indexOf(this.cursors[i]),1);
@@ -247,12 +246,16 @@
 		},
 		fromJSON:function(json)
 		{
-			this.map.fromJSON(json.map);
-			this.cursors.length=0;
+			for(var i=0;i<json.images.length;i++)
+			{
+				json.images[i]=new GUI.Map.Image().fromJSON(json.images[i]);
+			}
 			for(var i=0;i<json.cursors.length;i++)
 			{
-				this.addCursors(new GUI.Map.Cursor().fromJSON(json.cursors[i]));
+				json.images.push(new GUI.Map.Cursor().fromJSON(json.cursors[i]));
 			}
+			this.map.fromJSON(json);
+			this.organizer.clear().add(json.images);
 			this.threshold.set(json.threshold);
 		}
 	});
@@ -274,7 +277,7 @@
     	},
 		toJSON:function()
 		{
-			var json=MAP.Image.prototype.toJson.call(this);
+			var json=MAP.Image.prototype.toJSON.call(this);
 			json.collision=this.collision;
 			json.trigger=this.trigger;
 			return json;

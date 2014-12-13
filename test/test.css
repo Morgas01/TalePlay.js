@@ -5,3 +5,16 @@
 body > fieldset{
     height:500px;
 }
+
+.GUIElement.Map [data-name~="black"] {
+	background-color:black;" 
+}
+.GUIElement.Map [data-name~="blue"] {
+	background-color:blue;" 
+}
+.GUIElement.Map [data-name~="green"] {
+	background-color:green;" 
+}
+.GUIElement.Map [data-name~="orange"] {
+	background-color:orange;" 
+}

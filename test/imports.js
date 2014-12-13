@@ -32,6 +32,7 @@
 	WR(morgasDir+"Morgas.Organizer.js");
 	WR(morgasDir+"Morgas.Detached.js");
 	WR(morgasDir+"DB/Morgas.DB.js");
+	WR(morgasDir+"Morgas.util.Request.js");
 
 	WR(srcDir+"TalePlay.Board.js");
 	WR(srcDir+"TalePlay.Layer.js");
@@ -85,6 +86,10 @@
     
     //TextBox
     WR(testDir+"test.Morgas.Board.GUIElement.TextBox.js");
+    
+    //RPGPlayer
+    WR(srcDir+"TalePlay.Layer.RPGPlayer.js");
+    WR(testDir+"test.TalePlay.Layer.RPGPlayer.js");
 
 	// Theme
 	CSS(cssDir+"themes/TalePlay-classic.css");
