@@ -15,7 +15,7 @@
 				size:50,
 				offset:25
 			},
-			map:"testMap.json",
+			map:"testMap",
 			position:{x:200,y:350},
 			quests:["Quest 1"]
 		});

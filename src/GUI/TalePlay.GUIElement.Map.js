@@ -49,6 +49,7 @@
             param.cursors&&this.addAll(param.cursors);
             this.assignFilter=param.assignFilter||null;
             this.animationRquest=null;
+            this.paused=param.paused===true;
 		},
         addAll:function(images)
         {
@@ -87,6 +88,28 @@
 		setThreshold:function(numberOrPoint,y)
 		{
 			this.threshold.set(numberOrPoint,y);
+		},
+		setPaused:function(paused)
+		{
+			this.paused=!!paused;
+			if(this.animationRquest!==null&&this.paused)
+			{
+				cancelAnimationFrame(this.animationRquest)
+				this.animationRquest=null;
+			}
+			else if(!this.paused)
+			{
+				var now=Date.now();
+				for([cursor, data] of this.movingCursors)
+				{
+					data.lastTime=now-performance.timing.navigationStart;
+				}
+				this.animationRquest=requestAnimationFrame(this._animateCursor);
+			}
+		},
+		isPaused:function()
+		{
+			return this.paused;
 		},
         collide:function(rect)
         {
@@ -133,7 +156,7 @@
 					data.lastTime=Date.now()-performance.timing.navigationStart;
 				}
 			}
-			if(this.animationRquest===null)
+			if(this.animationRquest===null&&!this.paused)
 			{
 				this.animationRquest=requestAnimationFrame(this._animateCursor);
 			}
@@ -189,7 +212,7 @@
 	                this.movingCursors["delete"](cursor);
 	            }
 			}
-			if(this.movingCursors.size>0)
+			if(this.movingCursors.size>0&&!this.paused)
 			{
 				this.animationRquest=requestAnimationFrame(this._animateCursor);
 			}
@@ -200,7 +223,7 @@
 		},
 		onButton:function(event)
 		{
-			if(event.value===1)
+			if(event.value===1&&!this.paused)
 			{
 				for(var i=0;i<this.cursors.length;i++)
 				{
@@ -246,6 +269,7 @@
 		},
 		fromJSON:function(json)
 		{
+			this.movingCursors.clear();
 			for(var i=0;i<json.images.length;i++)
 			{
 				json.images[i]=new GUI.Map.Image().fromJSON(json.images[i]);

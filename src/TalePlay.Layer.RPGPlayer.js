@@ -64,9 +64,10 @@
 				scope.fire("ready");
 			});
         },
-		_changeMap:function(url,position)
+		_changeMap:function(name,position)
 		{
-			return SC.rj(this.baseUrl+url).then(SC.rs(function changeMap_loaded(json)
+			this.map.setPaused(true);
+			return SC.rj(this.baseUrl+name+".json").then(SC.rs(function changeMap_loaded(json)
 			{
 				var todo=json.cursors.concat(json.images);
 				while(todo.length>0)
@@ -75,14 +76,20 @@
 					image.url=this.imageBaseUrl+image.url;
 				}
 				json.position=position;
+				var animation=this.map.movingCursors.get(this.cursor);
 				this.map.fromJSON(json);
 				this.cursor.setPosition(position);
 				this.map.add(this.cursor);
+				if(animation)
+				{
+					this.map.movingCursors.set(this.cursor,animation);
+				}
+				this.map.setPaused(false);
             	return null;
 			},this),
 			function changeMap_Error(error)
 			{
-				SC.debug(["Could not load Map: ",url,error],0);
+				SC.debug(["Could not load Map: ",name,error],0);
 			});
 		},
 		_onTrigger:function(e)
@@ -121,6 +128,9 @@
 							this.activeQuests.set(quest.name,quest);
 							this.fire("quest-activate",{value:quest});
 						}
+						break;
+					case "CHANGE_MAP":
+						this._changeMap(a.mapName, a.position)
 						break;
 					case "EXECUTE":
 						try{

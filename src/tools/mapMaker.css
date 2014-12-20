@@ -66,5 +66,9 @@ body {
 }
 .info {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction:column;
+}
+.info > div {
+	margin-bottom: 1em;
 }

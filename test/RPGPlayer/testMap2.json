@@ -45,7 +45,7 @@
 			}
 		},
 		{
-			"url": "2.png",
+			"url": "empty.png",
 			"position": {
 				"x": 0,
 				"y": 100
@@ -53,7 +53,8 @@
 			"size": {
 				"x": 100,
 				"y": 100
-			}
+			},
+			"collision": true
 		},
 		{
 			"url": "1.png",
@@ -71,105 +72,6 @@
 			"position": {
 				"x": 200,
 				"y": 100
-			},
-			"size": {
-				"x": 100,
-				"y": 100
-			}
-		},
-		{
-			"url": "1.png",
-			"position": {
-				"x": 300,
-				"y": 100
-			},
-			"size": {
-				"x": 100,
-				"y": 100
-			}
-		},
-		{
-			"url": "1.png",
-			"position": {
-				"x": 0,
-				"y": 200
-			},
-			"size": {
-				"x": 100,
-				"y": 100
-			}
-		},
-		{
-			"url": "2.png",
-			"position": {
-				"x": 100,
-				"y": 200
-			},
-			"size": {
-				"x": 100,
-				"y": 100
-			}
-		},
-		{
-			"url": "1.png",
-			"position": {
-				"x": 200,
-				"y": 200
-			},
-			"size": {
-				"x": 100,
-				"y": 100
-			}
-		},
-		{
-			"url": "2.png",
-			"position": {
-				"x": 300,
-				"y": 200
-			},
-			"size": {
-				"x": 100,
-				"y": 100
-			}
-		},
-		{
-			"url": "2.png",
-			"position": {
-				"x": 0,
-				"y": 300
-			},
-			"size": {
-				"x": 100,
-				"y": 100
-			}
-		},
-		{
-			"url": "1.png",
-			"position": {
-				"x": 100,
-				"y": 300
-			},
-			"size": {
-				"x": 100,
-				"y": 100
-			}
-		},
-		{
-			"url": "2.png",
-			"position": {
-				"x": 200,
-				"y": 300
-			},
-			"size": {
-				"x": 100,
-				"y": 100
-			}
-		},
-		{
-			"url": "1.png",
-			"position": {
-				"x": 300,
-				"y": 300
 			},
 			"size": {
 				"x": 100,
@@ -179,71 +81,110 @@
 		{
 			"url": "empty.png",
 			"position": {
-				"x": 187,
-				"y": 62
+				"x": 300,
+				"y": 100
 			},
 			"size": {
-				"x": 26,
-				"y": 176
+				"x": 100,
+				"y": 100
 			},
-			"name": "collide black",
 			"collision": true
 		},
 		{
 			"url": "empty.png",
 			"position": {
-				"x": 25,
-				"y": 125
+				"x": 0,
+				"y": 200
 			},
 			"size": {
-				"x": 50,
-				"y": 50
+				"x": 100,
+				"y": 100
 			},
-			"name": "quest_1 blue",
-			"trigger": {
-				"type": "step",
-				"value": [
-					{
-						"type": "RESOLVE_QUEST",
-						"questName": "Quest 1"
-					},
-					{
-						"type": "ACTIVATE_QUEST",
-						"questName": "Quest 2"
-					}
-				]
+			"collision": true
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 100,
+				"y": 200
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "1.png",
+			"position": {
+				"x": 200,
+				"y": 200
+			},
+			"size": {
+				"x": 100,
+				"y": 100
 			}
 		},
 		{
 			"url": "empty.png",
 			"position": {
-				"x": 325	,
-				"y": 125
+				"x": 300,
+				"y": 200
 			},
 			"size": {
-				"x": 50,
-				"y": 50
+				"x": 100,
+				"y": 100
 			},
-			"name": "quest_2 orange",
-			"trigger": {
-				"type": "step",
-				"value": [
-					{
-						"type": "RESOLVE_QUEST",
-						"questName": "Quest 2"
-					},
-					{
-						"type": "ACTIVATE_QUEST",
-						"questName": "Quest 1"
-					}
-				]
+			"collision": true
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 0,
+				"y": 300
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "1.png",
+			"position": {
+				"x": 100,
+				"y": 300
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "2.png",
+			"position": {
+				"x": 200,
+				"y": 300
+			},
+			"size": {
+				"x": 100,
+				"y": 100
+			}
+		},
+		{
+			"url": "1.png",
+			"position": {
+				"x": 300,
+				"y": 300
+			},
+			"size": {
+				"x": 100,
+				"y": 100
 			}
 		},
 		{
 			"url": "empty.png",
 			"position": {
 				"x": 150,
-				"y": 399
+				"y": -19
 			},
 			"size": {
 				"x": 100,
@@ -255,8 +196,8 @@
 				"value": [
 					{
 						"type": "CHANGE_MAP",
-						"mapName": "testMap2",
-						"position": {"x": 200,"y": 50}
+						"mapName": "testMap",
+						"position": {"x": 200,"y": 350}
 					}
 				]
 			}
