@@ -202,10 +202,16 @@
 			"name": "quest_1 blue",
 			"trigger": {
 				"type": "step",
-				"value": {
-					"type": "RESOLVE_QUEST",
-					"questName": "Quest 1"
-				}
+				"value": [
+					{
+						"type": "RESOLVE_QUEST",
+						"questName": "Quest 1"
+					},
+					{
+						"type": "ACTIVATE_QUEST",
+						"questName": "Quest 2"
+					}
+				]
 			}
 		},
 		{
@@ -221,10 +227,16 @@
 			"name": "quest_2 orange",
 			"trigger": {
 				"type": "step",
-				"value": {
-					"type": "RESOLVE_QUEST",
-					"questName": "Quest 2"
-				}
+				"value": [
+					{
+						"type": "RESOLVE_QUEST",
+						"questName": "Quest 2"
+					},
+					{
+						"type": "ACTIVATE_QUEST",
+						"questName": "Quest 1"
+					}
+				]
 			}
 		}
 	],

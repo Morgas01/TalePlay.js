@@ -3,6 +3,7 @@
 	var Layer=GMOD("Layer");
 
 	var SC=µ.getModule("shortcut")({
+		det:"Detached",
 		Map:"GUI.Map",
 		rj:"Request.json",
 		rs:"rescope",
@@ -19,7 +20,7 @@
 			this.domElement.classList.add("RPGPlayer");
 			
 			SC.aLst(this);
-			this.createListener("quest-complete");
+			this.createListener("ready quest-activate quest-complete quest-abort");
 			
 			this.baseUrl=param.baseUrl||"";
 			this.imageBaseUrl=param.imageBaseUrl||"";
@@ -34,36 +35,38 @@
         		param.cursor.speed
         	);
 
-			this.quests=new Map();
-			if(param.quests)
-			{
-				this.addQuests(param.quests);
-			}
+            this.quests=new Map();
+			this.activeQuests=new Map();
+            var questsReady=SC.rj(this.baseUrl+"quests.json").then(SC.rs(function quests_loaded(quests)
+            {
+            	for(var i=0;i<quests.length;i++)
+            	{
+            		var quest=new RPGPlayer.Quest(quests[i]);
+            		this.quests.set(quest.name,quest);
+            		if(param.quests&&param.quests.indexOf(quests[i].name)!==-1)
+            		{
+            			quest=quest.clone();
+            			this.activeQuests.set(quest.name,quest);
+            		}
+            	}
+            	return null;
+            },this),function quest_load_error(error)
+            {
+				SC.debug(["Could not load Quests: ",error],0);
+            });
 			
 			this.map=new SC.Map();
 			this.add(this.map);
 			this.map.addListener("trigger",this,this._onTrigger);
 
-			this.changeMap(param.map,param.position);
+			var mapReady=this._changeMap(param.map,param.position);
+			new SC.det([this,questsReady,mapReady]).then(function(scope) {
+				scope.fire("ready");
+			});
         },
-		addQuests:function(quests)
+		_changeMap:function(url,position)
 		{
-			if(quests instanceof RPGPlayer.Quest)
-			{//single
-				this.addQuest(quests);
-			}
-			else
-			{//multiple
-				SC.it(quests,this.addQuest,false,false,this);
-			}
-		},
-		addQuest:function(quest)
-		{
-			this.quests.set(quest.name,quest);
-		},
-		changeMap:function(url,position)
-		{
-			SC.rj(this.baseUrl+url).then(SC.rs(function changeMap_loaded(json)
+			return SC.rj(this.baseUrl+url).then(SC.rs(function changeMap_loaded(json)
 			{
 				var todo=json.cursors.concat(json.images);
 				while(todo.length>0)
@@ -75,25 +78,56 @@
 				this.map.fromJSON(json);
 				this.cursor.setPosition(position);
 				this.map.add(this.cursor);
+            	return null;
 			},this),
 			function changeMap_Error(error)
 			{
-				SC.debug(["Could nor load Map: ",url,error],0);
-			})
+				SC.debug(["Could not load Map: ",url,error],0);
+			});
 		},
 		_onTrigger:function(e)
 		{
-			var action=e.value;
-			switch(action.type)
+			this.doActions(e.value);
+		},
+		doActions:function(actions)
+		{
+			for(var i=0;i<actions.length;i++)
 			{
-				case "RESOLVE_QUEST":
-					var quest=this.quests.get(action.questName);
-					if(quest)
-					{
-						this.quests["delete"](action.questName);
-						this.fire("quest-complete",{value:quest});
-					}
-				break;
+				var a=actions[i]
+				switch (a.type) 
+				{
+					case "ABORT_QUEST":
+						var quest=this.activeQuests.get(a.questName);
+						if(quest)
+						{
+							this.activeQuests["delete"](a.questName);
+							this.fire("quest-abort",{value:quest});
+						}
+						break;
+					case "RESOLVE_QUEST":
+						var quest=this.activeQuests.get(a.questName);
+						if(quest)
+						{
+							this.activeQuests["delete"](a.questName);
+							this.fire("quest-complete",{value:quest});
+							actions=actions.concat(quest.resolve);
+						}
+						break;
+					case "ACTIVATE_QUEST":
+						var quest=this.quests.get(a.questName);
+						if(quest)
+						{
+							quest=quest.clone();
+							this.activeQuests.set(quest.name,quest);
+							this.fire("quest-activate",{value:quest});
+						}
+						break;
+					case "EXECUTE":
+						try{
+							a.value(this);
+						}catch(e){µ.debug(["doAction Error: ",a,e],0);}
+						break;
+				}
 			}
 		}
     });
@@ -106,6 +140,19 @@
 			
 			this.name=param.name||"NO NAME!";
 			this.description=param.description||"NO DESCRIPTION!";
+			this.resolve=param.resolve||[];
+		},
+		clone:function(cloning)
+		{
+			if(!cloning)
+			{
+				cloning=new RPGPlayer.Quest();
+			}
+			cloning.name=this.name;
+			cloning.description=this.description;
+			cloning.resolve=this.resolve.slice();
+			
+			return cloning;
 		}
 	});
 	SMOD("Quest",RPGPlayer.Quest);

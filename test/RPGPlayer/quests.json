@@ -1,0 +1,22 @@
+[
+	{
+		"name":"Quest 1",
+		"description":"go to the blue square",
+		"resolve":[
+			{
+				"type":"ACTIVATE_QUEST",
+				"questName":"Quest 2"
+			}
+		]
+	},
+	{
+		"name":"Quest 2",
+		"description":"go to the orange square",
+		"resolve":[
+			{
+				"type":"ACTIVATE_QUEST",
+				"questName":"Quest 1"
+			}
+		]
+	}
+]
