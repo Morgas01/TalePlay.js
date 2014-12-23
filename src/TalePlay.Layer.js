@@ -26,15 +26,7 @@
 		{
 			for(var i=0;i<this.GUIElements.length;i++)
 			{
-				switch(event.type)
-				{
-					case "analogStickChanged":
-						this.GUIElements[i].onAnalogStick(event);
-						break;
-					case "buttonChanged":
-						this.GUIElements[i].onButton(event);
-						break;
-				}
+				this.GUIElements[i][LAYER._CONTROLLER_EVENT_MAP[event.type]](event);
 			}
 		},
 		add:function(guiElement,target)
@@ -74,5 +66,9 @@
 			}
 		}
 	});
+	LAYER._CONTROLLER_EVENT_MAP={
+			"analogStickChanged":"onAnalogStick",
+			"buttonChanged":"onButton"
+	}
 	SMOD("Layer",LAYER);
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);

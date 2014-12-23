@@ -132,7 +132,7 @@
 		init:function(param)
 		{
 			param=param||{};
-			this.superInit(GUI,param.styleClass);
+			this.superInit(GUI,param);
 			SC.rs.all(["onInputChange","onClick"],this);
 			this.createListener("submit");
 			

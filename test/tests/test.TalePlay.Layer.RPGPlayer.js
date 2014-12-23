@@ -28,7 +28,10 @@
 		questlog.style.height="80px";
 		board.domElement.parentNode.parentNode.appendChild(questlog);
 		
-		player.addListener("ready:once quest-activate",null,function(e){
+		player.addListener("ready:once",null,function(e){
+			player.doActions([{type:"SHOW_DIALOG",dialogName:"d0"}]);
+		});
+		player.addListener("quest-activate quest-complete",null,function(e){
 			questlog.value="";
 			player.activeQuests.forEach(function(q){questlog.value+=JSON.stringify(q,null,"\t")});
 		});

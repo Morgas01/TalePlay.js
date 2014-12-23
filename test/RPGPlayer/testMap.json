@@ -206,10 +206,6 @@
 					{
 						"type": "RESOLVE_QUEST",
 						"questName": "Quest 1"
-					},
-					{
-						"type": "ACTIVATE_QUEST",
-						"questName": "Quest 2"
 					}
 				]
 			}
@@ -231,10 +227,6 @@
 					{
 						"type": "RESOLVE_QUEST",
 						"questName": "Quest 2"
-					},
-					{
-						"type": "ACTIVATE_QUEST",
-						"questName": "Quest 1"
 					}
 				]
 			}

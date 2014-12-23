@@ -13,10 +13,11 @@
 			
 			param=param||{};
 			
-			this.superInit(GUI,param.styleClass);
+			this.superInit(GUI,param);
 			this.addStyleClass("TextBox");
-			this.parts=[];
+			this.createListener("complete");
 			
+			this.parts=[];
 			for(var i=0,l=param.parts&&param.parts.length;i<l;i++)
 			{
 				var p=param.parts[i];
@@ -29,7 +30,7 @@
 		{
 			this.parts.push({
 				text:text||"",
-				speed:(1000/speed)||125,
+				speed:(1000/speed)||25,
 				stop:!!stop,
 				styleClass:styleClass,
 				tag:tag||"span"
@@ -58,7 +59,7 @@
 				part.domElement.textContent+=part.text[part.domElement.textContent.length];
 				if(part.domElement.textContent.length===part.text.length)
 				{
-					this.parts.splice(0,1);
+					this.parts.shift();
 					if(part.stop)
 					{
 						this.domElement.classList.add("stop");
@@ -104,7 +105,14 @@
 			{
 				if(this._timeout===null)
 				{
-					this.start();
+					if(this.parts.length===0)
+					{
+						this.fire("complete");
+					}
+					else
+					{
+						this.start();
+					}
 				}
 				else
 				{

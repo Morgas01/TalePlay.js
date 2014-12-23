@@ -83,7 +83,7 @@
 		},
 		setControllerDisabled:function()
 		{
-			//TODO;
+			//TODO
 		},
 		_ctrlCallback:function(event)
 		{

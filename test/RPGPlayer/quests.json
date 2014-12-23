@@ -4,8 +4,8 @@
 		"description":"go to the blue square",
 		"resolve":[
 			{
-				"type":"ACTIVATE_QUEST",
-				"questName":"Quest 2"
+				"type": "SHOW_DIALOG",
+				"dialogName": "d1"
 			}
 		]
 	},
@@ -14,8 +14,8 @@
 		"description":"go to the orange square",
 		"resolve":[
 			{
-				"type":"ACTIVATE_QUEST",
-				"questName":"Quest 1"
+				"type": "SHOW_DIALOG",
+				"dialogName": "d2"
 			}
 		]
 	}

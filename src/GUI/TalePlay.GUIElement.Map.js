@@ -19,7 +19,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(GUI,param.styleClass);
+			this.superInit(GUI,param);
 			this.createListener("trigger");
 			SC.rescope.all(["_animateCursor"],this);
 			

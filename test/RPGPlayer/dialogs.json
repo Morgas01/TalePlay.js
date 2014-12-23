@@ -1,0 +1,92 @@
+[
+	{
+		"name":"d0",
+		"dialogParts":[
+			{
+				"title":"GOD",
+				"bottom":"0px",
+				"left":"0px",
+				"right":"0px",
+				"parts":[
+					{
+						"text":"Go to the blue square"
+					}
+				]
+			}
+		],
+		"actions":[
+			{
+				"type":"ACTIVATE_QUEST",
+				"questName":"Quest 1"
+			}
+		]
+	},
+	{
+		"name":"d1",
+		"dialogParts":[
+			{
+				"title":"blue square",
+				"top":"10%",
+				"left":"10%",
+				"parts":[
+					{
+						"text":"Go to the orange square"
+					}
+				]
+			},
+			{
+				"title":"blue square",
+				"top":"10%",
+				"left":"10%",
+				"choices":[
+					{
+						"name":"ok",
+						"actions":[
+							{
+								"type":"ACTIVATE_QUEST",
+								"questName":"Quest 2"
+							}
+						]
+					},
+					{
+						"name":"no"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name":"d2",
+		"dialogParts":[
+			{
+				"title":"orange square",
+				"top":"10%",
+				"left":"70%",
+				"parts":[
+					{
+						"text":"Go to the blue square"
+					}
+				]
+			},
+			{
+				"title":"orange square",
+				"top":"10%",
+				"left":"70%",
+				"choices":[
+					{
+						"name":"ok",
+						"actions":[
+							{
+								"type":"ACTIVATE_QUEST",
+								"questName":"Quest 1"
+							}
+						]
+					},
+					{
+						"name":"no"
+					}
+				]
+			}
+		]
+	}
+]

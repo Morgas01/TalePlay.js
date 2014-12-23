@@ -14,7 +14,7 @@
 			
 			param=param||{};
 			
-			this.superInit(GUI,param.styleClass);
+			this.superInit(GUI,param);
 			this.menu=new SC.MENU(param);
 			this.addStyleClass("Menu");
 			

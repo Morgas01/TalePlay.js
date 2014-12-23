@@ -23,9 +23,24 @@
     border-radius: 10px;
     margin: 1px;
 }
+.panel>legend {
+    background-color: #4444FF;
+    background-image:none;
+    border: 4px solid #FFFFFF;
+    border-bottom:0 none;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 -1px 0 1px black;
+    margin: 1px;
+    position:relative;
+    bottom: 10px;
+}
 
 .GUIElement {
 	background-image: linear-gradient(#bbbbbb, #444444);
+}
+
+.GUIElement .GUIElement {
+	background-image: inherit;
 }
 
 

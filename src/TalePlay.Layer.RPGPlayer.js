@@ -5,6 +5,7 @@
 	var SC=µ.getModule("shortcut")({
 		det:"Detached",
 		Map:"GUI.Map",
+		Dialog:"GUI.Dialog",
 		rj:"Request.json",
 		rs:"rescope",
 		it:"iterate",
@@ -54,16 +55,38 @@
             {
 				SC.debug(["Could not load Quests: ",error],0);
             });
-			
+            
+            this.dialogs=new Map();
+            var dialogsReady=SC.rj(this.baseUrl+"dialogs.json").then(SC.rs(function dialogs_loaded(dialogs)
+            {
+            	for(var i=0;i<dialogs.length;i++)
+            	{
+            		this.dialogs.set(dialogs[i].name,dialogs[i]);
+            	}
+            	return null;
+            },this),function quest_load_error(error)
+            {
+            	SC.debug(["Could not load Dialogs: ",error],0);
+            });
+            
+            this.focused=null;
 			this.map=new SC.Map();
 			this.add(this.map);
 			this.map.addListener("trigger",this,this._onTrigger);
 
 			var mapReady=this._changeMap(param.map,param.position);
-			new SC.det([this,questsReady,mapReady]).then(function(scope) {
+			new SC.det([this,questsReady,mapReady,dialogsReady]).then(function(scope) {
+				scope.focused=scope.map;
 				scope.fire("ready");
 			});
         },
+		onController:function(event)
+		{
+			if(this.focused)
+			{
+				this.focused[Layer._CONTROLLER_EVENT_MAP[event.type]](event);
+			}
+		},
 		_changeMap:function(name,position)
 		{
 			this.map.setPaused(true);
@@ -91,6 +114,33 @@
 			{
 				SC.debug(["Could not load Map: ",name,error],0);
 			});
+		},
+		_stopCursor:function()
+		{
+			if(this.cursor.direction)
+			{
+				this.cursor.direction.set(0);
+			}
+		},
+		_showDialog:function(dialogName)
+		{
+			var dialog=this.dialogs.get(dialogName);
+			if(dialog)
+			{
+				dialog.styleClass="panel";
+				this.focused=new SC.Dialog(dialog);
+				this.focused.addListener("dialogEnd:once",this,function(event)
+				{
+					this.focused.destroy();
+					this.focused=this.map;
+					if(event.actions)
+					{
+						this.doActions(event.actions);
+					}
+				});
+				this.add(this.focused);
+				this._stopCursor();
+			}
 		},
 		_onTrigger:function(e)
 		{
@@ -130,7 +180,10 @@
 						}
 						break;
 					case "CHANGE_MAP":
-						this._changeMap(a.mapName, a.position)
+						this._changeMap(a.mapName, a.position);
+						break;
+					case "SHOW_DIALOG":
+						this._showDialog(a.dialogName);
 						break;
 					case "EXECUTE":
 						try{

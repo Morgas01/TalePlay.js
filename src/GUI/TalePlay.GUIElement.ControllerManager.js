@@ -38,7 +38,7 @@
 			param=param||{};
 			param.styleClass=param.styleClass||"overlay";
 			
-			this.superInit(GUI,param.styleClass);
+			this.superInit(GUI,param);
 			this.addStyleClass("ControllerManager");
 			SC.rs.all(["_Click","_playerChanged","_mappingsLoaded"],this);
 			this.domElement.addEventListener("click",this._Click);

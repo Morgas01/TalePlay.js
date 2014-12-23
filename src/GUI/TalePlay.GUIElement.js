@@ -8,20 +8,21 @@
     });
 	
 	var GE=TALE.GUIElement=µ.Class(LST,{
-		init:function(styleClass)
+		init:function(param)
 		{
+			param=param||{};
 			this.superInit(LST);
 			this.nodePatch=new SC.node(this,{
 				parent:"layer"
 			});
 			//this.layer=null;
 
-			this.domElement=document.createElement("div");
+			this.domElement=document.createElement(param.element||"div");
 			this.addStyleClass("GUIElement");
 			
-			if (styleClass)
+			if (param.styleClass)
 			{
-				this.addStyleClass(styleClass);
+				this.addStyleClass(param.styleClass);
 			}
 		},
 		addStyleClass:function(styleClass)
