@@ -88,6 +88,7 @@
     WR(testDir+"test.Morgas.Board.GUIElement.TextBox.js");
     
     //RPGPlayer
+    WR(guiDir+"TalePlay.GUIElement.StartMenu.js");
     WR(guiDir+"TalePlay.GUIElement.Dialog.js");
     WR(srcDir+"TalePlay.Layer.RPGPlayer.js");
     WR(testDir+"test.TalePlay.Layer.RPGPlayer.js");

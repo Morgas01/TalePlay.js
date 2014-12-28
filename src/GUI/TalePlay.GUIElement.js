@@ -4,7 +4,9 @@
 
 	var LST=GMOD("Listeners");
 	var SC=GMOD("shortcut")({
-        node:"NodePatch"
+		sc:"shortcut",
+        node:"NodePatch",
+        Layer:"Layer"
     });
 	
 	var GE=TALE.GUIElement=µ.Class(LST,{
@@ -13,8 +15,21 @@
 			param=param||{};
 			this.superInit(LST);
 			this.nodePatch=new SC.node(this,{
-				parent:"layer"
+		        parent:"parent",
+		        children:"children",
+		        addChild:"addChild",
+		        removeChild:"removeChild",
 			});
+			
+			SC.sc({layer:function(node)
+			{
+				var layer=node.parent;
+				while(layer&&!(layer instanceof SC.Layer))
+				{
+					layer=layer.parent
+				}
+				return layer;
+			}},this,this.nodePatch,true)
 			//this.layer=null;
 
 			this.domElement=document.createElement(param.element||"div");
@@ -48,6 +63,32 @@
 			{
 				list.remove(styleClass);
 			}
+		},
+		addChild:function(guiElement,target)
+		{
+			if(guiElement instanceof GE&&this.nodePatch.addChild(guiElement))
+			{
+				if(typeof target==="string")
+				{
+					target=this.domElement.querySelector(target);
+				}
+				if(!target)
+				{
+					target=this.domElement;
+				}
+				target.appendChild(guiElement.domElement);
+				return true;
+			}
+			return false;
+		},
+		removeChild:function(guiElement)
+		{
+			if(this.nodePatch.removeChild(guiElement))
+			{
+				guiElement.domElement.remove();
+				return true;
+			}
+			return false;
 		},
 		onAnalogStick:function(event)
 		{

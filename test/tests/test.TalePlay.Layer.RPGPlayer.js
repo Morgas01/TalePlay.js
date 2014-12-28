@@ -8,16 +8,7 @@
 	{
 		var player=new RPGPlayer({
 			baseUrl:"RPGPlayer/",
-			imageBaseUrl:imagesDir,
-			cursor:{
-				url:imagesDir+"empty.png",
-				name:"arrow",
-				size:50,
-				offset:25
-			},
-			map:"testMap",
-			position:{x:200,y:350},
-			quests:["Quest 1"]
+			imageBaseUrl:imagesDir
 		});
 		
 		var board=getBoard("RPGPlayer");
@@ -27,10 +18,6 @@
 		questlog.style.width="100%";
 		questlog.style.height="80px";
 		board.domElement.parentNode.parentNode.appendChild(questlog);
-		
-		player.addListener("ready:once",null,function(e){
-			player.doActions([{type:"SHOW_DIALOG",dialogName:"d0"}]);
-		});
 		player.addListener("quest-activate quest-complete",null,function(e){
 			questlog.value="";
 			player.activeQuests.forEach(function(q){questlog.value+=JSON.stringify(q,null,"\t")});

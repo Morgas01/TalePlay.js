@@ -164,11 +164,11 @@
 			if(index>-1)
 			{
 				event.stopPropagation();
-				this.toggleSelect(index);
 				if(this.layer&&this.layer.board)
 				{
 					this.layer.board.focus();
 				}
+				this.toggleSelect(index);
 			}
 		},
 		onButton:function(event)

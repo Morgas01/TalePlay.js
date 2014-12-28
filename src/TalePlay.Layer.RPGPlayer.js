@@ -7,11 +7,44 @@
 		Map:"GUI.Map",
 		Dialog:"GUI.Dialog",
 		rj:"Request.json",
-		rs:"rescope",
 		it:"iterate",
 		aLst:"attachListeners",
 		debug:"debug"
 	});
+	
+	var requestCallbacks={
+		quests:{
+			loaded:function quests_loaded(quests,self)
+            {
+            	for(var i=0;i<quests.length;i++)
+            	{
+            		var quest=new RPGPlayer.Quest(quests[i]);
+            		self.quests.set(quest.name,quest);
+            	}
+            	return self;
+            },
+			error:function quest_load_error(error)
+            {
+				SC.debug(["Could not load Quests: ",error],0);
+				return error;
+            }
+		},
+		dialogs:{
+			loaded:function dialogs_loaded(dialogs,self)
+            {
+            	for(var i=0;i<dialogs.length;i++)
+            	{
+            		self.dialogs.set(dialogs[i].name,dialogs[i]);
+            	}
+            	return self;
+            },
+			error:function dialogs_load_error(error)
+            {
+            	SC.debug(["Could not load Dialogs: ",error],0);
+				return error;
+            }
+		}
+	}
 
     var RPGPlayer=Layer.RPGPlayer=µ.Class(Layer,{
         init:function(param)
@@ -24,61 +57,29 @@
 			this.createListener("ready quest-activate quest-complete quest-abort");
 			
 			this.baseUrl=param.baseUrl||"";
-			this.imageBaseUrl=param.imageBaseUrl||"";
-            this.cursor=new SC.Map.Cursor(
-        		param.cursor.url,
-        		0,
-        		param.cursor.size,
-        		param.cursor.offset,
-        		param.cursor.name,
-        		param.cursor.colision!==false,
-        		null,
-        		param.cursor.speed
-        	);
+			this.imageBaseUrl=param.imageBaseUrl||param.baseUrl||"";
+			this.mapBaseUrl=param.mapBaseUrl||param.baseUrl||"";
+            this.cursor=new SC.Map.Cursor();
 
             this.quests=new Map();
 			this.activeQuests=new Map();
-            var questsReady=SC.rj(this.baseUrl+"quests.json").then(SC.rs(function quests_loaded(quests)
-            {
-            	for(var i=0;i<quests.length;i++)
-            	{
-            		var quest=new RPGPlayer.Quest(quests[i]);
-            		this.quests.set(quest.name,quest);
-            		if(param.quests&&param.quests.indexOf(quests[i].name)!==-1)
-            		{
-            			quest=quest.clone();
-            			this.activeQuests.set(quest.name,quest);
-            		}
-            	}
-            	return null;
-            },this),function quest_load_error(error)
-            {
-				SC.debug(["Could not load Quests: ",error],0);
-            });
+            this.questsReady=SC.rj(this.baseUrl+"quests.json",this).then(requestCallbacks.quests.loaded,requestCallbacks.quests.error);
             
             this.dialogs=new Map();
-            var dialogsReady=SC.rj(this.baseUrl+"dialogs.json").then(SC.rs(function dialogs_loaded(dialogs)
-            {
-            	for(var i=0;i<dialogs.length;i++)
-            	{
-            		this.dialogs.set(dialogs[i].name,dialogs[i]);
-            	}
-            	return null;
-            },this),function quest_load_error(error)
-            {
-            	SC.debug(["Could not load Dialogs: ",error],0);
-            });
+            SC.rj(this.baseUrl+"dialogs.json",this).then(requestCallbacks.dialogs.loaded,requestCallbacks.dialogs.error);
             
             this.focused=null;
 			this.map=new SC.Map();
-			this.add(this.map);
 			this.map.addListener("trigger",this,this._onTrigger);
-
-			var mapReady=this._changeMap(param.map,param.position);
-			new SC.det([this,questsReady,mapReady,dialogsReady]).then(function(scope) {
-				scope.focused=scope.map;
-				scope.fire("ready");
+			
+			var startMenu=new (GMOD(param.startMenu||"StartMenu"))(this,param);
+			startMenu.addListener("start:once",this,function(event)
+			{
+				event.source.destroy();
+				this.add(this.focused=this.map);
+				this.loadSave(event.save);
 			});
+			this.add(this.focused=startMenu);
         },
 		onController:function(event)
 		{
@@ -87,32 +88,62 @@
 				this.focused[Layer._CONTROLLER_EVENT_MAP[event.type]](event);
 			}
 		},
+		loadSave:function(save)
+		{
+			this.cursor.url=this.imageBaseUrl+save.cursor.url;
+			this.cursor.name=save.cursor.name||"";
+			this.cursor.rect.size.set(save.cursor.size);
+			this.cursor.offset.set(save.cursor.offset);
+			this.cursor.speed.set(save.cursor.speed);
+			this.cursor.collision=save.cursor.collision!==false;
+			
+			this.questsReady.complete(function (self)
+            {
+				var aQ=[];
+            	for(var i=0;i<save.quests.length;i++)
+            	{
+            		if(self.quests.has(save.quests[i].name))
+            		{
+            			quest=self.quests.get(save.quests[i].name).clone();
+            			self.activeQuests.set(quest.name,quest);
+            			aQ.push(quest.name);
+            		}
+            	}
+            	return aQ;
+            });
+            this._changeMap(save.map, save.position);
+            if(save.actions)
+            {
+            	this.doActions(save.actions);
+            }
+		},
 		_changeMap:function(name,position)
 		{
 			this.map.setPaused(true);
-			return SC.rj(this.baseUrl+name+".json").then(SC.rs(function changeMap_loaded(json)
+			return SC.rj(this.mapBaseUrl+name+".json",this).then(function changeMap_loaded(json,self)
 			{
 				var todo=json.cursors.concat(json.images);
 				while(todo.length>0)
 				{
 					var image=todo.shift();
-					image.url=this.imageBaseUrl+image.url;
+					image.url=self.imageBaseUrl+image.url;
 				}
 				json.position=position;
-				var animation=this.map.movingCursors.get(this.cursor);
-				this.map.fromJSON(json);
-				this.cursor.setPosition(position);
-				this.map.add(this.cursor);
+				var animation=self.map.movingCursors.get(self.cursor);
+				self.map.fromJSON(json);
+				self.cursor.setPosition(position);
+				self.map.add(self.cursor);
 				if(animation)
 				{
-					this.map.movingCursors.set(this.cursor,animation);
+					self.map.movingCursors.set(self.cursor,animation);
 				}
-				this.map.setPaused(false);
-            	return null;
-			},this),
+				self.map.setPaused(false);
+            	return name;
+			},
 			function changeMap_Error(error)
 			{
 				SC.debug(["Could not load Map: ",name,error],0);
+				return error;
 			});
 		},
 		_stopCursor:function()

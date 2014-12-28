@@ -5,7 +5,7 @@
 	height:100%;
 	width:100%;
 }
-.Board .Layer,.Board .panel,.Board .overlay {
+.Board .Layer,.Board .panel,.Board .overlay , .board .center {
 	position:absolute;
 }
 .Board .overlay {
@@ -13,4 +13,12 @@
     right:0;
     bottom:0;
     left:0;
+}
+.board .center {
+	top:50%;
+	left:50%;
+	transform:translateX(-50%) translateY(-50%);
+}
+.board .hidden {
+	display:none;
 }
