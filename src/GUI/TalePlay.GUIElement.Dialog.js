@@ -58,9 +58,10 @@
 				{//choice
 					this.active=new SC.menu({
 						items:dPart.choices,
-						loop:false,
 						converter:DIALOG.MENU_CONVERTER,
-						active:0
+						loop:false,
+						active:0,
+						selectionType:SC.menu.SelectionTypes.NONE
 					});
 					this.active.addListener("select:once",this,this.next);
 				}

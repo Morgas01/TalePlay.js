@@ -48,7 +48,7 @@
 
 			this.controllers=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
-				selectionType:SC.Menu.SelectionTypes.single,
+				selectionType:SC.Menu.SelectionTypes.SINGLE,
 				converter:MANAGER.controllerConverter
 			});
 			this.controllers.addListener("select",this,this._MenuSelect);
@@ -57,7 +57,7 @@
 			param.mappings.unshift(null);
 			this.mappings=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
-				selectionType:SC.Menu.SelectionTypes.single,
+				selectionType:SC.Menu.SelectionTypes.SINGLE,
 				converter:MANAGER.mappingConverter,
 				items:param.mappings
 			});
@@ -236,9 +236,9 @@
 						case !!isNew://reset old mapping or set new
 							controller.setMapping(mapping);
 					}
-					this.update("controllers");
 					event.source.destroy();
                     this.config=null;
+					this.update("controllers");
 				});
 				return true;
 			}

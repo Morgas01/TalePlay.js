@@ -8,7 +8,7 @@
 			param=param||{};
 			
 			this.items=param.items||[];
-			this.selectionType=param.selectionType||MENU.SelectionTypes.multi;
+			this.selectionType=param.selectionType||MENU.SelectionTypes.MULTI;
 			this.loop=param.loop!==false;
 			
 			this.selectedIndexs=[];
@@ -77,7 +77,7 @@
 		},
 		addSelect:function(item)
 		{
-			if(this.selectionType===MENU.SelectionTypes.none)
+			if(this.selectionType===MENU.SelectionTypes.NONE)
 			{
 				return false;
 			}
@@ -89,7 +89,7 @@
 			}
 			if(this.items.hasOwnProperty(index)&&this.selectedIndexs.indexOf(index)===-1)
 			{
-				if(this.selectionType===MENU.SelectionTypes.single)
+				if(this.selectionType===MENU.SelectionTypes.SINGLE)
 				{
 					this.selectedIndexs[0]=index;
 				}
@@ -118,7 +118,7 @@
 		},
 		toggleSelect:function(item,isIndex)
 		{
-			if(this.selectionType===MENU.SelectionTypes.none)
+			if(this.selectionType===MENU.SelectionTypes.NONE)
 			{
 				return false;
 			}
@@ -133,7 +133,7 @@
 				var sIndex=this.selectedIndexs.indexOf(index);
 				if(sIndex===-1)
 				{
-					if(this.selectionType===MENU.SelectionTypes.single)
+					if(this.selectionType===MENU.SelectionTypes.SINGLE)
 					{
 						this.selectedIndexs[0]=index;
 					}
@@ -206,10 +206,10 @@
 		{
 			switch(selectionType)
 			{
-				case MENU.SelectionTypes.none:
+				case MENU.SelectionTypes.NONE:
 					this.selectedIndexs.length=0;
 					break;
-				case MENU.SelectionTypes.single:
+				case MENU.SelectionTypes.SINGLE:
 					this.selectedIndexs.length=1;
 					break;
 			}
@@ -224,9 +224,9 @@
 	});
 	
 	MENU.SelectionTypes={
-		none:1,
-		single:2,
-		multi:3
+		NONE:1,
+		SINGLE:2,
+		MULTI:3
 	};
 	
 	SMOD("Menu",MENU);

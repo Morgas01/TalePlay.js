@@ -22,7 +22,7 @@
 		}),
 		hMenu=new SC.gMenu({
 			type:SC.gMenu.Types.HORIZONTAL,
-			selectionType:SC.menu.SelectionTypes.single,
+			selectionType:SC.menu.SelectionTypes.SINGLE,
 			items:[
 				{val:1},
 				{val:2},

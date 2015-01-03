@@ -184,7 +184,7 @@
 		toggleSelect:function(index)
 		{
 			var cl=this.getItemDomElement(index).classList;
-			if(this.menu.selectionType===SC.MENU.SelectionTypes.single&&!this.menu.isSelected(index)&&this.menu.selectedIndexs.length>0)
+			if(this.menu.selectionType===SC.MENU.SelectionTypes.SINGLE&&!this.menu.isSelected(index)&&this.menu.selectedIndexs.length>0)
 			{
 				this.getItemDomElement(this.menu.selectedIndexs[0]).classList.remove("selected");
 			}

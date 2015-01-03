@@ -25,7 +25,8 @@
 					"Load"
 				],
 				active:0,
-				loop:false
+				loop:false,
+				selectionType:SC.Menu.SelectionTypes.NONE
 			});
 			
 			this.nodePatch.patchNow();

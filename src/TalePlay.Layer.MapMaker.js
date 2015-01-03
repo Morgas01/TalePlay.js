@@ -86,7 +86,7 @@
 			this.images=new SC.Menu({
 				styleClass:["images","panel"],
 				type:SC.Menu.Types.VERTICAL,
-				selectionType:SC.Menu.SelectionTypes.none,
+				selectionType:SC.Menu.SelectionTypes.NONE,
 				columns:1,
 				converter:function(item,index,selected){
 					return '<img src="'+item.url+'">';
