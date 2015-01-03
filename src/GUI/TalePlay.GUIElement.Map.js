@@ -180,7 +180,8 @@
 							image:stepTrigger[i],
 							cursor:cursor,
 							value:stepTrigger[i].trigger.value,
-							distance:distance
+							distance:distance,
+							controllerEvent:event
 						});
 					}
 					
@@ -248,7 +249,8 @@
 									triggerType:"activate",
 									image:activateTrigger[t],
 									cursor:this.cursors[i],
-									value:activateTrigger[t].trigger.value
+									value:activateTrigger[t].trigger.value,
+									controllerEvent:event
 								});
 							}
 						}
