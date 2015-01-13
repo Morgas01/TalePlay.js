@@ -14,6 +14,7 @@
 	cssDir=srcDir+"css/";
 	gameDir=srcDir+"minigames/";
 	imagesDir=srcDir+"Images/";
+	RPGDir=srcDir+"RPGPlayer/";
 	
 
 
@@ -88,9 +89,14 @@
     WR(testDir+"test.Morgas.Board.GUIElement.TextBox.js");
     
     //RPGPlayer
-    WR(guiDir+"TalePlay.GUIElement.StartMenu.js");
-    WR(guiDir+"TalePlay.GUIElement.Dialog.js");
-    WR(srcDir+"TalePlay.Layer.RPGPlayer.js");
+	WR(morgasDir+"DB/Morgas.DB.IndexedDBConnector.js");
+	WR(srcDir+"TalePlay.Layer.Persistance.js");
+    WR(srcDir+"TalePlay.Layer.ActionMenu.js");
+    WR(srcDir+"TalePlay.Layer.ActionMenu.StartMenu.js");
+    WR(RPGDir+"TalePlay.Layer.ActionMenu.GameMenu.js");
+    WR(RPGDir+"TalePlay.GUIElement.Dialog.js");
+    WR(RPGDir+"TalePlay.RPGPlayer.js");
+    WR(RPGDir+"TalePlay.RPGPlayer.GameSave.js");
     WR(testDir+"test.TalePlay.Layer.RPGPlayer.js");
 
 	// Theme

@@ -19,7 +19,7 @@
 		        children:"children",
 		        addChild:"addChild",
 		        removeChild:"removeChild",
-			});
+			},true);
 			
 			SC.sc({layer:function(node)
 			{
@@ -86,6 +86,7 @@
 			if(this.nodePatch.removeChild(guiElement))
 			{
 				guiElement.domElement.remove();
+				guiElement.removeListener("all",this);
 				return true;
 			}
 			return false;
@@ -101,6 +102,12 @@
 		destroy:function()
 		{
 			this.nodePatch.remove();
+			var c=this.children.slice();
+			for(var i=0;i<c.length;i++)
+			{
+				c[i].destroy();
+			}
+			LST.prototype.destroy.call(this);
 		}
 	});
 	

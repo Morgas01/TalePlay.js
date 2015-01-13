@@ -24,6 +24,7 @@
 
 			this.type=param.type||MENU.Types.VERTICAL;
 			this.converter=param.converter||MENU.defaultConverter;
+			this.converterInfo=param.converterInfo||{};
 			this.rows=param.rows||null;
 			this.columns=param.columns||null;
 			
@@ -168,6 +169,7 @@
 				{
 					this.layer.board.focus();
 				}
+				this.setActive(index);
 				this.toggleSelect(index);
 			}
 		},
@@ -242,24 +244,32 @@
 		},
 		convertItem:function(item,index)
 		{
-			var converted=this.converter(item,index,this.menu.selectedIndexs.indexOf(index)!==-1);
-			item=document.createElement("span");
-			if(Array.isArray(converted))
+			var converted=this.converter(item,index,this.menu.selectedIndexs.indexOf(index)!==-1,this.converterInfo);
+			var element=null;
+			if(converted instanceof HTMLElement)
 			{
-				converted="<span>"+converted.join("</span><span>")+"</span>";
+				element=converted;
 			}
-			item.innerHTML=converted;
+			else
+			{
+				element=document.createElement("span");
+				if(Array.isArray(converted))
+				{
+					converted="<span>"+converted.join("</span><span>")+"</span>";
+				}
+				element.innerHTML=converted;
+			}
 			
-			item.classList.add("menuitem");
+			element.classList.add("menuitem");
 			if(this.menu.isSelected(item))
 			{
-				item.classList.add("selected");
+				element.classList.add("selected");
 			}
 			if(this.menu.active===index)
 			{
-				item.classList.add("active");
+				element.classList.add("active");
 			}
-			return item;
+			return element;
 		},
 		addItem:function(item)
 		{

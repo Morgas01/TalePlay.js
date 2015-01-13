@@ -8,8 +8,9 @@
 		Dialog:"GUI.Dialog",
 		rj:"Request.json",
 		it:"iterate",
-		aLst:"attachListeners",
-		debug:"debug"
+		debug:"debug",
+		idb:"IDBConn",
+		GameSave:"RPGPlayer.GameSave"
 	});
 	
 	var requestCallbacks={
@@ -53,7 +54,25 @@
             this.superInit(Layer,param);
 			this.domElement.classList.add("RPGPlayer");
 			
-			SC.aLst(this);
+			if(!param.board)
+			{
+				throw "board is undefined";
+			}
+			else
+			{
+				param.board.addLayer(this);
+			}
+			
+			if(!param.gameName)
+			{
+				throw "gameName is undefined";
+			}
+			else
+			{
+				this.gameName=param.gameName;
+				this.domElement.dataset.gamename=this.gameName;
+				this.dbConn=new SC.idb(this.gameName);
+			}
 			this.createListener("ready quest-activate quest-complete quest-abort");
 			
 			this.baseUrl=param.baseUrl||"";
@@ -69,23 +88,64 @@
             SC.rj(this.baseUrl+"dialogs.json",this).then(requestCallbacks.dialogs.loaded,requestCallbacks.dialogs.error);
             
             this.focused=null;
+            this.mapName=null;
 			this.map=new SC.Map();
 			this.map.addListener("trigger",this,this._onTrigger);
 			
-			var startMenu=new (GMOD(param.startMenu||"StartMenu"))(this,param);
-			startMenu.addListener("start:once",this,function(event)
+			this._StartMenu=(typeof param.startMenu==="function")?param.startMenu:GMOD(param.startMenu||"StartMenu");
+			this._GameMenu=(typeof param.gameMenu==="function")?param.gameMenu:GMOD(param.gameMenu||"RPGPlayer.GameMenu");
+			
+			this._openStartMenu();
+        },
+        _openStartMenu:function()
+        {
+        	this.focused=null;
+        	var smenu=new this._StartMenu({
+        		dbConn:this.dbConn,
+        		saveClass:SC.GameSave,
+        		saveConverter:RPGPlayer.saveConverter,
+        		newGameUrl:this.baseUrl+"newgame.json"
+        	});
+        	smenu.addListener("start:once",this,function(event)
 			{
 				event.source.destroy();
-				this.add(this.focused=this.map);
+				this.focused=this.map;
+				if(!this.has(this.map)) this.add(this.map);
 				this.loadSave(event.save);
 			});
-			this.add(this.focused=startMenu);
+			this.board.addLayer(smenu);
         },
+		_openGameMenu:function(enableSave)
+		{
+			this.map.movingCursors["delete"](this.cursor);
+			this.map.setPaused(true);
+			this.focused=null;
+			var gmenu=new this._GameMenu({
+				dbConn:this.dbConn,
+        		saveClass:SC.GameSave,
+				saveConverter:RPGPlayer.saveConverter,
+				saveData:enableSave?this.getSave():null
+			});
+			gmenu.addListener("close:once",this,function(event)
+			{
+				event.source.destroy();
+				this.focused=this.map;
+				this.map.setPaused(false);
+			});
+			this.board.addLayer(gmenu);
+		},
 		onController:function(event)
 		{
 			if(this.focused)
 			{
-				this.focused[Layer._CONTROLLER_EVENT_MAP[event.type]](event);
+				if(this.focused===this.map&&event.type==="buttonChanged"&&event.index===3&&event.value==1)
+				{
+					this._openGameMenu();
+				}
+				else
+				{
+					this.focused[Layer._CONTROLLER_EVENT_MAP[event.type]](event);
+				}
 			}
 		},
 		loadSave:function(save)
@@ -116,6 +176,12 @@
             {
             	this.doActions(save.actions);
             }
+		},
+		getSave:function()
+		{
+			return {
+				
+			};
 		},
 		_changeMap:function(name,position)
 		{
@@ -225,6 +291,12 @@
 			}
 		}
     });
+	RPGPlayer.saveConverter=function(save,index)
+	{
+		if(!save)
+			return "EMPTY";
+		return [index,save.getTimeStamp().toLocaleString(),save.getData().map];
+	};
 	SMOD("RPGPlayer",RPGPlayer);
 
 	RPGPlayer.Quest=µ.Class({
@@ -249,5 +321,5 @@
 			return cloning;
 		}
 	});
-	SMOD("Quest",RPGPlayer.Quest);
+	SMOD("RPGPlayer.Quest",RPGPlayer.Quest);
 })(Morgas,Morgas.setModule,Morgas.getModule);
