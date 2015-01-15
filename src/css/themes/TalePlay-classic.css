@@ -65,6 +65,9 @@
 .GUIElement.Menu .menuitem.selected {
     background-color: #FFFFFF;
 }
+.GUIElement.Menu .menuitem.disabled {
+    color: #888;
+}
 
 /** MapMaker **/
 .MapMaker .images.panel {

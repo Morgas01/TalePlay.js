@@ -12,10 +12,20 @@
 			this.loop=param.loop!==false;
 			
 			this.selectedIndexs=[];
+			this.disabledIndexs=[];
 			this.active=-1;
+			
 			if (param.active!==undefined&&param.active>-1&&param.active<this.items.length)
 			{
 				this.active=param.active;
+			}
+			if(param.selected!==undefined)
+			{
+				for(var i=0;i<param.selected.length;i++)this.addSelect(param.selected[i]);
+			}
+			if(param.disabled!==undefined)
+			{
+				for(var i=0;i<param.disabled.length;i++)this.setDisabled(param.disabled[i],true);
 			}
 		},
 		addItem:function(item)
@@ -42,6 +52,11 @@
 				{
 					this.selectedIndexs.splice(sIndex, 1);
 				}
+				var dIndex=this.disabledIndexs.indexOf(index);
+				if(dIndex!==-1)
+				{
+					this.disabledIndexs.splice(sIndex, 1);
+				}
 				if(this.active>index)
 				{
 					this.active--;
@@ -59,7 +74,8 @@
 				index:index,
 				value:this.items[index],
 				active:this.active===index,
-				selected:this.selectedIndexs.indexOf(index)!==-1
+				selected:this.selectedIndexs.indexOf(index)!==-1,
+				disabled:this.disabledIndexs.indexOf(index)!==-1
 			};
 		},
 		clearSelect:function()
@@ -198,6 +214,29 @@
 			}
 			return rtn;
 		},
+		setDisabled:function(item,boolen)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			if(this.items.hasOwnProperty(index)&&this.disabledIndexs.indexOf(index)===-1)
+			{
+				this.disabledIndexs.push(index);
+				return true;
+			}
+			return false;
+		},
+		isDisabled:function(item)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			return this.disabledIndexs.indexOf(index)!==-1;
+		},
 		getType:function()
 		{
 			return this.selectionType;
@@ -217,7 +256,7 @@
 		},
 		clear:function()
 		{
-			this.items.length=this.selectedIndexs.length=0;
+			this.items.length=this.selectedIndexs.lengt=this.disabledIndexs.length=0;
 			this.active=-1;
 			return this;
 		}

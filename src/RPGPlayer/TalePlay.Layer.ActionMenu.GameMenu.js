@@ -10,7 +10,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(AMENU,{
+			var menuParam={
 				styleClass:["panel"],
 				actions:[
 					{
@@ -22,8 +22,13 @@
 						text:"close",
 						action:"close"
 					}
-				],
-			});
+				]
+			};
+			if(!param.saveData)
+			{
+				menuParam.disabled=[0];
+			}
+			this.superInit(AMENU,menuParam);
 
 			this.domElement.classList.add("GameMenu");
 			this.createListener("start close");

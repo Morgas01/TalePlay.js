@@ -244,7 +244,7 @@
 		},
 		convertItem:function(item,index)
 		{
-			var converted=this.converter(item,index,this.menu.selectedIndexs.indexOf(index)!==-1,this.converterInfo);
+			var converted=this.converter(item,index,this.converterInfo);
 			var element=null;
 			if(converted instanceof HTMLElement)
 			{
@@ -264,6 +264,10 @@
 			if(this.menu.isSelected(item))
 			{
 				element.classList.add("selected");
+			}
+			if(this.menu.isDisabled(item))
+			{
+				element.classList.add("disabled");
 			}
 			if(this.menu.active===index)
 			{

@@ -24,7 +24,8 @@
 				active:param.active||0,
 				loop:param.loop===true,
 				selectionType:SC.Menu.SelectionTypes.NONE,
-				converter:param.converter||AMENU.defaultConverter
+				converter:param.converter||AMENU.defaultConverter,
+				disabled:param.disabled
 			});
 			
 			this.add(this.menu);
