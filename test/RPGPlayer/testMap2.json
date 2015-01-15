@@ -201,6 +201,28 @@
 					}
 				]
 			}
+		},
+		{
+			"url": "empty.png",
+			"position": {
+				"x": 325,
+				"y": 325
+			},
+			"size": {
+				"x": 50,
+				"y": 50
+			},
+			"name": "save purple",
+			"collision": true,
+			"trigger": {
+				"type": "activate",
+				"value": [
+					{
+						"type": "OPEN_GAMEMENU",
+						"enableSave": true
+					}
+				]
+			}
 		}
 	],
 	"size": {

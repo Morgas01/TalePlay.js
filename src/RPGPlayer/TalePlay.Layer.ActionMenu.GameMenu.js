@@ -35,6 +35,7 @@
 		
 			this.persistanceLayer=(typeof param.persistanceLayer==="function")?param.persistanceLayer:GMOD(param.persistanceLayer||"Layer.Persistance");
 			this.dbConn=param.dbConn;
+			this.saveClass=param.saveClass;
 			this.saveConverter=param.saveConverter;
 
 		},

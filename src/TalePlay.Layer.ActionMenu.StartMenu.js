@@ -82,6 +82,7 @@
 			p.addListener("load:once",this,function(event)
 			{
 				this.fire("start",{save:event.save});
+				event.source.destroy();
 			});
 			this.board.addLayer(p);
 		},

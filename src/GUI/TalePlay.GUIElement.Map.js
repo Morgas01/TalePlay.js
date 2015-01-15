@@ -181,7 +181,6 @@
 							cursor:cursor,
 							value:stepTrigger[i].trigger.value,
 							distance:distance,
-							controllerEvent:event
 						});
 					}
 					

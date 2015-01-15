@@ -25,7 +25,7 @@
 			
 			this.dbConn=param.dbConn;
 			this.saveClass=param.saveClass;
-			this.saveData=param.data;
+			this.saveData=param.saveData;
 			
 			this.menu=new SC.Menu({
 				styleClass:param.styleClass,
@@ -62,15 +62,19 @@
 		},
 		_update:function()
 		{
-			this.dbConn.load(this.saveClass).then(this._fillMenu);
+			this.dbConn.load(this.saveClass,{}).then(this._fillMenu);
 			return null;
 		},
 		_fillMenu:function(results)
 		{
 			this.menu.clear();
-			results.sort(function(a,b){return a.getID()-b.getID();});
-			results.push(null);
-			this.menu.addAll(results);
+			var saves=[];
+			for(var i=0;i<results.length;i++)
+			{
+				saves[results[i].getID()]=results[i];
+			}
+			saves.push(null);
+			this.menu.addAll(saves);
 			if(this.menu.getActive().index===-1)this.menu.setActive(0);
 			return null;
 		},
@@ -106,13 +110,14 @@
 					this.fire("load",{save:this.menu.getActive().value.getData()})
 					break;
 				case "Save":
+					this.saveData.setID(this.menu.getActive().index);
 					this.dbConn.save([this.saveData]).then(this._update());
 					break;
 				case "Export":
 					SC.download(JSON.stringify(this.menu.getActive().value));
 					break;
 				case "Delete":
-					this.dbConn["delete"]([this.saveData]).then(this._update());
+					this.dbConn["delete"](this.saveClass,[this.menu.getActive().value]).then(this._update());
 					break;
 				case "Cancel":
 					break;

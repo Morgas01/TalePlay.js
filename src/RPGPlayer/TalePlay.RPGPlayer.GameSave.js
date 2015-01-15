@@ -15,7 +15,7 @@
 			
 			this.superInit(DBOBJ,param);
 			
-			this.addField("data",SC.field.TYPES.JSON,param.cursor);
+			this.addField("data",SC.field.TYPES.JSON,param.data);
 			this.addField("timeStamp",SC.field.TYPES.DATE,param.timeStamp||new Date());
 		},
 		getData:function(){return this.getValueOf("data");},

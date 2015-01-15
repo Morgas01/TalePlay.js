@@ -162,9 +162,9 @@
 				var aQ=[];
             	for(var i=0;i<save.quests.length;i++)
             	{
-            		if(self.quests.has(save.quests[i].name))
+            		if(self.quests.has(save.quests[i]))
             		{
-            			quest=self.quests.get(save.quests[i].name).clone();
+            			quest=self.quests.get(save.quests[i]).clone();
             			self.activeQuests.set(quest.name,quest);
             			aQ.push(quest.name);
             		}
@@ -179,9 +179,25 @@
 		},
 		getSave:function()
 		{
-			return {
-				
+			var save={
+				"cursor":{
+					"url":this.cursor.url.slice(this.cursor.url.lastIndexOf("/")+1),
+					"name":this.cursor.name,
+					"size":this.cursor.rect.size,
+					"offset":this.cursor.offset
+				},
+				"map":this.mapName,
+				"position":this.cursor.getPosition(),
+				"quests":[]
 			};
+			var it=this.activeQuests.entries();
+			var step=null;
+			while(step=it.next(),!step.done)
+			{
+				save.quests.push(step.value[0]);
+			}
+			
+			return new SC.GameSave({data:save});
 		},
 		_changeMap:function(name,position)
 		{
@@ -204,6 +220,7 @@
 					self.map.movingCursors.set(self.cursor,animation);
 				}
 				self.map.setPaused(false);
+				self.mapName=name;
             	return name;
 			},
 			function changeMap_Error(error)
@@ -282,6 +299,9 @@
 					case "SHOW_DIALOG":
 						this._showDialog(a.dialogName);
 						break;
+					case "OPEN_GAMEMENU":
+						this._openGameMenu(a.enableSave);
+						break;
 					case "EXECUTE":
 						try{
 							a.value(this);
@@ -295,7 +315,15 @@
 	{
 		if(!save)
 			return "EMPTY";
-		return [index,save.getTimeStamp().toLocaleString(),save.getData().map];
+		try
+		{
+			return [index,save.getTimeStamp().toLocaleString(),save.getData().map];
+		}
+		catch(error)
+		{
+			SC.debug([error,save],SC.debug.LEVEL.ERROR);
+			return "CORRUPT DATA";
+		}
 	};
 	SMOD("RPGPlayer",RPGPlayer);
 

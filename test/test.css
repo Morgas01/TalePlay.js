@@ -7,14 +7,17 @@ body > fieldset{
 }
 
 .GUIElement.Map [data-name~="black"] {
-	background-color:black;" 
+	background-color:black; 
 }
 .GUIElement.Map [data-name~="blue"] {
-	background-color:blue;" 
+	background-color:blue; 
 }
 .GUIElement.Map [data-name~="green"] {
-	background-color:green;" 
+	background-color:green; 
 }
 .GUIElement.Map [data-name~="orange"] {
-	background-color:orange;" 
+	background-color:orange; 
+}
+.GUIElement.Map [data-name~="purple"] {
+	background-color:purple; 
 }
