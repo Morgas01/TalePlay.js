@@ -17,7 +17,7 @@
 			param=param||{};
 			
 			this.superInit(LAYER,{mode:LAYER.Modes.LAST});
-			SC.rs.all(["_fillMenu"],this);
+			SC.rs.all(["_update","_fillMenu"],this);
 			
 			this.createListener("load");
 
@@ -99,7 +99,7 @@
 			else if (this.saveData)
 			{
 				this.saveData.setID(event.index);
-				this.dbConn.save([this.saveData]).then(this._update());
+				this.dbConn.save([this.saveData]).then(this._update);
 			}
 		},
 		_onSubSelect:function(event)
@@ -107,17 +107,17 @@
 			switch (event.value)
 			{
 				case "Load":
-					this.fire("load",{save:this.menu.getActive().value.getData()})
+					this.fire("load",{save:this.menu.getActive().value.getData()});
 					break;
 				case "Save":
 					this.saveData.setID(this.menu.getActive().index);
-					this.dbConn.save([this.saveData]).then(this._update());
+					this.dbConn.save([this.saveData]).then(this._update);
 					break;
 				case "Export":
 					SC.download(JSON.stringify(this.menu.getActive().value));
 					break;
 				case "Delete":
-					this.dbConn["delete"](this.saveClass,[this.menu.getActive().value]).then(this._update());
+					this.dbConn["delete"](this.saveClass,[this.menu.getActive().value]).then(this._update);
 					break;
 				case "Cancel":
 					break;
