@@ -90,7 +90,7 @@
             this.focused=null;
             this.mapName=null;
 			this.map=new SC.Map();
-			this.map.addListener("trigger",this,this._onTrigger);
+			this.map.addListener("trigger",this,"_onTrigger");
 			
 			this._StartMenu=(typeof param.startMenu==="function")?param.startMenu:GMOD(param.startMenu||"StartMenu");
 			this._GameMenu=(typeof param.gameMenu==="function")?param.gameMenu:GMOD(param.gameMenu||"RPGPlayer.GameMenu");

@@ -94,7 +94,7 @@
                 items:param.images
 			});
 			this.add(this.images);
-			this.images.addListener("select",this,this.placeImage);
+			this.images.addListener("select",this,"placeImage");
 			
 			this.map.setPosition(0);
 		},

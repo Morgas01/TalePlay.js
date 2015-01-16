@@ -54,7 +54,7 @@
 				selectionType:SC.Menu.SelectionTypes.SINGLE,
 				converter:MANAGER.controllerConverter
 			});
-			this.controllers.addListener("select",this,this._MenuSelect);
+			this.controllers.addListener("select",this,"_MenuSelect");
 
 			param.mappings=param.mappings||[];
 			param.mappings.unshift(null);
@@ -65,7 +65,7 @@
 				converter:MANAGER.mappingConverter,
 				items:param.mappings
 			});
-			this.mappings.addListener("select",this,this._MenuSelect);
+			this.mappings.addListener("select",this,"_MenuSelect");
 			
 			this.dbConn=param.dbConn||null;
 			if(this.dbConn)

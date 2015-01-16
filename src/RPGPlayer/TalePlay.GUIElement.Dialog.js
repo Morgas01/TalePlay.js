@@ -51,7 +51,7 @@
 					this.active=new SC.tb({
 						parts:dPart.parts
 					});
-					this.active.addListener("complete:once",this,this.next);
+					this.active.addListener("complete:once",this,"next");
 					this.active.start();
 				}
 				else if (dPart.choices)
@@ -63,7 +63,7 @@
 						active:0,
 						selectionType:SC.menu.SelectionTypes.NONE
 					});
-					this.active.addListener("select:once",this,this.next);
+					this.active.addListener("select:once",this,"next");
 				}
 				this.domElement.appendChild(this.active.domElement);
 			}

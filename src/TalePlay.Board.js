@@ -55,7 +55,7 @@
 		{
 			this.removeController(controller);
 			this.controllers.push({controller:controller,player:player||1});
-			controller.addListener(CTRL_EVENTS,this,this._ctrlCallback);
+			controller.addListener(CTRL_EVENTS,this,"_ctrlCallback");
 			//TODO no key events on a div
 			/**/
 			if(HMOD("Controller.Keyboard")&&controller instanceof GMOD("Controller.Keyboard"))
@@ -70,7 +70,7 @@
 			{
 				if(this.controllers[i].controller===controller)
 				{
-					controller.removeListener(CTRL_EVENTS,this,this._ctrlCallback);
+					controller.removeListener(CTRL_EVENTS,this,"_ctrlCallback");
 					if(HMOD("Controller.Keyboard")&&controller instanceof GMOD("Controller.Keyboard"))
 					{
 						controller.setDomElement();

@@ -22,7 +22,7 @@
 			this.player=param.player||["manual","manual"];
 			
 			this.setTurn(param.turn);
-			this.addListener("select",this,this._select)
+			this.addListener("select",this,"_select")
 		},
 		setTurn:function(turn)
 		{

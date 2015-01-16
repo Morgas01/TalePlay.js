@@ -174,7 +174,7 @@
 				{
 					this.controllerType=controllerTypes.Gamepad;
 					this.domElement.classList.add("Gamepad");
-					this.controller.addListener("analogStickChanged buttonChanged",this,this.controllerChanged);
+					this.controller.addListener("analogStickChanged buttonChanged",this,"controllerChanged");
 				}
 				this.oldMapping=this.controller.getMapping();
 				this.controller.setMapping(null);
@@ -251,7 +251,7 @@
 				event.preventDefault();
 				event.stopPropagation();
 				
-				var input=event.originalTarget;
+				var input=event.target;
 				input.value=event.code||event.key;
 				input.title=getTitle(event.code||event.key);
 			}

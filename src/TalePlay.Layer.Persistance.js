@@ -36,7 +36,7 @@
 			});
 			
 			this.add(this.menu);
-			this.menu.addListener("select",this,this._onSelect);
+			this.menu.addListener("select",this,"_onSelect");
 			
 			this._update();
 		},
@@ -93,7 +93,7 @@
 					loop:false,
 					selectionType:SC.Menu.SelectionTypes.NONE
 				});
-				subMenu.addListener("select",this,this._onSubSelect);
+				subMenu.addListener("select",this,"_onSubSelect");
 				this.add(subMenu);
 			}
 			else if (this.saveData)

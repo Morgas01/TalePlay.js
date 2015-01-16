@@ -29,7 +29,7 @@
 			});
 			
 			this.add(this.menu);
-			this.menu.addListener("select",this,this._onSelect);
+			this.menu.addListener("select",this,"_onSelect");
 
 		},
 		_onSelect:function(event)

@@ -11,7 +11,7 @@
 			
 			this.pollKey=null;
 			
-			this.addListener(".created:once",this,this.update);
+			this.addListener(".created:once",this,"update");
 		},
 		update:function()
 		{
