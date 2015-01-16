@@ -5,6 +5,7 @@
 	var AMENU=GMOD("Layer.ActionMenu");
 	
 	var SC=GMOD("shortcut")({
+		manager:"GUI.ControllerManager",
 		rj:"Request.json",
 		debug:"debug"
 	});
@@ -21,6 +22,11 @@
 						text:"New Game",
 						action:"newGame",
 						url:param.newGameUrl
+					},
+					{
+						text:"Controllers",
+						action:"openControllerManager",
+						controllerLayout:param.controllerLayout||{}
 					},
 					{
 						text:"Load",
@@ -71,6 +77,18 @@
 			{
 				SC.debug(["could not load new game: ",error],SC.debug.LEVEL.ERROR);
 			});
+		},
+		openControllerManager:function(item)
+		{
+			var param={
+				styleClass:["panel","overlay"],
+				buttons:item.controllerLayout.buttons,
+				analogSticks:item.controllerLayout.analogSticks,
+				dbConn:this.dbConn
+			};
+			var m=new SC.manager(param);
+			this.add(m);
+			m.update("controllers");
 		},
 		loadSave:function()
 		{
