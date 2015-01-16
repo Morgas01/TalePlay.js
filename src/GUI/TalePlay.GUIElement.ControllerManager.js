@@ -50,6 +50,7 @@
 
 			this.controllers=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
+				header:["No.","Device","Mapping","Player"],
 				selectionType:SC.Menu.SelectionTypes.SINGLE,
 				converter:MANAGER.controllerConverter
 			});
@@ -59,6 +60,7 @@
 			param.mappings.unshift(null);
 			this.mappings=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
+				header:["Name","Type"],
 				selectionType:SC.Menu.SelectionTypes.SINGLE,
 				converter:MANAGER.mappingConverter,
 				items:param.mappings

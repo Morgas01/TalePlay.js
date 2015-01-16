@@ -27,6 +27,7 @@
 			this.converterInfo=param.converterInfo||{};
 			this.rows=param.rows||null;
 			this.columns=param.columns||null;
+			this.header=param.header||null;
 			
 			this.stepDirection=null;
 			this.stepID=null;
@@ -109,7 +110,7 @@
 			{
 				this.menu.moveActive(step);
 				this._updateActive();
-				this.fire("activeChanged")
+				this.fire("activeChanged");
 				
 				if(this.stepID===null)
 				{
@@ -158,6 +159,10 @@
 				gridLayout=this.getGridLayout();
 				index=row*gridLayout.columns+column;
 			}
+			else if (this.type===MENU.Types.TABLE)
+			{
+				index=Array.indexOf(this.domElement.children,target)-1;
+			}
 			else
 			{
 				index=Array.indexOf(this.domElement.children,target);
@@ -202,7 +207,7 @@
 		},
 		getGridLayout:function()
 		{
-			var rtn={rows:this.rows,columns:this.columns}
+			var rtn={rows:this.rows,columns:this.columns};
 			if(rtn.rows===null&&rtn.columns===null)
 			{
 				rtn.columns=Math.ceil(Math.sqrt(this.menu.items.length));
@@ -220,7 +225,11 @@
 		update:function()
 		{
 			this.domElement.innerHTML="";
-			if(this.type===MENU.Types.GRID&&this.menu.items.length>0)
+			if(this.type===MENU.Types.TABLE&&this.header)
+			{
+				this.domElement.innerHTML='<span class="menuheader"><span>'+this.header.join('</span><span>')+'</span></span>'
+			}
+			else if(this.type===MENU.Types.GRID&&this.menu.items.length>0)
 			{
 				var gridLayout=this.getGridLayout();
 				
@@ -278,7 +287,7 @@
 		addItem:function(item)
 		{
 			this.menu.addItem(item);
-			this.domElement.appendChild(this.convertItem(item,this.menu.items.length));
+			this.domElement.appendChild(this.convertItem(item,this.menu.items.length-1));
 			return this;
 		},
 		addAll:function(items)
@@ -292,7 +301,7 @@
 		removeItem:function(item)
 		{
 			var index=this.menu.removeItem(item);
-			if(index!==-1&&index<this.domElement.children.length)
+			if(index!==-1)
 			{
 				this.getItemDomElement(index).remove();
 			}
@@ -306,6 +315,10 @@
 				row=Math.floor(index/gridLayout.columns),
 				column=index-row*gridLayout.columns;
 				return this.domElement.children[row].children[column];
+			}
+			else if (this.type===MENU.Types.TABLE)
+			{
+				return this.domElement.children[index+1];
 			}
 			else
 			{
@@ -330,7 +343,7 @@
 		clear:function()
 		{
 			this.menu.clear();
-			while(this.domElement.lastChild)
+			while(!this.header&&this.domElement.lastChild||this.domElement.lastChild!==this.domElement.firstChild)
 			{
 				this.domElement.lastChild.remove();
 			}
@@ -351,12 +364,12 @@
 		VERTICAL:1,
 		HORIZONTAL:2,
 		TABLE:3,
-		GRID:4//TODO
+		GRID:4
 	};
 	MENU.defaultConverter=function(item,index,selected)
 	{
 		return ""+item;
-	}
+	};
 	
 	var reverseTypes={};
 	for(var t in MENU.Types)

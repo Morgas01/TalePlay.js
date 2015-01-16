@@ -6,10 +6,12 @@
     display:table;
 }
 .GUIElement.Menu[data-type="TABLE"] .menuitem,
+.GUIElement.Menu[data-type="TABLE"] .menuheader,
 .GUIElement.Menu[data-type="GRID"] .row {
     display:table-row;
 }
 .GUIElement.Menu[data-type="TABLE"] .menuitem span,
+.GUIElement.Menu[data-type="TABLE"] .menuheader span,
 .GUIElement.Menu[data-type="GRID"] .menuitem {
     display:table-cell;
     padding:5px;
