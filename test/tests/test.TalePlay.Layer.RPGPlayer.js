@@ -6,13 +6,15 @@
 	
 	test("RPGPlayer",function()
 	{
+		var board=getBoard("RPGPlayer");
+		
 		var player=new RPGPlayer({
+			board:board,
+			gameName:"testGame",
 			baseUrl:"RPGPlayer/",
 			imageBaseUrl:imagesDir
 		});
 		
-		var board=getBoard("RPGPlayer");
-		board.addLayer(player);
 		
 		var questlog=document.createElement("textarea");
 		questlog.style.width="100%";

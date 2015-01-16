@@ -10,7 +10,7 @@ window.addEventListener("load",function(){
     window.addEventListener("change",function(e)
     {
     	Array.forEach(document.querySelectorAll(':indeterminate'), function(v){v.indeterminate=false});
-        var values=Array.map(document.querySelectorAll('[type="checkbox"]:checked'),function(val){return val.value});
+        var values=Array.prototype.map.call(document.querySelectorAll('[type="checkbox"]:checked'),function(val){return val.value});
         if(values)
         {
             var resolved=TalePlay.dependencies.resolve(values);

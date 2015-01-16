@@ -1,5 +1,7 @@
 (function(µ,SMOD,GMOD){
-
+	
+	//TODO change to Layer
+	
 	var GUI=GMOD("GUIElement");
 	
 	var SC=GMOD("shortcut")({
@@ -48,20 +50,22 @@
 
 			this.controllers=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
-				selectionType:SC.Menu.SelectionTypes.single,
+				header:["No.","Device","Mapping","Player"],
+				selectionType:SC.Menu.SelectionTypes.SINGLE,
 				converter:MANAGER.controllerConverter
 			});
-			this.controllers.addListener("select",this,this._MenuSelect);
+			this.controllers.addListener("select",this,"_MenuSelect");
 
 			param.mappings=param.mappings||[];
 			param.mappings.unshift(null);
 			this.mappings=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
-				selectionType:SC.Menu.SelectionTypes.single,
+				header:["Name","Type"],
+				selectionType:SC.Menu.SelectionTypes.SINGLE,
 				converter:MANAGER.mappingConverter,
 				items:param.mappings
 			});
-			this.mappings.addListener("select",this,this._MenuSelect);
+			this.mappings.addListener("select",this,"_MenuSelect");
 			
 			this.dbConn=param.dbConn||null;
 			if(this.dbConn)
@@ -236,9 +240,9 @@
 						case !!isNew://reset old mapping or set new
 							controller.setMapping(mapping);
 					}
-					this.update("controllers");
 					event.source.destroy();
                     this.config=null;
+					this.update("controllers");
 				});
 				return true;
 			}

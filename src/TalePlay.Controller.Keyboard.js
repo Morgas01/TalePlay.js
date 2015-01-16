@@ -51,13 +51,13 @@
 		{
 			if(!this.disabled&&this.mapping)
 			{
-				if(this.mapping.hasButtonMapping(event.code||event.key)||this.mapping.hasButtonAxisMapping(event.code||event.key))
+				if(this.mapping.hasButtonMapping(event.code||event.key||event.keyCode)||this.mapping.hasButtonAxisMapping(event.code||event.key||event.keyCode))
 				{
 					event.preventDefault();
 					event.stopPropagation();
 					
 					var map={};
-					map[event.code||event.key]=value;
+					map[event.code||event.key||event.keyCode]=value;
 					this.setButton(map);
 				}
 			}
@@ -70,26 +70,26 @@
 	});
 	CTRL.Keyboard.stdMapping={
 		"buttons": {
-			"1": "2",
-			"2": "3",
-			"3": "4",
-			"4": "5",
-			"5": "6",
-			"6": "7",
-			" ": "0",
-			"Shift": "1",
-			"Pause": "8",
-			"Enter": "9"
+			"13": "9",
+			"16": "1",
+			"19": "8",
+			"32": "0",
+			"97": "2",
+			"98": "3",
+			"99": "4",
+			"100": "5",
+			"101": "6",
+			"102": "7"
 		},
 		"buttonAxis": {
-			"w": "1",
-			"d": "0",
-			"s": "-1",
-			"a": "-0",
-			"Up": "3",
-			"Right": "2",
-			"Down": "-3",
-			"Left": "-2"
+			"37": "-2",
+			"38": "3",
+			"39": "2",
+			"40": "-3",
+			"65": "-0",
+			"68": "0",
+			"83": "-1",
+			"87": "1"
 		},
 		"axes": {}
 	};

@@ -8,14 +8,24 @@
 			param=param||{};
 			
 			this.items=param.items||[];
-			this.selectionType=param.selectionType||MENU.SelectionTypes.multi;
+			this.selectionType=param.selectionType||MENU.SelectionTypes.MULTI;
 			this.loop=param.loop!==false;
 			
 			this.selectedIndexs=[];
+			this.disabledIndexs=[];
 			this.active=-1;
+			
 			if (param.active!==undefined&&param.active>-1&&param.active<this.items.length)
 			{
 				this.active=param.active;
+			}
+			if(param.selected!==undefined)
+			{
+				for(var i=0;i<param.selected.length;i++)this.addSelect(param.selected[i]);
+			}
+			if(param.disabled!==undefined)
+			{
+				for(var i=0;i<param.disabled.length;i++)this.setDisabled(param.disabled[i],true);
 			}
 		},
 		addItem:function(item)
@@ -42,6 +52,11 @@
 				{
 					this.selectedIndexs.splice(sIndex, 1);
 				}
+				var dIndex=this.disabledIndexs.indexOf(index);
+				if(dIndex!==-1)
+				{
+					this.disabledIndexs.splice(sIndex, 1);
+				}
 				if(this.active>index)
 				{
 					this.active--;
@@ -59,7 +74,8 @@
 				index:index,
 				value:this.items[index],
 				active:this.active===index,
-				selected:this.selectedIndexs.indexOf(index)!==-1
+				selected:this.selectedIndexs.indexOf(index)!==-1,
+				disabled:this.disabledIndexs.indexOf(index)!==-1
 			};
 		},
 		clearSelect:function()
@@ -77,7 +93,7 @@
 		},
 		addSelect:function(item)
 		{
-			if(this.selectionType===MENU.SelectionTypes.none)
+			if(this.selectionType===MENU.SelectionTypes.NONE)
 			{
 				return false;
 			}
@@ -89,7 +105,7 @@
 			}
 			if(this.items.hasOwnProperty(index)&&this.selectedIndexs.indexOf(index)===-1)
 			{
-				if(this.selectionType===MENU.SelectionTypes.single)
+				if(this.selectionType===MENU.SelectionTypes.SINGLE)
 				{
 					this.selectedIndexs[0]=index;
 				}
@@ -118,7 +134,7 @@
 		},
 		toggleSelect:function(item,isIndex)
 		{
-			if(this.selectionType===MENU.SelectionTypes.none)
+			if(this.selectionType===MENU.SelectionTypes.NONE)
 			{
 				return false;
 			}
@@ -133,7 +149,7 @@
 				var sIndex=this.selectedIndexs.indexOf(index);
 				if(sIndex===-1)
 				{
-					if(this.selectionType===MENU.SelectionTypes.single)
+					if(this.selectionType===MENU.SelectionTypes.SINGLE)
 					{
 						this.selectedIndexs[0]=index;
 					}
@@ -198,6 +214,29 @@
 			}
 			return rtn;
 		},
+		setDisabled:function(item,boolen)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			if(this.items.hasOwnProperty(index)&&this.disabledIndexs.indexOf(index)===-1)
+			{
+				this.disabledIndexs.push(index);
+				return true;
+			}
+			return false;
+		},
+		isDisabled:function(item)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			return this.disabledIndexs.indexOf(index)!==-1;
+		},
 		getType:function()
 		{
 			return this.selectionType;
@@ -206,10 +245,10 @@
 		{
 			switch(selectionType)
 			{
-				case MENU.SelectionTypes.none:
+				case MENU.SelectionTypes.NONE:
 					this.selectedIndexs.length=0;
 					break;
-				case MENU.SelectionTypes.single:
+				case MENU.SelectionTypes.SINGLE:
 					this.selectedIndexs.length=1;
 					break;
 			}
@@ -217,16 +256,16 @@
 		},
 		clear:function()
 		{
-			this.items.length=this.selectedIndexs.length=0;
+			this.items.length=this.selectedIndexs.lengt=this.disabledIndexs.length=0;
 			this.active=-1;
 			return this;
 		}
 	});
 	
 	MENU.SelectionTypes={
-		none:1,
-		single:2,
-		multi:3
+		NONE:1,
+		SINGLE:2,
+		MULTI:3
 	};
 	
 	SMOD("Menu",MENU);

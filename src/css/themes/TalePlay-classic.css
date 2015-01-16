@@ -1,7 +1,8 @@
+/** Board / Core **/
 .Board {
     background-color: black;
 }
-.Board,.Board * {
+.Board, .Board * {
     color: white;
     font-family: lucida console,monospace;
     font-size:20px;
@@ -15,6 +16,13 @@
 .Board .overlay {
     background-color: rgba(255, 255, 255, 0.8);
 }
+
+/** GUIElement **/
+.Layer>.GUIElement {
+	background-image: linear-gradient(#bbbbbb, #444444);
+}
+
+/** Panel **/
 .Board .panel {
     background-color: #4444FF;
     background-image:none;
@@ -35,15 +43,7 @@
     bottom: 10px;
 }
 
-.GUIElement {
-	background-image: linear-gradient(#bbbbbb, #444444);
-}
-
-.GUIElement .GUIElement {
-	background-image: inherit;
-}
-
-
+/** GUIElement.Menu **/
 .GUIElement.Menu .menuitem {
     margin: 10px 10px 10px 30px;
 }
@@ -59,19 +59,23 @@
     margin: 0 0 0 -20px;
     position: absolute;
 }
-
 .GUIElement.Menu .menuitem:hover {
 	cursor: pointer;
 }
 .GUIElement.Menu .menuitem.selected {
     background-color: #FFFFFF;
 }
+.GUIElement.Menu .menuitem.disabled {
+    color: #888;
+}
 
+/** MapMaker **/
 .MapMaker .images.panel {
 	height:calc(100% - 10px);
 	position: relative;
 }
 
+/** TextBox **/
 .TextBox :last-child:after {
 	display: inline-block;
 	padding:0 10px;

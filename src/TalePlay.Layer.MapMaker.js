@@ -86,7 +86,7 @@
 			this.images=new SC.Menu({
 				styleClass:["images","panel"],
 				type:SC.Menu.Types.VERTICAL,
-				selectionType:SC.Menu.SelectionTypes.none,
+				selectionType:SC.Menu.SelectionTypes.NONE,
 				columns:1,
 				converter:function(item,index,selected){
 					return '<img src="'+item.url+'">';
@@ -94,7 +94,7 @@
                 items:param.images
 			});
 			this.add(this.images);
-			this.images.addListener("select",this,this.placeImage);
+			this.images.addListener("select",this,"placeImage");
 			
 			this.map.setPosition(0);
 		},
@@ -132,7 +132,7 @@
 						var reader=new FileReader();
 						reader.onload=function(e)
 						{
-							rtn.file=Array.slice(new Uint8Array(e.target.result,0,e.target.result.byteLength));
+							rtn.file=Array.prototype.slice.call(new Uint8Array(e.target.result,0,e.target.result.byteLength));
 						};
 						reader.readAsArrayBuffer(val);
 					}

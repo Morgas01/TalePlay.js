@@ -24,8 +24,10 @@
 
 			this.type=param.type||MENU.Types.VERTICAL;
 			this.converter=param.converter||MENU.defaultConverter;
+			this.converterInfo=param.converterInfo||{};
 			this.rows=param.rows||null;
 			this.columns=param.columns||null;
+			this.header=param.header||null;
 			
 			this.stepDirection=null;
 			this.stepID=null;
@@ -108,7 +110,7 @@
 			{
 				this.menu.moveActive(step);
 				this._updateActive();
-				this.fire("activeChanged")
+				this.fire("activeChanged");
 				
 				if(this.stepID===null)
 				{
@@ -152,14 +154,18 @@
 			}
 			if(this.type===MENU.Types.GRID)
 			{
-				var column=Array.indexOf(target.parentNode.children,target),
-				row=Array.indexOf(this.domElement.children,target.parentNode),
+				var column=Array.prototype.indexOf.call(target.parentNode.children,target),
+				row=Array.prototype.indexOf.call(this.domElement.children,target.parentNode),
 				gridLayout=this.getGridLayout();
 				index=row*gridLayout.columns+column;
 			}
+			else if (this.type===MENU.Types.TABLE)
+			{
+				index=Array.prototype.indexOf.call(this.domElement.children,target)-1;
+			}
 			else
 			{
-				index=Array.indexOf(this.domElement.children,target);
+				index=Array.prototype.indexOf.call(this.domElement.children,target);
 			}
 			if(index>-1)
 			{
@@ -168,6 +174,7 @@
 				{
 					this.layer.board.focus();
 				}
+				this.setActive(index);
 				this.toggleSelect(index);
 			}
 		},
@@ -184,7 +191,7 @@
 		toggleSelect:function(index)
 		{
 			var cl=this.getItemDomElement(index).classList;
-			if(this.menu.selectionType===SC.MENU.SelectionTypes.single&&!this.menu.isSelected(index)&&this.menu.selectedIndexs.length>0)
+			if(this.menu.selectionType===SC.MENU.SelectionTypes.SINGLE&&!this.menu.isSelected(index)&&this.menu.selectedIndexs.length>0)
 			{
 				this.getItemDomElement(this.menu.selectedIndexs[0]).classList.remove("selected");
 			}
@@ -200,7 +207,7 @@
 		},
 		getGridLayout:function()
 		{
-			var rtn={rows:this.rows,columns:this.columns}
+			var rtn={rows:this.rows,columns:this.columns};
 			if(rtn.rows===null&&rtn.columns===null)
 			{
 				rtn.columns=Math.ceil(Math.sqrt(this.menu.items.length));
@@ -218,7 +225,11 @@
 		update:function()
 		{
 			this.domElement.innerHTML="";
-			if(this.type===MENU.Types.GRID&&this.menu.items.length>0)
+			if(this.type===MENU.Types.TABLE&&this.header)
+			{
+				this.domElement.innerHTML='<span class="menuheader"><span>'+this.header.join('</span><span>')+'</span></span>'
+			}
+			else if(this.type===MENU.Types.GRID&&this.menu.items.length>0)
 			{
 				var gridLayout=this.getGridLayout();
 				
@@ -242,29 +253,41 @@
 		},
 		convertItem:function(item,index)
 		{
-			var converted=this.converter(item,index,this.menu.selectedIndexs.indexOf(index)!==-1);
-			item=document.createElement("span");
-			if(Array.isArray(converted))
+			var converted=this.converter(item,index,this.converterInfo);
+			var element=null;
+			if(converted instanceof HTMLElement)
 			{
-				converted="<span>"+converted.join("</span><span>")+"</span>";
+				element=converted;
 			}
-			item.innerHTML=converted;
+			else
+			{
+				element=document.createElement("span");
+				if(Array.isArray(converted))
+				{
+					converted="<span>"+converted.join("</span><span>")+"</span>";
+				}
+				element.innerHTML=converted;
+			}
 			
-			item.classList.add("menuitem");
+			element.classList.add("menuitem");
 			if(this.menu.isSelected(item))
 			{
-				item.classList.add("selected");
+				element.classList.add("selected");
+			}
+			if(this.menu.isDisabled(item))
+			{
+				element.classList.add("disabled");
 			}
 			if(this.menu.active===index)
 			{
-				item.classList.add("active");
+				element.classList.add("active");
 			}
-			return item;
+			return element;
 		},
 		addItem:function(item)
 		{
 			this.menu.addItem(item);
-			this.domElement.appendChild(this.convertItem(item,this.menu.items.length));
+			this.domElement.appendChild(this.convertItem(item,this.menu.items.length-1));
 			return this;
 		},
 		addAll:function(items)
@@ -278,7 +301,7 @@
 		removeItem:function(item)
 		{
 			var index=this.menu.removeItem(item);
-			if(index!==-1&&index<this.domElement.children.length)
+			if(index!==-1)
 			{
 				this.getItemDomElement(index).remove();
 			}
@@ -292,6 +315,10 @@
 				row=Math.floor(index/gridLayout.columns),
 				column=index-row*gridLayout.columns;
 				return this.domElement.children[row].children[column];
+			}
+			else if (this.type===MENU.Types.TABLE)
+			{
+				return this.domElement.children[index+1];
 			}
 			else
 			{
@@ -316,7 +343,7 @@
 		clear:function()
 		{
 			this.menu.clear();
-			while(this.domElement.lastChild)
+			while(!this.header&&this.domElement.lastChild||this.domElement.lastChild!==this.domElement.firstChild)
 			{
 				this.domElement.lastChild.remove();
 			}
@@ -337,12 +364,12 @@
 		VERTICAL:1,
 		HORIZONTAL:2,
 		TABLE:3,
-		GRID:4//TODO
+		GRID:4
 	};
 	MENU.defaultConverter=function(item,index,selected)
 	{
 		return ""+item;
-	}
+	};
 	
 	var reverseTypes={};
 	for(var t in MENU.Types)

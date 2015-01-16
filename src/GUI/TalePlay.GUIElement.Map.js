@@ -100,8 +100,13 @@
 			else if(!this.paused)
 			{
 				var now=Date.now();
-				for([cursor, data] of this.movingCursors)
+
+				var it=this.movingCursors.entries();
+				var step=null;
+				while(step=it.next(),!step.done)
 				{
+					var cursor=step.value[0];
+					var data=step.value[1];
 					data.lastTime=now-performance.timing.navigationStart;
 				}
 				this.animationRquest=requestAnimationFrame(this._animateCursor);
@@ -163,8 +168,12 @@
 		},
 		_animateCursor:function(time)
 		{
-			for([cursor, data] of this.movingCursors)
+			var it=this.movingCursors.entries();
+			var step=null;
+			while(step=it.next(),!step.done)
 			{
+				var cursor=step.value[0];
+				var data=step.value[1];
 				if(!data.direction.equals(0)&&cursor)
 				{
 					var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
@@ -227,7 +236,7 @@
 			{
 				for(var i=0;i<this.cursors.length;i++)
 				{
-					var cursor=this.cursors[i]
+					var cursor=this.cursors[i];
 					if(!this.assignFilter||this.assignFilter(event,cursor,i))
 					{
 						var activateTrigger=this.trigger("activate",cursor.getPosition());
@@ -248,7 +257,8 @@
 									triggerType:"activate",
 									image:activateTrigger[t],
 									cursor:this.cursors[i],
-									value:activateTrigger[t].trigger.value
+									value:activateTrigger[t].trigger.value,
+									controllerEvent:event
 								});
 							}
 						}
