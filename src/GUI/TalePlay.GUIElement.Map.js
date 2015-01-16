@@ -100,7 +100,7 @@
 			else if(!this.paused)
 			{
 				var now=Date.now();
-				for([cursor, data] of this.movingCursors)
+				for(var [cursor, data] of this.movingCursors)
 				{
 					data.lastTime=now-performance.timing.navigationStart;
 				}
@@ -163,7 +163,7 @@
 		},
 		_animateCursor:function(time)
 		{
-			for([cursor, data] of this.movingCursors)
+			for(var [cursor, data] of this.movingCursors)
 			{
 				if(!data.direction.equals(0)&&cursor)
 				{
@@ -180,7 +180,7 @@
 							image:stepTrigger[i],
 							cursor:cursor,
 							value:stepTrigger[i].trigger.value,
-							distance:distance,
+							distance:distance
 						});
 					}
 					
@@ -227,7 +227,7 @@
 			{
 				for(var i=0;i<this.cursors.length;i++)
 				{
-					var cursor=this.cursors[i]
+					var cursor=this.cursors[i];
 					if(!this.assignFilter||this.assignFilter(event,cursor,i))
 					{
 						var activateTrigger=this.trigger("activate",cursor.getPosition());
