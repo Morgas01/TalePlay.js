@@ -154,18 +154,18 @@
 			}
 			if(this.type===MENU.Types.GRID)
 			{
-				var column=Array.indexOf(target.parentNode.children,target),
-				row=Array.indexOf(this.domElement.children,target.parentNode),
+				var column=Array.prototype.indexOf.call(target.parentNode.children,target),
+				row=Array.prototype.indexOf.call(this.domElement.children,target.parentNode),
 				gridLayout=this.getGridLayout();
 				index=row*gridLayout.columns+column;
 			}
 			else if (this.type===MENU.Types.TABLE)
 			{
-				index=Array.indexOf(this.domElement.children,target)-1;
+				index=Array.prototype.indexOf.call(this.domElement.children,target)-1;
 			}
 			else
 			{
-				index=Array.indexOf(this.domElement.children,target);
+				index=Array.prototype.indexOf.call(this.domElement.children,target);
 			}
 			if(index>-1)
 			{

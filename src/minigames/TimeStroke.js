@@ -86,7 +86,7 @@
 				{
 					item.domElement.style.left=distance+"%";
 					item.domElement.dataset.active=item.active=(distance<=this.zoneWidth);
-					if(Array.indexOf(this.domElement.children,item.domElement)===-1)
+					if(Array.prototype.indexOf.call(this.domElement.children,item.domElement)===-1)
 					{
 						this.domElement.appendChild(item.domElement);
 					}
