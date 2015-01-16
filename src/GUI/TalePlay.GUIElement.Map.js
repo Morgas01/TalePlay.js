@@ -100,8 +100,13 @@
 			else if(!this.paused)
 			{
 				var now=Date.now();
-				for(var [cursor, data] of this.movingCursors)
+
+				var it=this.movingCursors.entries();
+				var step=null;
+				while(step=it.next(),!step.done)
 				{
+					var cursor=step.value[0];
+					var data=step.value[1];
 					data.lastTime=now-performance.timing.navigationStart;
 				}
 				this.animationRquest=requestAnimationFrame(this._animateCursor);
@@ -163,8 +168,12 @@
 		},
 		_animateCursor:function(time)
 		{
-			for(var [cursor, data] of this.movingCursors)
+			var it=this.movingCursors.entries();
+			var step=null;
+			while(step=it.next(),!step.done)
 			{
+				var cursor=step.value[0];
+				var data=step.value[1];
 				if(!data.direction.equals(0)&&cursor)
 				{
 					var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
