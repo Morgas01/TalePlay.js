@@ -138,9 +138,19 @@
 		{
 			if(this.focused)
 			{
-				if(this.focused===this.map&&event.type==="buttonChanged"&&event.index===3&&event.value==1)
+				if(this.focused===this.map&&event.type==="buttonChanged")
 				{
-					this._openGameMenu();
+					switch (event.index)
+					{
+						case 1:
+							//TODO speed up?
+						case 2:
+							this.focused[Layer._CONTROLLER_EVENT_MAP[event.type]](event);
+							break;
+						case 3:
+							if(event.value==1) this._openGameMenu();
+							break;
+					}
 				}
 				else
 				{
@@ -314,7 +324,7 @@
 	RPGPlayer.saveConverter=function(save,index)
 	{
 		if(!save)
-			return "EMPTY";
+			return ["EMPTY"];
 		try
 		{
 			return [index,save.getTimeStamp().toLocaleString(),save.getData().map];
