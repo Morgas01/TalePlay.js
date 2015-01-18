@@ -9,7 +9,7 @@
 		bind:"bind",
 		mapping:"Controller.Mapping",
 		ctrlK:"Controller.Keyboard",
-		ctrlG:"Controller.GamePad",
+		ctrlG:"Controller.Gamepad",
 		GMenu:"GUI.Menu",
 		Menu:"Menu",
 		config:"GUI.ControllerConfig"

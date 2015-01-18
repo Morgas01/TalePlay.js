@@ -8,7 +8,7 @@
             uses:[MORGAS_PATH+"Morgas.util.function.rescope.js",MORGAS_PATH+"Morgas.NodePatch.js","css/structure/core.css"]
         },
         "TalePlay.Layer.js":{
-            deps:[MORGAS_PATH+"Morgas.js"],
+            deps:[MORGAS_PATH+"Morgas.js",MORGAS_PATH+"Morgas.Listeners.js"],
             uses:[MORGAS_PATH+"Morgas.NodePatch.js"]
         },
         "TalePlay.Controller.js":{
@@ -25,7 +25,7 @@
         },
         "TalePlay.Controller.Gamepad.js":{
             deps:[MORGAS_PATH+"Morgas.js","TalePlay.Controller.js"],
-            uses:[]
+            uses:[MORGAS_PATH+"Morgas.util.function.rescope.js"]
         },
         
         "TalePlay.Map.js":{
