@@ -11,7 +11,6 @@
 		ctrlK:"Controller.Keyboard",
 		ctrlG:"Controller.Gamepad",
 		GMenu:"GUI.Menu",
-		Menu:"Menu",
 		config:"GUI.ControllerConfig"
 	});
 	
@@ -53,7 +52,7 @@
 			this.controllers=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
 				header:["No.","Device","Mapping","Player"],
-				selectionType:SC.Menu.SelectionTypes.SINGLE,
+				selectionType:SC.GMenu.SelectionTypes.SINGLE,
 				converter:MANAGER.controllerConverter
 			});
 			this.controllers.addListener("select",this,"_MenuSelect");
@@ -63,7 +62,7 @@
 			this.mappings=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
 				header:["Name","Type"],
-				selectionType:SC.Menu.SelectionTypes.SINGLE,
+				selectionType:SC.GMenu.SelectionTypes.SINGLE,
 				converter:MANAGER.mappingConverter,
 				items:param.mappings
 			});

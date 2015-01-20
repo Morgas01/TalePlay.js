@@ -42,13 +42,17 @@
 		},
 		onAnalogStick:function(event)
 		{
-			if(this.stepID)
+			var direction=event.analogStick.clonePoint().doMath(Math.round,0);
+			if(!direction.equals(this.stepDirection))
 			{
-				clearTimeout(this.stepID);
-				this.stepID=null;
+				if(this.stepID)
+				{
+					clearTimeout(this.stepID);
+					this.stepID=null;
+				}
+				this.stepDirection=direction;
+				var step=this._stepActive();
 			}
-			this.stepDirection=event.analogStick;
-			var step=this._stepActive();
 		},
 		_stepActive:function()
 		{
@@ -57,36 +61,11 @@
 			{
 				case MENU.Types.VERTICAL:
 				case MENU.Types.TABLE:
-					if(this.stepDirection.y>=0.5)
-					{
-						step=-1;
-					}
-					else if (this.stepDirection.y<=-0.5)
-					{
-						step=1;
-					}
-					break;
-				case MENU.Types.HORIZONTAL:
-					if(this.stepDirection.x>=0.5)
-					{
-						step=1;
-					}
-					else if (this.stepDirection.x<=-0.5)
-					{
-						step=-1;
-					}
+					step=-this.stepDirection.y
 					break;
 				case MENU.Types.GRID:
 					var gridLayout=this.getGridLayout();
-					if(this.stepDirection.x>=0.5)
-					{
-						step=1;
-					}
-					else if (this.stepDirection.x<=-0.5)
-					{
-						step=-1;
-					}
-					else if(this.stepDirection.y>=0.5)
+					if(this.stepDirection.y===1)
 					{
 						step=-gridLayout.columns;
 						if(this.menu.active+step<0)
@@ -95,7 +74,7 @@
 							step=(r===0||r>this.menu.active) ? -r : step-r;
 						}
 					}
-					else if (this.stepDirection.y<=-0.5)
+					else if (this.stepDirection.y===-1)
 					{
 						step=gridLayout.columns;
 						if(this.menu.active+step>=this.menu.items.length)
@@ -104,6 +83,8 @@
 							step=this.menu.items.length-this.menu.active+step;
 						}
 					}
+					case MENU.Types.HORIZONTAL:
+					step+=this.stepDirection.x;
 					break;
 			}
 			if(step!==0)
@@ -360,7 +341,7 @@
 			this._updateActive();
 		}
 	});
-	GMOD("shortcut")({SelectionTypes:function(){return GMOD("Menu").SelectionTypes}},MENU);
+	GMOD("shortcut")({SelectionTypes:()=>GMOD("Menu").SelectionTypes},MENU);
 	MENU.Types={
 		VERTICAL:1,
 		HORIZONTAL:2,

@@ -30,7 +30,7 @@
         
         "TalePlay.Map.js":{
             deps:[MORGAS_PATH+"Morgas.js"],
-            uses:[MORGAS_PATH+"Morgas.util.object.find.js",MORGAS_PATH+"Morgas.NodePatch.js",MORGAS_PATH+"Morgas.Organizer.js",
+            uses:[MORGAS_PATH+"Morgas.util.object.find.js",MORGAS_PATH+"Morgas.NodePatch.js",
                   "Math/TalePlay.Math.Point.js","Math/TalePlay.Math.Rect.js","css/structure/Map.css"]
         },
         "TalePlay.Menu.js":{
@@ -58,7 +58,7 @@
         },
         "GUI/TalePlay.GUIElement.ControllerConfig.js":{
             deps:[MORGAS_PATH+"Morgas.js","GUI/TalePlay.GUIElement.js"],
-            uses:[MORGAS_PATH+"Morgas.util.function.rescope.js","TalePlay.Controller.js","TalePlay.Controller.Mapping.js",
+            uses:[MORGAS_PATH+"Morgas.util.function.rescope.js","TalePlay.Controller.Mapping.js",
                   "css/structure/GUIElement.ControllerConfig.css"]
         },
         "GUI/TalePlay.GUIElement.ControllerManager.js":{
@@ -69,9 +69,8 @@
         },
         "GUI/TalePlay.GUIElement.Map.js":{
             deps:[MORGAS_PATH+"Morgas.js","GUI/TalePlay.GUIElement.js","TalePlay.Map.js"],
-            uses:[MORGAS_PATH+"Morgas.util.object.find.js",MORGAS_PATH+"Morgas.util.object.goPath.js",
-                  MORGAS_PATH+"Morgas.util.function.rescope.js",MORGAS_PATH+"Morgas.util.function.proxy.js",
-                  "Math/TalePlay.Math.Point.js"]
+            uses:[MORGAS_PATH+"Morgas.util.object.find.js",MORGAS_PATH+"Morgas.util.function.rescope.js",MORGAS_PATH+"Morgas.util.function.proxy.js",
+                  MORGAS_PATH+"Morgas.Organizer","Math/TalePlay.Math.Point.js"]
         },
         "GUI/TalePlay.GUIElement.Menu.js":{
             deps:[MORGAS_PATH+"Morgas.js","GUI/TalePlay.GUIElement.js"],
@@ -93,6 +92,34 @@
         "minigames/TimeStroke.js":{
         	deps:[MORGAS_PATH+"Morgas.js","GUI/TalePlay.GUIElement.js"],
         	uses:[MORGAS_PATH+"Morgas.util.function.rescope.js","minigames/TimeStroke.css"]
+        },
+        
+        "RPGPlayer/TalePlay.RPGPlayer.js":{
+        	deps:[MORGAS_PATH+"Morgas.js","TalePlay.Layer.js"],
+        	uses:[MORGAS_PATH+"Morgas.Detached.js",MORGAS_PATH+"Morgas.util.Request.js",MORGAS_PATH+"DB/Morgas.DB.IndexedDBConnector.js",
+        	      "GUI/TalePlay.GUIElement.Map.js","RPGPlayer/TalePlay.GUIElement.Dialog.js","RPGPlayer/TalePlay.RPGPlayer.GameSave.js",
+        	      //defaults
+        	      "TalePlay.Layer.ActionMenu.StartMenu.js","RPGPlayer/TalePlay.Layer.ActionMenu.GameMenu.js"],
+        },
+        "RPGPlayer/TalePlay.GUIElement.Dialog.js":{
+        	deps:[MORGAS_PATH+"Morgas.js","GUI/TalePlay.GUIElement.js"],
+        	uses:[MORGAS_PATH+"Morgas.util.function.proxy.js","GUI/TalePlay.GUIElement.TextBox.js","GUI/TalePlay.GUIElement.Menu.js"],
+        },
+        "RPGPlayer/TalePlay.RPGPlayer.GameSave.js":{
+        	deps:[MORGAS_PATH+"Morgas.js",MORGAS_PATH+"DB/Morgas.DB.js","RPGPlayer/TalePlay.RPGPlayer.js"],
+        	uses:[],
+        },
+        "TalePlay.Layer.ActionMenu.js":{
+        	deps:[MORGAS_PATH+"Morgas.js","TalePlay.Layer.js"],
+        	uses:["GUI/TalePlay.GUIElement.Menu.js"],
+        },
+        "TalePlay.Layer.ActionMenu.StartMenu.js":{
+        	deps:[MORGAS_PATH+"Morgas.js","TalePlay.Layer.ActionMenu.js"],
+        	uses:[MORGAS_PATH+"Morgas.util.Request.js"],
+        },
+        "RPGPlayer/TalePlay.Layer.ActionMenu.GameMenu.js":{
+        	deps:[MORGAS_PATH+"Morgas.js","TalePlay.Layer.ActionMenu.js"],
+        	uses:[MORGAS_PATH+"Morgas.util.Request.js"],
         },
     });
 

@@ -4,13 +4,17 @@
 
 	var SC=µ.getModule("shortcut")({
 		det:"Detached",
-		Map:"GUI.Map",
-		Dialog:"GUI.Dialog",
 		rj:"Request.json",
-		it:"iterate",
 		debug:"debug",
 		idb:"IDBConn",
-		GameSave:"RPGPlayer.GameSave"
+		
+		Map:"GUI.Map",
+		Dialog:"GUI.Dialog",
+		GameSave:"RPGPlayer.GameSave",
+		/* default modules:
+		 * StartMenu
+		 * RPGPlayer.GameMenu
+		 */
 	});
 	
 	var requestCallbacks={
