@@ -109,7 +109,7 @@
 			switch (event.value)
 			{
 				case "Load":
-					this.fire("load",{save:this.menu.getActive().value.getData()});
+					this.fire("load",{save:this.menu.getActive().value});
 					break;
 				case "Save":
 					this.saveData.setID(this.menu.getActive().index);
