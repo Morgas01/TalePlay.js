@@ -345,13 +345,12 @@
 					type="GAMEPAD";
 					break;
 			}
-			var name=this.domElement.querySelector('[data-field="name"]')
+			var name=this.domElement.querySelector('[data-field="name"]');
 			if(name)
 			{
 				name=name.value;
 			}
-			var mapping=new SC.mapping({data:this.getData(),type:type,name:name});
-			return mapping;
+			return new SC.mapping({data:this.getData(),type:type,name:name});
 		},
 		destroy:function()
 		{

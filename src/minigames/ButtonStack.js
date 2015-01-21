@@ -2,7 +2,7 @@
 
     var GUI=GMOD("GUIElement");
 
-    ButtonStack=µ.Class(GUI,{
+    var ButtonStack=µ.Class(GUI,{
         init:function(param)
         {
             param=param||{};

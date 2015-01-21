@@ -3,7 +3,7 @@
 	var SC=µ.getModule("shortcut")({
 		Board:"Board",
 		Layer:"Layer",
-		gMap:"GUI.Map",
+		gMap:"GUI.Map"
 	});
 	module(name);
 	test(name, function() {
@@ -66,7 +66,7 @@
 		var eventlog=document.createElement("textarea");
 		eventlog.style.width="100%";
 		eventlog.style.height="20px";
-		board.domElement.parentNode.parentNode.appendChild(eventlog)
+		board.domElement.parentNode.parentNode.appendChild(eventlog);
 		
 		map.addListener("trigger",map,function(event)
 		{

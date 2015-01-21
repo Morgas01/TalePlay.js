@@ -2,7 +2,7 @@
 	
 	var GUI=GMOD("GUIElement"),
 	SC=GMOD("shortcut")({
-		rescope:"rescope",
+		rescope:"rescope"
 	});
 	
 	var TimeStroke=µ.Class(GUI,{
@@ -49,7 +49,7 @@
 		},
 		onButton:function(event)
 		{
-			var item=this.buttonItems[0]
+			var item=this.buttonItems[0];
 			if(event.value===1)
 			{
 				if(item&&item.active===true&&item.button===event.index)

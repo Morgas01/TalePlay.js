@@ -15,7 +15,7 @@
         	this.nodePatch=new SC.Node(this,{
         		children:"images",
         		addChild:"add",
-        		removeChild:"remove",
+        		removeChild:"remove"
         	});
         	
         	param=param||{};

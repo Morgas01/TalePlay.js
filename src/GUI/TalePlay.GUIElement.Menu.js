@@ -61,7 +61,7 @@
 			{
 				case MENU.Types.VERTICAL:
 				case MENU.Types.TABLE:
-					step=-this.stepDirection.y
+					step=-this.stepDirection.y;
 					break;
 				case MENU.Types.GRID:
 					var gridLayout=this.getGridLayout();
@@ -70,7 +70,7 @@
 						step=-gridLayout.columns;
 						if(this.menu.active+step<0)
 						{
-							var r=this.menu.items.length%gridLayout.columns
+							var r=this.menu.items.length%gridLayout.columns;
 							step=(r===0||r>this.menu.active) ? -r : step-r;
 						}
 					}

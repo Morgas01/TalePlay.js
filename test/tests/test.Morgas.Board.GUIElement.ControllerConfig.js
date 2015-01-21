@@ -5,7 +5,7 @@
 		Board:"Board",
 		Layer:"Layer",
 		KCon:"Controller.Keyboard",
-		Config:"GUI.ControllerConfig",
+		Config:"GUI.ControllerConfig"
 	});
 	module(name);
 	test(name, function() {

@@ -55,7 +55,7 @@
 				background-color: red;
 			}
 			.TimeStroke .ButtonItem[data-active="true"] {
-				box-shadow: 0px 0px 5px 5px;
+				box-shadow: 0 0 5px 5px;
 			}
 		</style>
 		<script>
@@ -65,7 +65,7 @@
 					Layer:"Layer",
 					game:"Minigames.TimeStroke",
 					CK:"Controller.Keyboard"
-				})
+				});
 				var board=new SC.Board(document.body),
 				layer=new SC.Layer(),
 				ctrl=new SC.CK(),

@@ -98,6 +98,6 @@
 	LAYER._CONTROLLER_EVENT_MAP={
 			"analogStickChanged":"onAnalogStick",
 			"buttonChanged":"onButton"
-	}
+	};
 	SMOD("Layer",LAYER);
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
