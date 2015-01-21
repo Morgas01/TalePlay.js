@@ -10,8 +10,8 @@
 		point:"Math.Point"
 	});
 	
-	var cursorFilter= image => image instanceof GUI.Map.Cursor;
-	var cursorGetter= GuiMap => GuiMap.organizer.getFilter("cursors");
+	var cursorFilter=function(image){return image instanceof GUI.Map.Cursor};
+	var cursorGetter=function(GuiMap){return GuiMap.organizer.getFilter("cursors")};
 	
 	GUI.Map=µ.Class(GUI,{
 		init:function(param)
@@ -79,7 +79,7 @@
 		},
 		updateSize:function()
 		{
-			this.map.calcSize(img => !(img instanceof GUI.Map.Cursor));
+			this.map.calcSize(function(img){return !(img instanceof GUI.Map.Cursor)});
 		},
 		setThreshold:function(numberOrPoint,y)
 		{

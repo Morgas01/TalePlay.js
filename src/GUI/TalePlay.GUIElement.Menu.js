@@ -341,7 +341,7 @@
 			this._updateActive();
 		}
 	});
-	GMOD("shortcut")({SelectionTypes:()=>GMOD("Menu").SelectionTypes},MENU);
+	GMOD("shortcut")({SelectionTypes:function(){return GMOD("Menu").SelectionTypes}},MENU);
 	MENU.Types={
 		VERTICAL:1,
 		HORIZONTAL:2,

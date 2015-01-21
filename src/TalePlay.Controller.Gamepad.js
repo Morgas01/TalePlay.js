@@ -19,7 +19,7 @@
 		},
 		update:function()
 		{
-			this.set(this.gamepad.buttons.map(b => b.value),this.gamepad.axes);
+			this.set(this.gamepad.buttons.map(function(b){return b.value}),this.gamepad.axes);
 			this.pollKey=requestAnimationFrame(this.update);
 		},
 		toJSON:function()
