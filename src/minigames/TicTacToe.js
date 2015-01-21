@@ -15,7 +15,7 @@
 			param.converter=param.converter||TicTacToe.defaultConverter;
 			param.active=param.active||4;
 			
-			this.superInit(MENU,param)
+			this.superInit(MENU,param);
 			this.addStyleClass("TicTacToe");
 			this.createListener("finish");
 
@@ -26,7 +26,7 @@
 		},
 		setTurn:function(turn)
 		{
-			this.turn=+!!turn
+			this.turn=+!!turn;
 			this.domElement.dataset.turn=this.turn+1;
 		},
 		toggleTurn:function()

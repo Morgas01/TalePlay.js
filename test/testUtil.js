@@ -1,6 +1,6 @@
 function logController()
 {
-	var type=this instanceof µ.getModule("Controller.Keyboard")?"Keyboard":"Gamepad"
+	var type=this instanceof µ.getModule("Controller.Keyboard")?"Keyboard":"Gamepad";
 	document.getElementById("logger").value=type+": "+this;
 }
 

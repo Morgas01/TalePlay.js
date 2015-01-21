@@ -90,7 +90,7 @@
 			this.paused=!!paused;
 			if(this.animationRquest!==null&&this.paused)
 			{
-				cancelAnimationFrame(this.animationRquest)
+				cancelAnimationFrame(this.animationRquest);
 				this.animationRquest=null;
 			}
 			else if(!this.paused)

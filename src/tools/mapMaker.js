@@ -69,7 +69,7 @@
 		putImages:function()
 		{
 			var dialog=document.querySelector("#addImageDialog");
-			var images=[]
+			var images=[];
 			
 			var input=dialog.querySelector("input");
 			for(var i=0;i<input.files.length;i++)
@@ -137,7 +137,7 @@
 		};
 		reader.readAsText(e.target.files[0]);
 		board.focus();
-	}, false)
+	}, false);
 
 	board.focus();
 }, false);

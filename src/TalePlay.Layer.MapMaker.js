@@ -7,7 +7,7 @@
 		setIn:"setInputValues",
 		getIn:"getInputValues",
 		Map:"GUI.Map",
-		Menu:"GUI.Menu",
+		Menu:"GUI.Menu"
 	});
 	
 	var imageLayer=µ.Class(Layer,{
