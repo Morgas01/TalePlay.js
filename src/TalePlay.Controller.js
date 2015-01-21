@@ -164,7 +164,7 @@
 	CTRL.AnalogStick=µ.Class(POINT,{
 		init:function(x,y)
 		{
-			this.old={x:0,y:0}
+			this.old={x:0,y:0};
 			this.superInit(POINT,x,y);
 		},
 		clone:function(cloning)

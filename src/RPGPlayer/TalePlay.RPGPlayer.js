@@ -10,7 +10,7 @@
 		
 		Map:"GUI.Map",
 		Dialog:"GUI.Dialog",
-		GameSave:"RPGPlayer.GameSave",
+		GameSave:"RPGPlayer.GameSave"
 		/* default modules:
 		 * StartMenu
 		 * RPGPlayer.GameMenu
@@ -49,7 +49,7 @@
 				return error;
             }
 		}
-	}
+	};
 
     var RPGPlayer=Layer.RPGPlayer=µ.Class(Layer,{
         init:function(param)
@@ -178,7 +178,7 @@
             	{
             		if(self.quests.has(save.quests[i]))
             		{
-            			quest=self.quests.get(save.quests[i]).clone();
+            			var quest=self.quests.get(save.quests[i]).clone();
             			self.activeQuests.set(quest.name,quest);
             			aQ.push(quest.name);
             		}
@@ -278,7 +278,7 @@
 		{
 			for(var i=0;i<actions.length;i++)
 			{
-				var a=actions[i]
+				var a=actions[i];
 				switch (a.type) 
 				{
 					case "ABORT_QUEST":

@@ -4,7 +4,7 @@
 	var SC=µ.getModule("shortcut")({
 		Board:"Board",
 		Layer:"Layer",
-		Manager:"GUI.ControllerManager",
+		Manager:"GUI.ControllerManager"
 	});
 	module(name);
 	test(name, function() {

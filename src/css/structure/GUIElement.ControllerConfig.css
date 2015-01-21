@@ -23,7 +23,7 @@
 }
 .ControllerConfig .button input {
     top:25px;
-    left:0px;
+    left:0;
 }
 .ControllerConfig .analogSticks {
     padding:50px 0;

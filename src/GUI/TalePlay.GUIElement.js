@@ -18,7 +18,7 @@
 		        parent:"parent",
 		        children:"children",
 		        addChild:"addChild",
-		        removeChild:"removeChild",
+		        removeChild:"removeChild"
 			},true);
 			
 			SC.sc({layer:function(node)
@@ -29,7 +29,7 @@
 					layer=layer.parent
 				}
 				return layer;
-			}},this,this.nodePatch,true)
+			}},this,this.nodePatch,true);
 			//this.layer=null;
 
 			this.domElement=document.createElement(param.element||"div");

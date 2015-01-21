@@ -39,7 +39,7 @@
 						text:"import from File",
 						action:"fileImport"
 					}
-				],
+				]
 			});
 
 			this.domElement.classList.add("StartMenu");
