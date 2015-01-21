@@ -4,7 +4,6 @@
     
 	var SC=GMOD("shortcut")({
 		rs:"rescope",
-		ctrlK:"Controller.Keyboard",
         node:"NodePatch"
 	});
 	

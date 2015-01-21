@@ -4,15 +4,14 @@
 	MAP=GMOD("Map"),
 	SC=GMOD("shortcut")({
 		find:"find",
-		goPath:"goPath",//for Map.cursors shortcut
 		rescope:"rescope",
 		proxy:"proxy",
         Org:"Organizer",
 		point:"Math.Point"
 	});
 	
-	var cursorFilter=function(image){return image instanceof GUI.Map.Cursor};
-	var cursorGetter=function(GuiMap){return GuiMap.organizer.getFilter("cursors")};
+	var cursorFilter= image => image instanceof GUI.Map.Cursor;
+	var cursorGetter= GuiMap => GuiMap.organizer.getFilter("cursors");
 	
 	GUI.Map=µ.Class(GUI,{
 		init:function(param)
@@ -80,10 +79,7 @@
 		},
 		updateSize:function()
 		{
-			this.map.calcSize(function(img)
-			{
-				return !(img instanceof GUI.Map.Cursor)
-			});
+			this.map.calcSize(img => !(img instanceof GUI.Map.Cursor));
 		},
 		setThreshold:function(numberOrPoint,y)
 		{
