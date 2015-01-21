@@ -1,9 +1,8 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD){
 	
 	var SC=GMOD("shortcut")({
 		rs:"rescope",
-		mapping:"Controller.Mapping",
-		ctrl:"Controller"
+		mapping:"Controller.Mapping"
 	});
 	
 	var controllerTypes={
@@ -165,7 +164,7 @@
 			}
 			if(this.controller)
 			{
-				if(this.controller instanceof SC.ctrl.Keyboard)
+				if(HMOD("Controller.Keyboard")&&this.controller instanceof GMOD("Controller.Keyboard"))
 				{
 					this.controllerType=controllerTypes.Keyboard;
 					this.domElement.classList.add("Keyboard");
@@ -362,4 +361,4 @@
 	});
 	SMOD("GUI.ControllerConfig",CONF);
 	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);

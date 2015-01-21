@@ -6,11 +6,11 @@
 	
 	var SC=GMOD("shortcut")({
 		rs:"rescope",
+		bind:"bind",
 		mapping:"Controller.Mapping",
 		ctrlK:"Controller.Keyboard",
-		ctrlG:"Controller.GamePad",
+		ctrlG:"Controller.Gamepad",
 		GMenu:"GUI.Menu",
-		Menu:"Menu",
 		config:"GUI.ControllerConfig"
 	});
 	
@@ -33,7 +33,8 @@
 			'<td class="controllers"></td>'+
 			'<td class="mappings"></td>'+
 		'</tr>'+
-	'</table>';
+	'</table>'+
+	'<button data-action="close">OK</button>';
 	var MANAGER=GUI.ControllerManager=µ.Class(GUI,{
 		init:function(param)
 		{
@@ -51,7 +52,7 @@
 			this.controllers=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
 				header:["No.","Device","Mapping","Player"],
-				selectionType:SC.Menu.SelectionTypes.SINGLE,
+				selectionType:SC.GMenu.SelectionTypes.SINGLE,
 				converter:MANAGER.controllerConverter
 			});
 			this.controllers.addListener("select",this,"_MenuSelect");
@@ -61,7 +62,7 @@
 			this.mappings=new SC.GMenu({
 				type:SC.GMenu.Types.TABLE,
 				header:["Name","Type"],
-				selectionType:SC.Menu.SelectionTypes.SINGLE,
+				selectionType:SC.GMenu.SelectionTypes.SINGLE,
 				converter:MANAGER.mappingConverter,
 				items:param.mappings
 			});
@@ -82,12 +83,9 @@
 			this.domElement.querySelector(".mappings").appendChild(this.mappings.domElement);
 			
 			this.update();
-			//TODO remove on destroy
-			var _self=this;
-			window.addEventListener("gamepadconnected",function()
-			{
-				_self.update("devices");
-			});
+			
+			this._gamepadListener=SC.bind(this.update,this,"devices");
+			window.addEventListener("gamepadconnected",this._gamepadListener);
 		},
 		update:function(part)
 		{
@@ -183,7 +181,7 @@
 				this.mappings.removeItem(mapping.value);
 				if(this.dbConn&&mapping.value.getID()!==undefined)
 				{
-					this.dbConn.delete(SC.mapping,mapping.value);
+					this.dbConn["delete"](SC.mapping,mapping.value);
 				}
 			}
 		},
@@ -248,12 +246,22 @@
 			}
 			return false;
 		},
+		close:function()
+		{
+			if(this.layer&&this.layer.board)this.layer.board.focus();
+			this.destroy();
+		},
 		_playerChanged:function(event)
 		{
 			if(event.target.dataset.controllerindex!==undefined)
 			{
 				this.layer.board.controllers[event.target.dataset.controllerindex].player=1*event.target.value||1;
 			}
+		},
+		destroy:function()
+		{
+			GUI.prototype.destroy.call(this);
+			window.removeEventListener("gamepadconnected",this._gamepadListener);
 		}
 	});
 	MANAGER.controllerConverter=function(item,index,selected)
@@ -273,10 +281,7 @@
 		}
 		else
 		{
-			return [
-			        item.getValueOf("name"),
-			        item.getValueOf("type")
-		    ];
+			return [item.getValueOf("name"),item.getValueOf("type")];
 		}
 	};
 	SMOD("GUI.ControllerManager",MANAGER);

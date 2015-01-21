@@ -89,6 +89,7 @@
     WR(testDir+"test.Morgas.Board.GUIElement.TextBox.js");
     
     //RPGPlayer
+	WR(morgasDir+"Morgas.util.download.js");
 	WR(morgasDir+"DB/Morgas.DB.IndexedDBConnector.js");
 	WR(srcDir+"TalePlay.Layer.Persistance.js");
     WR(srcDir+"TalePlay.Layer.ActionMenu.js");

@@ -4,7 +4,6 @@
 	MAP=GMOD("Map"),
 	SC=GMOD("shortcut")({
 		find:"find",
-		goPath:"goPath",//for Map.cursors shortcut
 		rescope:"rescope",
 		proxy:"proxy",
         Org:"Organizer",
@@ -80,10 +79,7 @@
 		},
 		updateSize:function()
 		{
-			this.map.calcSize(function(img)
-			{
-				return !(img instanceof GUI.Map.Cursor)
-			});
+			this.map.calcSize(function(img){return !(img instanceof GUI.Map.Cursor)});
 		},
 		setThreshold:function(numberOrPoint,y)
 		{

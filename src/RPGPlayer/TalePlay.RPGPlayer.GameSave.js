@@ -15,13 +15,13 @@
 			
 			this.superInit(DBOBJ,param);
 			
+			this.addField("gameName",SC.field.TYPES.STRING,param.gameName);
 			this.addField("data",SC.field.TYPES.JSON,param.data);
 			this.addField("timeStamp",SC.field.TYPES.DATE,param.timeStamp||new Date());
 		},
+		getGameName:function(){return this.getValueOf("gameName");},
 		getData:function(){return this.getValueOf("data");},
-		setData:function(d){return this.setValueOf("data",d);},
-		getTimeStamp:function(){return this.getValueOf("timeStamp");},
-		setTimeStamp:function(t){return this.setValueOf("timeStamp",t);},
+		getTimeStamp:function(){return this.getValueOf("timeStamp");}
 	});
 	SMOD("RPGPlayer.GameSave",GSAVE);
 	

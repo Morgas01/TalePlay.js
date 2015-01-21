@@ -8,6 +8,9 @@
 		manager:"GUI.ControllerManager",
 		rj:"Request.json",
 		debug:"debug"
+		/* default module
+		 * Layer.Persistance
+		 */
 	});
 	
 	var SMENU=AMENU.StartMenu=µ.Class(AMENU,{

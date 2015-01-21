@@ -8,7 +8,7 @@
 		rs:"rescope",
 		Menu:"GUI.Menu",
 		debug:"debug",
-		donwload:"download"
+		download:"download"
 	});
 	
 	var PERSISTANCE=LAYER.Persistance=µ.Class(LAYER,{
@@ -28,7 +28,8 @@
 			this.saveData=param.saveData;
 			
 			this.menu=new SC.Menu({
-				styleClass:param.styleClass,
+				type:param.type||SC.Menu.Types.TABLE,
+				styleClass:"center",
 				active:param.active||0,
 				loop:param.loop===true,
 				selectionType:SC.Menu.SelectionTypes.NONE,
@@ -83,6 +84,7 @@
 			if(event.value)
 			{
 				var subMenu=new SC.Menu({
+					styleClass:["panel","center"],
 					items:[
 					   this.saveData ? "Save" : "Load",
 					   "Export",
@@ -114,7 +116,7 @@
 					this.dbConn.save([this.saveData]).then(this._update);
 					break;
 				case "Export":
-					SC.download(JSON.stringify(this.menu.getActive().value));
+					SC.download(JSON.stringify(this.menu.getActive().value),"save.json","application/json");
 					break;
 				case "Delete":
 					this.dbConn["delete"](this.saveClass,[this.menu.getActive().value]).then(this._update);

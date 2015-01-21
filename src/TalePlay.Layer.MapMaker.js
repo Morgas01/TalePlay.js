@@ -160,7 +160,7 @@
         selectImage:function()
         {
             var pos=this.map.cursors[0].getPosition();
-            var image=this.map.getImages(val => val!==this.map.cursors[0]&&val.rect.contains(pos))[0];
+            var image=this.map.getImages(function(val){return val!==this.map.cursors[0]&&val.rect.contains(pos)})[0];
             if(image)
             {
                 new imageLayer(this.board,image,function(image,action)
