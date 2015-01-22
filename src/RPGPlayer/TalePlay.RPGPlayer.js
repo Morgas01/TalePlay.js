@@ -201,7 +201,7 @@
 				"position":this.cursor.getPosition(),
 				"quests":[]
 			};
-			save.cursor.urls.map(u => u.slice(u.lastIndexOf("/")+1));
+			save.cursor.urls.map(u => u ? u.slice(u.lastIndexOf("/")+1) : u);
 			let it=this.activeQuests.entries();
 			let step=null;
 			while(step=it.next(),!step.done)
