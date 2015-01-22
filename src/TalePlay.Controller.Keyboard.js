@@ -1,8 +1,8 @@
 (function(µ,SMOD,GMOD){
 
-	let CTRL=GMOD("Controller");
+	var CTRL=GMOD("Controller");
 	
-	let SC=µ.shortcut({
+	var SC=µ.shortcut({
 		rescope:"rescope"
 	});
 	
@@ -56,8 +56,8 @@
 					event.preventDefault();
 					event.stopPropagation();
 
-					let map={};
-					map[event.code||event.key]=value;
+					var map={};
+					map[event.code||event.key||event.keyCode]=value;
 					this.setButton(map);
 				}
 			}

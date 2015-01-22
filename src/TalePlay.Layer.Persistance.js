@@ -2,16 +2,16 @@
 	
 	//TODO change to Layer
 	
-	let LAYER=GMOD("Layer");
+	var LAYER=GMOD("Layer");
 	
-	let SC=GMOD("shortcut")({
+	var SC=GMOD("shortcut")({
 		rs:"rescope",
 		Menu:"GUI.Menu",
 		debug:"debug",
 		download:"download"
 	});
 	
-	let PERSISTANCE=LAYER.Persistance=µ.Class(LAYER,{
+	var PERSISTANCE=LAYER.Persistance=µ.Class(LAYER,{
 		init:function(param)
 		{
 			param=param||{};
@@ -69,8 +69,8 @@
 		_fillMenu:function(results)
 		{
 			this.menu.clear();
-			let saves=[];
-			for(let i=0;i<results.length;i++)
+			var saves=[];
+			for(var i=0;i<results.length;i++)
 			{
 				saves[results[i].getID()]=results[i];
 			}
@@ -83,7 +83,7 @@
 		{
 			if(event.value)
 			{
-				let subMenu=new SC.Menu({
+				var subMenu=new SC.Menu({
 					styleClass:["panel","center"],
 					items:[
 					   this.saveData ? "Save" : "Load",

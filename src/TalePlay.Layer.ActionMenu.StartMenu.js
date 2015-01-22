@@ -2,9 +2,9 @@
 	
 	//TODO change to Layer
 	
-	let AMENU=GMOD("Layer.ActionMenu");
+	var AMENU=GMOD("Layer.ActionMenu");
 	
-	let SC=GMOD("shortcut")({
+	var SC=GMOD("shortcut")({
 		manager:"GUI.ControllerManager",
 		rj:"Request.json",
 		debug:"debug"
@@ -13,7 +13,7 @@
 		 */
 	});
 	
-	let SMENU=AMENU.StartMenu=µ.Class(AMENU,{
+	var SMENU=AMENU.StartMenu=µ.Class(AMENU,{
 		init:function(param)
 		{
 			param=param||{};
@@ -74,7 +74,7 @@
 		{
 			SC.rj(item.url,this).then(function(newGameJson,scope)
 			{
-				let save=new scope.saveClass();
+				var save=new scope.saveClass();
 				save.fromJSON(newGameJson);
 				scope.fire("start",{save:save});
 			},
@@ -85,19 +85,19 @@
 		},
 		openControllerManager:function(item)
 		{
-			let param={
+			var param={
 				styleClass:["panel","overlay"],
 				buttons:item.controllerLayout.buttons,
 				analogSticks:item.controllerLayout.analogSticks,
 				dbConn:this.dbConn
 			};
-			let m=new SC.manager(param);
+			var m=new SC.manager(param);
 			this.add(m);
 			m.update("controllers");
 		},
 		loadSave:function()
 		{
-			let p=new this.persistanceLayer({
+			var p=new this.persistanceLayer({
 				dbConn:this.dbConn,
 				saveClass:this.saveClass,
 				saveConverter:this.saveConverter

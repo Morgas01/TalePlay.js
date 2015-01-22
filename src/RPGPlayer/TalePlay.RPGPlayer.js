@@ -1,8 +1,8 @@
 (function(µ,SMOD,GMOD){
 	
-	let Layer=GMOD("Layer");
+	var Layer=GMOD("Layer");
 
-	let SC=µ.getModule("shortcut")({
+	var SC=µ.getModule("shortcut")({
 		det:"Detached",
 		rj:"Request.json",
 		debug:"debug",
@@ -17,13 +17,13 @@
 		 */
 	});
 	
-	let requestCallbacks={
+	var requestCallbacks={
 		quests:{
 			loaded:function quests_loaded(quests,self)
             {
-            	for(let i=0;i<quests.length;i++)
+            	for(var i=0;i<quests.length;i++)
             	{
-            		let quest=new RPGPlayer.Quest(quests[i]);
+            		var quest=new RPGPlayer.Quest(quests[i]);
             		self.quests.set(quest.name,quest);
             	}
             	return self;
@@ -37,7 +37,7 @@
 		dialogs:{
 			loaded:function dialogs_loaded(dialogs,self)
             {
-            	for(let i=0;i<dialogs.length;i++)
+            	for(var i=0;i<dialogs.length;i++)
             	{
             		self.dialogs.set(dialogs[i].name,dialogs[i]);
             	}
@@ -51,7 +51,7 @@
 		}
 	};
 
-    let RPGPlayer=Layer.RPGPlayer=µ.Class(Layer,{
+    var RPGPlayer=Layer.RPGPlayer=µ.Class(Layer,{
         init:function(param)
         {
             param=param||{};
@@ -104,7 +104,7 @@
         _openStartMenu:function()
         {
         	this.focused=null;
-        	let smenu=new this._StartMenu({
+        	var smenu=new this._StartMenu({
         		dbConn:this.dbConn,
         		saveClass:SC.GameSave,
         		saveConverter:RPGPlayer.saveConverter,
@@ -124,7 +124,7 @@
 			this.map.movingCursors["delete"](this.cursor);
 			this.map.setPaused(true);
 			this.focused=null;
-			let gmenu=new this._GameMenu({
+			var gmenu=new this._GameMenu({
 				dbConn:this.dbConn,
         		saveClass:SC.GameSave,
 				saveConverter:RPGPlayer.saveConverter,
@@ -173,12 +173,12 @@
 			
 			this.questsReady.complete(function (self)
             {
-				let aQ=[];
-            	for(let i=0;i<save.getQuests().length;i++)
+				var aQ=[];
+            	for(var i=0;i<save.getQuests().length;i++)
             	{
             		if(self.quests.has(save.getQuests()[i]))
             		{
-            			let quest=self.quests.get(save.getQuests()[i]).clone();
+            			var quest=self.quests.get(save.getQuests()[i]).clone();
             			self.activeQuests.set(quest.name,quest);
             			aQ.push(quest.name);
             		}
@@ -193,7 +193,7 @@
 		},
 		getSave:function()
 		{
-			let save={
+			var save={
 				"gameName":this.gameName,
 				"cursor":{
 					"url":this.cursor.url.slice(this.cursor.url.lastIndexOf("/")+1),
@@ -205,8 +205,8 @@
 				"position":this.cursor.getPosition(),
 				"quests":[]
 			};
-			let it=this.activeQuests.entries();
-			let step=null;
+			var it=this.activeQuests.entries();
+			var step=null;
 			while(step=it.next(),!step.done)
 			{
 				save.quests.push(step.value[0]);
@@ -219,14 +219,14 @@
 			this.map.setPaused(true);
 			return SC.rj(this.mapBaseUrl+name+".json",this).then(function changeMap_loaded(json,self)
 			{
-				let todo=json.cursors.concat(json.images);
+				var todo=json.cursors.concat(json.images);
 				while(todo.length>0)
 				{
-					let image=todo.shift();
+					var image=todo.shift();
 					image.url=self.imageBaseUrl+image.url;
 				}
 				json.position=position;
-				let animation=self.map.movingCursors.get(self.cursor);
+				var animation=self.map.movingCursors.get(self.cursor);
 				self.map.fromJSON(json);
 				self.cursor.setPosition(position);
 				self.map.add(self.cursor);
@@ -253,7 +253,7 @@
 		},
 		_showDialog:function(dialogName)
 		{
-			let dialog=this.dialogs.get(dialogName);
+			var dialog=this.dialogs.get(dialogName);
 			if(dialog)
 			{
 				dialog.styleClass="panel";
@@ -277,10 +277,10 @@
 		},
 		doActions:function(actions)
 		{
-			for(let i=0;i<actions.length;i++)
+			for(var i=0;i<actions.length;i++)
 			{
-				let a=actions[i];
-				let quest=this.activeQuests.get(a.questName);
+				var a=actions[i];
+				var quest=this.activeQuests.get(a.questName);
 				switch (a.type) 
 				{
 					case "ABORT_QUEST":

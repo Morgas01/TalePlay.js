@@ -1,9 +1,9 @@
 (function(µ,SMOD,GMOD){
 
-    let TALE=window.TalePlay=window.TalePlay||{};	
+    var TALE=window.TalePlay=window.TalePlay||{};
 	TALE.Math=TALE.Math||{};
 	
-	let POINT=TALE.Math.Point=µ.Class({
+	var POINT=TALE.Math.Point=µ.Class({
 		init:function(numberOrPoint,y)
 		{
 			this.x=0;
@@ -143,7 +143,7 @@
 		},
 		normalize:function()
 		{
-			let l=this.length();
+			var l=this.length();
 			if(l)
 			{
 				this.div(l);
@@ -154,7 +154,7 @@
 		{
 			if(this.y!==0||this.x!==0)
 			{
-				let a=Math.asin(this.y/this.length());
+				var a=Math.asin(this.y/this.length());
 				if(this.x>=0)
 				{
 					a=Math.PI/2-a;

@@ -36,7 +36,7 @@
 		<script type="text/javascript">
 			function logController()
 			{
-				let type=this instanceof Morgas.Controller.Keyboard?"Keyboard":"Gamepad ";
+				var type=this instanceof Morgas.Controller.Keyboard?"Keyboard":"Gamepad ";
 				document.getElementById("logger").value=type+": "+this;
 			}
 			
@@ -45,12 +45,12 @@
 			
 			window.addEventListener("load", function()
 			{
-				let board=new µ.Board(document.getElementById("board"));
+				var board=new µ.Board(document.getElementById("board"));
 				board.addController(controller);
-				let layer=new µ.Board.Layer();
+				var layer=new µ.Board.Layer();
 				board.addLayer(layer);
 
-				let manager=new µ.Board.GUIElement.ControllerManager({buttons:10,analogSticks:2});
+				var manager=new µ.Board.GUIElement.ControllerManager({buttons:10,analogSticks:2});
 				//manager.domElement.classList.add("panel");
 				layer.add(manager);
 				manager.update();
@@ -65,7 +65,7 @@
 			
 /*
 			window.addEventListener("gamepadconnected", function(e) {
-				let gp=new µ.Controller.Gamepad(e.gamepad,{
+				var gp=new µ.Controller.Gamepad(e.gamepad,{
 					"buttons": {
 						"0": "2",
 						"1": "0",
