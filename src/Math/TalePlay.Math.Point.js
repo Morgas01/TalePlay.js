@@ -1,6 +1,6 @@
 (function(µ,SMOD,GMOD){
 
-    var TALE=window.TalePlay=window.TalePlay||{};	
+    var TALE=window.TalePlay=window.TalePlay||{};
 	TALE.Math=TALE.Math||{};
 	
 	var POINT=TALE.Math.Point=µ.Class({

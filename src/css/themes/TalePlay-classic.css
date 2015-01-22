@@ -113,9 +113,11 @@
 	border-top-right-radius:10px;
 	border-bottom-right-radius:10px;
 }
+/*
 .Layer.persistance .Menu:first-child .menuitem span:only-child {
 	position: absolute;
 	width: calc(100% - 8px);
 	padding: 5px 0;
 	text-align: center;
 }
+*/

@@ -1,6 +1,7 @@
 .arrow, [data-name="arrow"] {
     background-size: 400% 100%;
-    background: url("../../Images/arrow_up.svg") 0 0;
+    background-image: url("../../Images/arrow_up.svg");
+    background-position: 0 0;
 }
 .arrow.right, [data-name="arrow"].right {
     background-image: url("../../Images/arrow_right.svg");

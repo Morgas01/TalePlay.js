@@ -15,13 +15,21 @@
 			
 			this.superInit(DBOBJ,param);
 			
-			this.addField("gameName",SC.field.TYPES.STRING,param.gameName);
-			this.addField("data",SC.field.TYPES.JSON,param.data);
-			this.addField("timeStamp",SC.field.TYPES.DATE,param.timeStamp||new Date());
+			this.addField("map",		SC.field.TYPES.String,param.map);
+			this.addField("position",	SC.field.TYPES.JSON,param.position);
+			this.addField("cursor",		SC.field.TYPES.JSON,param.cursor);
+			this.addField("quests",		SC.field.TYPES.JSON,param.quests);
+			this.addField("actions",	SC.field.TYPES.JSON,param.actions);
+			this.addField("info",		SC.field.TYPES.String,param.info);
+			this.addField("timeStamp",	SC.field.TYPES.DATE,param.timeStamp||new Date());
 		},
-		getGameName:function(){return this.getValueOf("gameName");},
-		getData:function(){return this.getValueOf("data");},
-		getTimeStamp:function(){return this.getValueOf("timeStamp");}
+		getMap:			function(){return this.getValueOf("map");},
+		getPosition:	function(){return this.getValueOf("position");},
+		getCursor:		function(){return this.getValueOf("cursor");},
+		getQuests:		function(){return this.getValueOf("quests");},
+		getActions:		function(){return this.getValueOf("actions");},
+		getInfo:		function(){return this.getValueOf("info");},
+		getTimeStamp:	function(){return this.getValueOf("timeStamp");}
 	});
 	SMOD("RPGPlayer.GameSave",GSAVE);
 	

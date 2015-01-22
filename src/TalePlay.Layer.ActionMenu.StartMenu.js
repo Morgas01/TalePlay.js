@@ -74,7 +74,9 @@
 		{
 			SC.rj(item.url,this).then(function(newGameJson,scope)
 			{
-				scope.fire("start",{save:newGameJson});
+				var save=new scope.saveClass();
+				save.fromJSON(newGameJson);
+				scope.fire("start",{save:save});
 			},
 			function(error)
 			{

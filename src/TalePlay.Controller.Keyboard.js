@@ -55,7 +55,7 @@
 				{
 					event.preventDefault();
 					event.stopPropagation();
-					
+
 					var map={};
 					map[event.code||event.key||event.keyCode]=value;
 					this.setButton(map);

@@ -43,12 +43,11 @@
 		},
 		getAnalogStick:function(axisIndex)
 		{
-			var stickIndex=Math.floor(axisIndex/2);
-			if(this.analogSticks[stickIndex]===undefined)
+			if(this.analogSticks[axisIndex]===undefined)
 			{
-				this.analogSticks[stickIndex]=new CTRL.AnalogStick();
+				this.analogSticks[axisIndex]=new CTRL.AnalogStick();
 			}
-			return this.analogSticks[stickIndex];
+			return this.analogSticks[axisIndex];
 		},
 		setButton:function(buttonMap)
 		{
@@ -107,25 +106,32 @@
 				axisMap=remapped;
 			}
 			
-			var keys=Object.keys(axisMap).sort();
-			for(var i=0;i<keys.length;i++)
+			var keys=Object.keys(axisMap);
+			while(keys.length>0)
 			{
-				var index=keys[i];
-				var aStick=this.getAnalogStick(index);
-				var old=aStick.clone();
-				if(index%2==0&&keys[i+1]===index+1)
+				var key=keys.shift(), xAxis=undefined, yAxis=undefined; index=-1;
+				var aStick=this.getAnalogStick(key>>1);
+				if(key%2==0)
 				{
-					i++;
-					aStick.set(axisMap[index],axisMap[index+1]);
+					xAxis=axisMap[key];
+					yAxis=axisMap[key*1+1]||aStick.y;
+					
+					index=keys.indexOf(key*1+1);
+					if(index!==-1) keys.splice(index,1);
 				}
 				else
 				{
-					aStick.setComponent(index,axisMap[index]);
+					xAxis=axisMap[key-1]||aStick.x;
+					yAxis=axisMap[key];
+					
+					index=keys.indexOf(key-1);
+					if(index!==-1) keys.splice(index,1);
 				}
+				aStick.set(xAxis,yAxis);
 				if(aStick.hasChanged())
 				{
 					changed=true;
-					this.fire("analogStickChanged",{index:index>>1,analogStick:aStick});
+					this.fire("analogStickChanged",{index:key>>1,analogStick:aStick});
 				}
 			}
 			if(changed&&!fromButton)

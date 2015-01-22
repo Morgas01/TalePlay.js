@@ -164,36 +164,37 @@
 		},
 		loadSave:function(save)
 		{
-			this.cursor.url=this.imageBaseUrl+save.cursor.url;
-			this.cursor.name=save.cursor.name||"";
-			this.cursor.rect.size.set(save.cursor.size);
-			this.cursor.offset.set(save.cursor.offset);
-			this.cursor.speed.set(save.cursor.speed);
-			this.cursor.collision=save.cursor.collision!==false;
+			this.cursor.url=this.imageBaseUrl+save.getCursor().url;
+			this.cursor.name=save.getCursor().name||"";
+			this.cursor.rect.size.set(save.getCursor().size);
+			this.cursor.offset.set(save.getCursor().offset);
+			this.cursor.speed.set(save.getCursor().speed);
+			this.cursor.collision=save.getCursor().collision!==false;
 			
 			this.questsReady.complete(function (self)
             {
 				var aQ=[];
-            	for(var i=0;i<save.quests.length;i++)
+            	for(var i=0;i<save.getQuests().length;i++)
             	{
-            		if(self.quests.has(save.quests[i]))
+            		if(self.quests.has(save.getQuests()[i]))
             		{
-            			var quest=self.quests.get(save.quests[i]).clone();
+            			var quest=self.quests.get(save.getQuests()[i]).clone();
             			self.activeQuests.set(quest.name,quest);
             			aQ.push(quest.name);
             		}
             	}
             	return aQ;
             });
-            this._changeMap(save.map, save.position);
-            if(save.actions)
+            this._changeMap(save.getMap(), save.getPosition());
+            if(save.getActions())
             {
-            	this.doActions(save.actions);
+            	this.doActions(save.getActions());
             }
 		},
 		getSave:function()
 		{
 			var save={
+				"gameName":this.gameName,
 				"cursor":{
 					"url":this.cursor.url.slice(this.cursor.url.lastIndexOf("/")+1),
 					"name":this.cursor.name,
@@ -211,7 +212,7 @@
 				save.quests.push(step.value[0]);
 			}
 			
-			return new SC.GameSave({data:save});
+			return new SC.GameSave(save);
 		},
 		_changeMap:function(name,position)
 		{
@@ -279,10 +280,11 @@
 			for(var i=0;i<actions.length;i++)
 			{
 				var a=actions[i];
+				var quest=null;
 				switch (a.type) 
 				{
 					case "ABORT_QUEST":
-						var quest=this.activeQuests.get(a.questName);
+						quest=this.activeQuests.get(a.questName);
 						if(quest)
 						{
 							this.activeQuests["delete"](a.questName);
@@ -290,7 +292,7 @@
 						}
 						break;
 					case "RESOLVE_QUEST":
-						var quest=this.activeQuests.get(a.questName);
+						quest=this.activeQuests.get(a.questName);
 						if(quest)
 						{
 							this.activeQuests["delete"](a.questName);
@@ -299,7 +301,7 @@
 						}
 						break;
 					case "ACTIVATE_QUEST":
-						var quest=this.quests.get(a.questName);
+						quest=this.quests.get(a.questName);
 						if(quest)
 						{
 							quest=quest.clone();
@@ -328,15 +330,15 @@
 	RPGPlayer.saveConverter=function(save,index)
 	{
 		if(!save)
-			return ["EMPTY"];
+			return [index,"EMPTY","&nbsp;"];
 		try
 		{
-			return [index,save.getTimeStamp().toLocaleString(),save.getData().map];
+			return [index,save.getTimeStamp().toLocaleString(),save.getMap()];
 		}
 		catch(error)
 		{
 			SC.debug([error,save],SC.debug.LEVEL.ERROR);
-			return "CORRUPT DATA";
+			return [index,"CORRUPT DATA","&nbsp;"];
 		}
 	};
 	SMOD("RPGPlayer",RPGPlayer);

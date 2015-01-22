@@ -249,7 +249,7 @@
 			{
 				event.preventDefault();
 				event.stopPropagation();
-				
+
 				var input=event.target;
 				input.value=event.code||event.key||event.keyCode;
 				input.title=getTitle(event.code||event.key||event.keyCode);
