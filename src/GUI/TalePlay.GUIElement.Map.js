@@ -139,7 +139,7 @@
 			{
 				if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
 				{
-					var data=this.movingCursors.get(i);
+					var data=this.movingCursors.get(this.cursors[i]);
 					if(!data)
 					{
 						data={
@@ -147,9 +147,9 @@
 							lastTime:Date.now()-performance.timing.navigationStart
 						};
 						this.movingCursors.set(this.cursors[i],data);
+						data.lastTime=Date.now()-performance.timing.navigationStart;
 					}
 					data.direction=event.analogStick.clone();
-					data.lastTime=Date.now()-performance.timing.navigationStart;
 				}
 			}
 			if(this.animationRquest===null&&!this.paused)

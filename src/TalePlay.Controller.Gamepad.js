@@ -7,19 +7,31 @@
 	});
 	
 	var GP=CTRL.Gamepad=µ.Class(CTRL,{
-		init:function(gamepad,map)
+		init:function(gamepad,map,precision)
 		{
 			this.superInit(CTRL,map);
 			SC.rs.all(["update"],this);
 			
 			this.gamepad=gamepad;
+			this.precision=precision||1;
 			this.pollKey=null;
 			
 			this.addListener(".created:once",this,"update");
 		},
 		update:function()
 		{
-			this.set(this.gamepad.buttons.map(b => b.value),this.gamepad.axes);
+			if(!this.gamepad.connected)
+			{
+				var gamepads=navigator.getGamepads();
+				if(gamepads[this.gamepad.index])
+				{
+					this.gamepad=gamepads[this.gamepad.index];
+				}
+			}
+			if(this.gamepad.connected)
+			{
+				this.set(this.gamepad.buttons.map(b => b.value),this.gamepad.axes.map(a => a.toFixed(this.precision)*1));
+			}
 			this.pollKey=requestAnimationFrame(this.update);
 		},
 		toJSON:function()
