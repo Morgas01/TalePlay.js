@@ -12,6 +12,7 @@
 			this.superInit(CTRL,map);
 			SC.rs.all(["update"],this);
 			
+			this.gamepadIndex=gamepad.index;
 			this.gamepad=gamepad;
 			this.precision=precision||1;
 			this.pollKey=null;
@@ -20,17 +21,11 @@
 		},
 		update:function()
 		{
-			if(!this.gamepad.connected)
+			this.gamepad=navigator.getGamepads()[this.gamepadIndex]
+			if(this.gamepad)
 			{
-				var gamepads=navigator.getGamepads();
-				if(gamepads[this.gamepad.index])
-				{
-					this.gamepad=gamepads[this.gamepad.index];
-				}
-			}
-			if(this.gamepad.connected)
-			{
-				this.set(this.gamepad.buttons.map(function(b){return b.value}),this.gamepad.axes.map(function(a){return a.toFixed(this.precision)*1}));
+				var p=this.precision;
+				this.set(this.gamepad.buttons.map(function(b){return b.value}),this.gamepad.axes.map(function(a){return a.toFixed(p)*1}));
 			}
 			this.pollKey=requestAnimationFrame(this.update);
 		},
