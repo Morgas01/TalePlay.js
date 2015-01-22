@@ -1,14 +1,14 @@
 (function() {
 	
-	var name="ControllerManager";
-	var SC=µ.getModule("shortcut")({
+	let name="ControllerManager";
+	let SC=µ.getModule("shortcut")({
 		Board:"Board",
 		Layer:"Layer",
 		Manager:"GUI.ControllerManager"
 	});
 	module(name);
 	test(name, function() {
-		var board = getBoard(name),
+		let board = getBoard(name),
 		layer=new SC.Layer(),
 		manager=new SC.Manager({styleClass:"panel"});
 		

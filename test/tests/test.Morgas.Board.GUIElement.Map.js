@@ -1,13 +1,13 @@
 (function() {
-	var name="Map";
-	var SC=µ.getModule("shortcut")({
+	let name="Map";
+	let SC=µ.getModule("shortcut")({
 		Board:"Board",
 		Layer:"Layer",
 		gMap:"GUI.Map"
 	});
 	module(name);
 	test(name, function() {
-		var board = getBoard(name),
+		let board = getBoard(name),
 		layer=new SC.Layer(),
 		map=new SC.gMap({
         	images:[
@@ -42,16 +42,16 @@
 		//"viewport" smaller than map
 		map.domElement.style.width=map.domElement.style.height="250px";
 		//collision
-		var collide=new SC.gMap.Image(imagesDir+"empty.png",{x:25,y:25},{x:50,y:50},"collide",true);
+		let collide=new SC.gMap.Image(imagesDir+"empty.png",{x:25,y:25},{x:50,y:50},"collide",true);
 		collide.domElement.style.backgroundColor="black";
 		//trigger activate
-		var activate=new SC.gMap.Image(imagesDir+"empty.png",{x:325,y:25},{x:50,y:50},"trigger_activate",false,{type:"activate",value:"activate"});
+		let activate=new SC.gMap.Image(imagesDir+"empty.png",{x:325,y:25},{x:50,y:50},"trigger_activate",false,{type:"activate",value:"activate"});
 		activate.domElement.style.backgroundColor="orange";
 		//trigger step
-		var step=new SC.gMap.Image(imagesDir+"empty.png",{x:325,y:325},{x:50,y:50},"trigger_step",false,{type:"step",value:"step"});
+		let step=new SC.gMap.Image(imagesDir+"empty.png",{x:325,y:325},{x:50,y:50},"trigger_step",false,{type:"step",value:"step"});
 		step.domElement.style.backgroundColor="green";
 		//trigger move
-		var move=new SC.gMap.Image(imagesDir+"empty.png",{x:25,y:325},{x:50,y:50},"trigger_move",true,{type:"move",value:"move"});
+		let move=new SC.gMap.Image(imagesDir+"empty.png",{x:25,y:325},{x:50,y:50},"trigger_move",true,{type:"move",value:"move"});
 		move.domElement.style.backgroundColor="blue";
 		
 		map.addAll([collide,activate,step,move]);
@@ -63,7 +63,7 @@
         map.setPosition(200,200);
 		map.update();
 		
-		var eventlog=document.createElement("textarea");
+		let eventlog=document.createElement("textarea");
 		eventlog.style.width="100%";
 		eventlog.style.height="20px";
 		board.domElement.parentNode.parentNode.appendChild(eventlog);

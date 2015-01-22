@@ -1,11 +1,11 @@
 (function(µ,SMOD,GMOD){
 
-	var MENU=GMOD("GUI.Menu"),
+	let MENU=GMOD("GUI.Menu"),
 	
 	SC=GMOD("shortcut")({
 		menu:"Menu"
 	});
-	var TicTacToe=µ.Class(MENU,{
+	let TicTacToe=µ.Class(MENU,{
 		init:function(param)
 		{
 			param=param||{};
@@ -42,7 +42,7 @@
 				{
 					this.menu.items[event.index]=this.turn+1;
 					this.update();
-					var finished=this.checkFinish();
+					let finished=this.checkFinish();
 					if(finished!==null)
 					{
 						this.fire("finish",{winner:finished})
@@ -56,8 +56,8 @@
 		},
 		checkFinish:function()
 		{
-			var items=this.menu.items;
-			for(var i=0;i<3;i++)
+			let items=this.menu.items;
+			for(let i=0;i<3;i++)
 			{
 				if(items[i*3]&&items[i*3]===items[i*3+1]&&items[i*3]===items[i*3+2])
 				{
@@ -72,7 +72,7 @@
 			{
 				return items[4];
 			}
-			for(var i=0;i<items.length;i++)
+			for(let i=0;i<items.length;i++)
 			{
 				if(!items[i])
 				{

@@ -1,8 +1,8 @@
 (function(µ,SMOD,GMOD){
 
-    var GUI=GMOD("GUIElement");
+    let GUI=GMOD("GUIElement");
 
-    var ButtonStack=µ.Class(GUI,{
+    let ButtonStack=µ.Class(GUI,{
         init:function(param)
         {
             param=param||{};
@@ -19,7 +19,7 @@
             if(items)
             {
                 items=[].concat(items);
-                for (var i = 0; i < items.length; i++)
+                for (let i = 0; i < items.length; i++)
                 {
                     this.buttonItems.push(items[i]);
                     this.domElement.appendChild(items[i].domElement);
@@ -28,7 +28,7 @@
         },
         onButton:function(event)
         {
-            var item=this.buttonItems[0];
+            let item=this.buttonItems[0];
             if(event.value===1&&item)
             {
                 if(item.button===event.index)

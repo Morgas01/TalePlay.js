@@ -2,7 +2,7 @@
 	
 	module("Morgas.Math.Point");
 	
-	var POINT=GMOD("Math.Point");
+	let POINT=GMOD("Math.Point");
 	
 	test("create",function(assert)
 	{

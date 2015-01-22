@@ -1,15 +1,15 @@
 (function(µ,SMOD,GMOD){
 
-    var TALE=window.TalePlay=window.TalePlay||{};
+    let TALE=window.TalePlay=window.TalePlay||{};
 	
-	var LST=GMOD("Listeners");
-	var POINT=GMOD("Math.Point");
+	let LST=GMOD("Listeners");
+	let POINT=GMOD("Math.Point");
 	
-	var SC=µ.shortcut({
+	let SC=µ.shortcut({
 		mapping:"Controller.Mapping"
 	});
 	
-	var CTRL=TALE.Controller=µ.Class(LST,{
+	let CTRL=TALE.Controller=µ.Class(LST,{
 		init:function(mapping,mappingName)
 		{
 			this.superInit(LST);
@@ -51,14 +51,14 @@
 		},
 		setButton:function(buttonMap)
 		{
-			var changed=false,axisMap=undefined;
+			let changed=false,axisMap=undefined;
 			if(this.mapping)
 			{
-				var remapped={};
+				let remapped={};
 				axisMap={};
-				for(var i in buttonMap)
+				for(let i in buttonMap)
 				{
-					var axisIndex=this.mapping.getButtonAxisMapping(i);
+					let axisIndex=this.mapping.getButtonAxisMapping(i);
 					if(axisIndex!==undefined)
 					{
 						axisMap[Math.abs(axisIndex)]=this.mapping.convertAxisValue(axisIndex,buttonMap[i]);
@@ -71,12 +71,12 @@
 				buttonMap=remapped;
 			}
 			
-			for(var index in buttonMap)
+			for(let index in buttonMap)
 			{
-				var value=buttonMap[index];
+				let value=buttonMap[index];
 				if(this.buttons[index]===undefined||this.buttons[index]!==value)
 				{
-					var old=this.buttons[index]||0;
+					let old=this.buttons[index]||0;
 					this.buttons[index]=value;
 					this.fire("buttonChanged",{index:1*index,value:value,oldValue:old});
 					changed=true;
@@ -94,23 +94,23 @@
 		},
 		setAxis:function(axisMap,fromButton)
 		{
-			var changed=false;
+			let changed=false;
 			if(this.mapping&&!fromButton)
 			{
-				var remapped={};
-				for(var i in axisMap)
+				let remapped={};
+				for(let i in axisMap)
 				{
-					var index=this.mapping.getAxisMapping(i);
+					let index=this.mapping.getAxisMapping(i);
 					remapped[Math.abs(index)]=this.mapping.convertAxisValue(index,axisMap[i]);
 				}
 				axisMap=remapped;
 			}
 			
-			var keys=Object.keys(axisMap);
+			let keys=Object.keys(axisMap);
 			while(keys.length>0)
 			{
-				var key=keys.shift(), xAxis=undefined, yAxis=undefined; index=-1;
-				var aStick=this.getAnalogStick(key>>1);
+				let key=keys.shift(), xAxis=undefined, yAxis=undefined; index=-1;
+				let aStick=this.getAnalogStick(key>>1);
 				if(key%2==0)
 				{
 					xAxis=axisMap[key];
@@ -148,7 +148,7 @@
 		setDisabled:function(disabled)
 		{
 			this.disabled=disabled===true;
-			for(var i in this.listeners)
+			for(let i in this.listeners)
 			{
 				this.listeners[i].setDisabled(this.disabled);
 			}

@@ -1,12 +1,12 @@
 (function(µ,SMOD,GMOD){
 	
-	var GUI=GMOD("GUIElement"),
+	let GUI=GMOD("GUIElement"),
 	
 	SC=GMOD("shortcut")({
 		rs:"rescope"
 	});
 	
-	var BOX=GUI.TextBox=µ.Class(GUI,{
+	let BOX=GUI.TextBox=µ.Class(GUI,{
 		init:function(param)
 		{
 			SC.rs.all(["_run"],this);
@@ -18,9 +18,9 @@
 			this.createListener("complete");
 			
 			this.parts=[];
-			for(var i=0,l=param.parts&&param.parts.length;i<l;i++)
+			for(let i=0,l=param.parts&&param.parts.length;i<l;i++)
 			{
-				var p=param.parts[i];
+				let p=param.parts[i];
 				this.addPart(p.text, p.speed, p.stop, p.styleClass, p.tag);
 			}
 			
@@ -49,7 +49,7 @@
 			this._timeout=null;
 			if(this.parts.length>0)
 			{
-				var part=this.parts[0];
+				let part=this.parts[0];
 				if(!part.domElement)
 				{
 					part.domElement=document.createElement(part.tag);
@@ -82,7 +82,7 @@
 			}
 			while(this.parts.length>0)
 			{
-				var part=this.parts[0];
+				let part=this.parts[0];
 				if(!part.domElement)
 				{
 					part.domElement=document.createElement(part.tag);

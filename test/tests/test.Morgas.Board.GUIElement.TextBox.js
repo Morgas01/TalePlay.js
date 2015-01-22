@@ -1,13 +1,13 @@
 (function() {
-	var name="TextBox";
-	var SC=µ.getModule("shortcut")({
+	let name="TextBox";
+	let SC=µ.getModule("shortcut")({
 		Board:"Board",
 		Layer:"Layer",
 		Tb:"GUI.TextBox"
 	});
 	module(name);
 	test(name, function() {
-		var board = getBoard(name),
+		let board = getBoard(name),
 		layer=new SC.Layer(),
 		box=new SC.Tb({
 			styleClass:"panel",

@@ -1,13 +1,13 @@
 (function(µ,SMOD,GMOD){
 	
-	var GUI=GMOD("GUIElement");
+	let GUI=GMOD("GUIElement");
 	
-	var SC=GMOD("shortcut")({
+	let SC=GMOD("shortcut")({
 		MENU:"Menu",
 		rescope:"rescope"
 	});
 	
-	var MENU=GUI.Menu=µ.Class(GUI,{
+	let MENU=GUI.Menu=µ.Class(GUI,{
 		init:function(param)
 		{
 			SC.rescope.all(["_stepActive","onClick"],this);
@@ -42,7 +42,7 @@
 		},
 		onAnalogStick:function(event)
 		{
-			var direction=event.analogStick.clonePoint().doMath(Math.round,0);
+			let direction=event.analogStick.clonePoint().doMath(Math.round,0);
 			if(!direction.equals(this.stepDirection))
 			{
 				if(this.stepID)
@@ -51,12 +51,12 @@
 					this.stepID=null;
 				}
 				this.stepDirection=direction;
-				var step=this._stepActive();
+				let step=this._stepActive();
 			}
 		},
 		_stepActive:function()
 		{
-			var step=0;
+			let step=0;
 			switch(this.type)
 			{
 				case MENU.Types.VERTICAL:
@@ -64,13 +64,13 @@
 					step=-this.stepDirection.y;
 					break;
 				case MENU.Types.GRID:
-					var gridLayout=this.getGridLayout();
+					let gridLayout=this.getGridLayout();
 					if(this.stepDirection.y===1)
 					{
 						step=-gridLayout.columns;
 						if(this.menu.active+step<0)
 						{
-							var r=this.menu.items.length%gridLayout.columns;
+							let r=this.menu.items.length%gridLayout.columns;
 							step=(r===0||r>this.menu.active) ? -r : step-r;
 						}
 					}
@@ -111,7 +111,7 @@
 		},
 		_updateActive:function()
 		{
-			for(var i=0,actives=this.domElement.querySelectorAll(".menuitem.active");i<actives.length;i++)
+			for(let i=0,actives=this.domElement.querySelectorAll(".menuitem.active");i<actives.length;i++)
 			{
 				actives[i].classList.remove("active");
 			}
@@ -123,7 +123,7 @@
 		},
 		onClick:function(event)
 		{
-			var target=event.target,
+			let target=event.target,
 			index=-1;
 			if(target.tagName==="INPUT"||target.tagName==="SELECT"||target.tagName==="TEXTAREA")
 			{
@@ -135,7 +135,7 @@
 			}
 			if(this.type===MENU.Types.GRID)
 			{
-				var column=Array.indexOf(target.parentNode.children,target),
+				let column=Array.indexOf(target.parentNode.children,target),
 				row=Array.indexOf(this.domElement.children,target.parentNode),
 				gridLayout=this.getGridLayout();
 				index=row*gridLayout.columns+column;
@@ -171,7 +171,7 @@
 		},
 		toggleSelect:function(index)
 		{
-			var cl=this.getItemDomElement(index).classList;
+			let cl=this.getItemDomElement(index).classList;
 			if(this.menu.selectionType===SC.MENU.SelectionTypes.SINGLE&&!this.menu.isSelected(index)&&this.menu.selectedIndexs.length>0)
 			{
 				this.getItemDomElement(this.menu.selectedIndexs[0]).classList.remove("selected");
@@ -188,7 +188,7 @@
 		},
 		getGridLayout:function()
 		{
-			var rtn={rows:this.rows,columns:this.columns};
+			let rtn={rows:this.rows,columns:this.columns};
 			if(rtn.rows===null&&rtn.columns===null)
 			{
 				rtn.columns=Math.ceil(Math.sqrt(this.menu.items.length));
@@ -212,13 +212,13 @@
 			}
 			if(this.type===MENU.Types.GRID&&this.menu.items.length>0)
 			{
-				var gridLayout=this.getGridLayout();
+				let gridLayout=this.getGridLayout();
 				
-				for(var r=0,row=document.createElement("span");r<gridLayout.rows;r++,row=document.createElement("span"))
+				for(let r=0,row=document.createElement("span");r<gridLayout.rows;r++,row=document.createElement("span"))
 				{
 					row.classList.add("row");
 					this.domElement.appendChild(row);
-					for(var c=0,index=r*gridLayout.columns;c<gridLayout.columns&&index<this.menu.items.length;c++,index=r*gridLayout.columns+c)
+					for(let c=0,index=r*gridLayout.columns;c<gridLayout.columns&&index<this.menu.items.length;c++,index=r*gridLayout.columns+c)
 					{
 						row.appendChild(this.convertItem(this.menu.items[index],index));
 					}
@@ -226,7 +226,7 @@
 			}
 			else
 			{
-				for(var i=0;i<this.menu.items.length;i++)
+				for(let i=0;i<this.menu.items.length;i++)
 				{
 					this.domElement.appendChild(this.convertItem(this.menu.items[i],i));
 				}
@@ -234,8 +234,8 @@
 		},
 		convertItem:function(item,index)
 		{
-			var converted=this.converter(item,index,this.converterInfo);
-			var element=null;
+			let converted=this.converter(item,index,this.converterInfo);
+			let element=null;
 			if(converted instanceof HTMLElement)
 			{
 				element=converted;
@@ -274,7 +274,7 @@
 		},
 		addAll:function(items)
 		{
-			for(var i=0;i<items.length;i++)
+			for(let i=0;i<items.length;i++)
 			{
 				this.addItem(items[i]);
 			}
@@ -282,7 +282,7 @@
 		},
 		removeItem:function(item)
 		{
-			var index=this.menu.removeItem(item);
+			let index=this.menu.removeItem(item);
 			if(index!==-1)
 			{
 				this.getItemDomElement(index).remove();
@@ -293,7 +293,7 @@
 		{
 			if(this.type===MENU.Types.GRID)
 			{
-				var gridLayout=this.getGridLayout(),
+				let gridLayout=this.getGridLayout(),
 				row=Math.floor(index/gridLayout.columns),
 				column=index-row*gridLayout.columns;
 				return this.domElement.children[row].children[column];
@@ -309,14 +309,14 @@
 		},
 		getItem:function(index)
 		{
-			var rtn=this.menu.getItem(index);
+			let rtn=this.menu.getItem(index);
 			rtn.domElement=this.getItemDomElement(index);
 			return rtn;
 		},
 		getSelectedItems:function()
 		{
-			var rtn=[];
-			for(var i=0;i<this.menu.selectedIndexs.length;i++)
+			let rtn=[];
+			for(let i=0;i<this.menu.selectedIndexs.length;i++)
 			{
 				rtn.push(this.getItem(this.menu.selectedIndexs[i]));
 			}
@@ -353,8 +353,8 @@
 		return ""+item;
 	};
 	
-	var reverseTypes={};
-	for(var t in MENU.Types)
+	let reverseTypes={};
+	for(let t in MENU.Types)
 	{
 		reverseTypes[MENU.Types[t]]=[t];
 	}

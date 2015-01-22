@@ -1,8 +1,8 @@
 (function(µ,SMOD,GMOD){
 	
-	var Layer=GMOD("Layer");
+	let Layer=GMOD("Layer");
 
-	var SC=µ.getModule("shortcut")({
+	let SC=µ.getModule("shortcut")({
 		rs:"rescope",
 		setIn:"setInputValues",
 		getIn:"getInputValues",
@@ -10,7 +10,7 @@
 		Menu:"GUI.Menu"
 	});
 	
-	var imageLayer=µ.Class(Layer,{
+	let imageLayer=µ.Class(Layer,{
 		init:function(board,image,callback,scope)
 		{
 			this.image=image;
@@ -42,7 +42,7 @@
 		},
 		onClick:function(e)
 		{
-			var action=e.target.dataset.action;
+			let action=e.target.dataset.action;
 			if(action)
 			{
 				e.stopPropagation();
@@ -69,7 +69,7 @@
 		}
 	});
 	
-	var MapMaker=Layer.MapMaker=µ.Class(Layer,{
+	let MapMaker=Layer.MapMaker=µ.Class(Layer,{
 		init:function(param)
 		{
 			param=param||{};
@@ -100,7 +100,7 @@
 		},
 		onController:function(event)
 		{
-			var i=Math.min(event.index,1);
+			let i=Math.min(event.index,1);
 			switch(event.type)
 			{
 				case "analogStickChanged":
@@ -122,14 +122,14 @@
 		{
 			if(imageSrc)
 			{
-				var images=[].concat(imageSrc).map(function(val)
+				let images=[].concat(imageSrc).map(function(val)
 				{
-					var rtn={url:undefined};
+					let rtn={url:undefined};
 					if(val instanceof File)
 					{
 						rtn.url=URL.createObjectURL(val);
 						rtn.fileType=val.type;
-						var reader=new FileReader();
+						let reader=new FileReader();
 						reader.onload=function(e)
 						{
 							rtn.file=Array.slice(new Uint8Array(e.target.result,0,e.target.result.byteLength));
@@ -159,8 +159,8 @@
 		},
         selectImage:function()
         {
-            var pos=this.map.cursors[0].getPosition();
-            var image=this.map.getImages(val => val!==this.map.cursors[0]&&val.rect.contains(pos))[0];
+            let pos=this.map.cursors[0].getPosition();
+            let image=this.map.getImages(val => val!==this.map.cursors[0]&&val.rect.contains(pos))[0];
             if(image)
             {
                 new imageLayer(this.board,image,function(image,action)
@@ -190,14 +190,14 @@
 		},
 		fromJSON:function(json)
 		{
-			for(var i=0;i<json.images.length;i++)
+			for(let i=0;i<json.images.length;i++)
 			{
 				if(json.images[i].file)
 				{
-					var oldUrl=json.images[i].url;
+					let oldUrl=json.images[i].url;
 					json.images[i].url=URL.createObjectURL(new Blob([new Uint8Array(json.images[i].file)],{type:json.images[i].fileType}));
-					var mapImages=json.map.map.images;
-					for(var l=0;l<mapImages.length;l++)
+					let mapImages=json.map.map.images;
+					for(let l=0;l<mapImages.length;l++)
 					{
 						if(mapImages[l].url===oldUrl)
 						{

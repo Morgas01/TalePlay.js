@@ -1,12 +1,12 @@
 (function(µ,SMOD,GMOD){
 
-	var CTRL=GMOD("Controller");
+	let CTRL=GMOD("Controller");
 
-	var SC=GMOD("shortcut")({
+	let SC=GMOD("shortcut")({
 		rs:"rescope"
 	});
 	
-	var GP=CTRL.Gamepad=µ.Class(CTRL,{
+	let GP=CTRL.Gamepad=µ.Class(CTRL,{
 		init:function(gamepad,map,precision)
 		{
 			this.superInit(CTRL,map);
@@ -22,7 +22,7 @@
 		{
 			if(!this.gamepad.connected)
 			{
-				var gamepads=navigator.getGamepads();
+				let gamepads=navigator.getGamepads();
 				if(gamepads[this.gamepad.index])
 				{
 					this.gamepad=gamepads[this.gamepad.index];
@@ -36,7 +36,7 @@
 		},
 		toJSON:function()
 		{
-			var json=CTRL.prototype.toJSON.call(this);
+			let json=CTRL.prototype.toJSON.call(this);
 			json.gpIndex=this.gpIndex;
 			return json;
 		},

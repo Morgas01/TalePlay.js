@@ -1,15 +1,15 @@
 (function(µ,SMOD,GMOD){
 
-    var TALE=window.TalePlay=window.TalePlay||{};
+    let TALE=window.TalePlay=window.TalePlay||{};
 
-	var LST=GMOD("Listeners");
-	var SC=GMOD("shortcut")({
+	let LST=GMOD("Listeners");
+	let SC=GMOD("shortcut")({
 		sc:"shortcut",
         node:"NodePatch",
         Layer:"Layer"
     });
 	
-	var GE=TALE.GUIElement=µ.Class(LST,{
+	let GE=TALE.GUIElement=µ.Class(LST,{
 		init:function(param)
 		{
 			param=param||{};
@@ -23,7 +23,7 @@
 			
 			SC.sc({layer:function(node)
 			{
-				var layer=node.parent;
+				let layer=node.parent;
 				while(layer&&!(layer instanceof SC.Layer))
 				{
 					layer=layer.parent
@@ -42,7 +42,7 @@
 		},
 		addStyleClass:function(styleClass)
 		{
-			var list=this.domElement.classList;
+			let list=this.domElement.classList;
 			if(Array.isArray(styleClass))
 			{
 				list.add.apply(list,styleClass);
@@ -54,7 +54,7 @@
 		},
 		removeStyleClass:function(styleClass)
 		{
-			var list=this.domElement.classList;
+			let list=this.domElement.classList;
 			if(Array.isArray(styleClass))
 			{
 				list.remove.apply(list,styleClass);
@@ -102,8 +102,8 @@
 		destroy:function()
 		{
 			this.nodePatch.remove();
-			var c=this.children.slice();
-			for(var i=0;i<c.length;i++)
+			let c=this.children.slice();
+			for(let i=0;i<c.length;i++)
 			{
 				c[i].destroy();
 			}

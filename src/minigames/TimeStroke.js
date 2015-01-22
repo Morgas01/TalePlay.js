@@ -1,11 +1,11 @@
 (function(µ,SMOD,GMOD){
 	
-	var GUI=GMOD("GUIElement"),
+	let GUI=GMOD("GUIElement"),
 	SC=GMOD("shortcut")({
 		rescope:"rescope"
 	});
 	
-	var TimeStroke=µ.Class(GUI,{
+	let TimeStroke=µ.Class(GUI,{
 		init:function(param)
 		{
 			param=param||{};
@@ -41,7 +41,7 @@
 		},
 		stop:function(){
 			this.pause();
-			for(var i=0;i<this.buttonItems.length;i++)
+			for(let i=0;i<this.buttonItems.length;i++)
 			{
 				this.buttonItems[i].domElement.remove();
 			}
@@ -49,7 +49,7 @@
 		},
 		onButton:function(event)
 		{
-			var item=this.buttonItems[0];
+			let item=this.buttonItems[0];
 			if(event.value===1)
 			{
 				if(item&&item.active===true&&item.button===event.index)
@@ -76,11 +76,11 @@
 			{
 				this.time+=stepTime-this.lastStep;
 			}
-			var maxTime=this.time+100/this.speed*1000;
+			let maxTime=this.time+100/this.speed*1000;
 			
-			for(var i=0;i<this.buttonItems.length&&this.buttonItems[i].time<maxTime;i++)
+			for(let i=0;i<this.buttonItems.length&&this.buttonItems[i].time<maxTime;i++)
 			{
-				var item=this.buttonItems[i],
+				let item=this.buttonItems[i],
 				distance=(item.time-this.time)*this.speed/1000;
 				if(distance>0)
 				{
