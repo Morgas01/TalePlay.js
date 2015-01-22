@@ -280,10 +280,11 @@
 			for(var i=0;i<actions.length;i++)
 			{
 				var a=actions[i];
-				var quest=this.activeQuests.get(a.questName);
+				var quest=null;
 				switch (a.type) 
 				{
 					case "ABORT_QUEST":
+						quest=this.activeQuests.get(a.questName);
 						if(quest)
 						{
 							this.activeQuests["delete"](a.questName);
@@ -291,6 +292,7 @@
 						}
 						break;
 					case "RESOLVE_QUEST":
+						quest=this.activeQuests.get(a.questName);
 						if(quest)
 						{
 							this.activeQuests["delete"](a.questName);
@@ -299,6 +301,7 @@
 						}
 						break;
 					case "ACTIVATE_QUEST":
+						quest=this.quests.get(a.questName);
 						if(quest)
 						{
 							quest=quest.clone();
