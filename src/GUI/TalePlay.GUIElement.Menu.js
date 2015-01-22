@@ -135,13 +135,8 @@
 			}
 			if(this.type===MENU.Types.GRID)
 			{
-<<<<<<< HEAD
-				var column=Array.prototype.indexOf.call(target.parentNode.children,target),
+				let column=Array.prototype.indexOf.call(target.parentNode.children,target),
 				row=Array.prototype.indexOf.call(this.domElement.children,target.parentNode),
-=======
-				let column=Array.indexOf(target.parentNode.children,target),
-				row=Array.indexOf(this.domElement.children,target.parentNode),
->>>>>>> master
 				gridLayout=this.getGridLayout();
 				index=row*gridLayout.columns+column;
 			}

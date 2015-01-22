@@ -249,16 +249,10 @@
 			{
 				event.preventDefault();
 				event.stopPropagation();
-				
-<<<<<<< HEAD
-				var input=event.target;
+
+				let input=event.target;
 				input.value=event.code||event.key||event.keyCode;
 				input.title=getTitle(event.code||event.key||event.keyCode);
-=======
-				let input=event.target;
-				input.value=event.code||event.key;
-				input.title=getTitle(event.code||event.key);
->>>>>>> master
 			}
 		},
 		onClick:function(event)

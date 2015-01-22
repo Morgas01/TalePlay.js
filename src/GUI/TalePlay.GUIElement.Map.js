@@ -100,16 +100,11 @@
 			}
 			else if(!this.paused)
 			{
-<<<<<<< HEAD
-				var now=Date.now();
-
-				var it=this.movingCursors.entries();
-				var step=null;
-				while(step=it.next(),!step.done)
-=======
 				let now=Date.now();
-				for(let [cursor, data] of this.movingCursors)
->>>>>>> master
+
+				let it=this.movingCursors.entries();
+				let step=null;
+				while(step=it.next(),!step.done)
 				{
 					var cursor=step.value[0];
 					var data=step.value[1];

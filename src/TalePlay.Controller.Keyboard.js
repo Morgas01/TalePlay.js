@@ -55,14 +55,9 @@
 				{
 					event.preventDefault();
 					event.stopPropagation();
-					
-<<<<<<< HEAD
-					var map={};
-					map[event.code||event.key||event.keyCode]=value;
-=======
+
 					let map={};
 					map[event.code||event.key]=value;
->>>>>>> master
 					this.setButton(map);
 				}
 			}

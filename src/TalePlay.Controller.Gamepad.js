@@ -20,9 +20,6 @@
 		},
 		update:function()
 		{
-<<<<<<< HEAD
-			this.set(this.gamepad.buttons.map(function(b){return b.value}),this.gamepad.axes);
-=======
 			if(!this.gamepad.connected)
 			{
 				let gamepads=navigator.getGamepads();
@@ -33,9 +30,8 @@
 			}
 			if(this.gamepad.connected)
 			{
-				this.set(this.gamepad.buttons.map(b => b.value),this.gamepad.axes.map(a => a.toFixed(this.precision)*1));
+				this.set(this.gamepad.buttons.map(function(b){return b.value}),this.gamepad.axes.map(function(a){return a.toFixed(this.precision)*1}));
 			}
->>>>>>> master
 			this.pollKey=requestAnimationFrame(this.update);
 		},
 		toJSON:function()
