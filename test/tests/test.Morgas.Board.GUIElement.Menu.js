@@ -1,6 +1,6 @@
 (function() {
-	var name="Menu";
-	var SC=µ.getModule("shortcut")({
+	let name="Menu";
+	let SC=µ.getModule("shortcut")({
 		Board:"Board",
 		Layer:"Layer",
 		gMenu:"GUI.Menu",
@@ -8,7 +8,7 @@
 	});
 	module(name);
 	test(name, function() {
-		var board = getBoard(name),
+		let board = getBoard(name),
 		layer=new SC.Layer(),
 		vMenu=new SC.gMenu({
 			type:SC.gMenu.Types.VERTICAL,
@@ -82,7 +82,7 @@
 		
 		board.addLayer(layer); 
 
-		var height=hMenu.domElement.getBoundingClientRect().height+5+"px",
+		let height=hMenu.domElement.getBoundingClientRect().height+5+"px",
 		width=vMenu.domElement.getBoundingClientRect().width+5+"px";
 
 		vMenu.domElement.style.top=height;

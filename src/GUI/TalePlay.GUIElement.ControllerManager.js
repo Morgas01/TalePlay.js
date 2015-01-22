@@ -2,9 +2,9 @@
 	
 	//TODO change to Layer
 	
-	var GUI=GMOD("GUIElement");
+	let GUI=GMOD("GUIElement");
 	
-	var SC=GMOD("shortcut")({
+	let SC=GMOD("shortcut")({
 		rs:"rescope",
 		bind:"bind",
 		mapping:"Controller.Mapping",
@@ -14,7 +14,7 @@
 		config:"GUI.ControllerConfig"
 	});
 	
-	var template=
+	let template=
 	'<table>'+
 		'<tr>'+
 			'<td class="DeviceActions">'+
@@ -35,7 +35,7 @@
 		'</tr>'+
 	'</table>'+
 	'<button data-action="close">OK</button>';
-	var MANAGER=GUI.ControllerManager=µ.Class(GUI,{
+	let MANAGER=GUI.ControllerManager=µ.Class(GUI,{
 		init:function(param)
 		{
 			param=param||{};
@@ -91,9 +91,9 @@
 		{
 			if(part===undefined||part==="devices")
 			{
-				var html='<option>Keyboard</option>';
-				var gamepads=navigator.getGamepads();
-				for(var i=0;i<gamepads.length;i++)
+				let html='<option>Keyboard</option>';
+				let gamepads=navigator.getGamepads();
+				for(let i=0;i<gamepads.length;i++)
 				{
 					if(gamepads[i])
 					{
@@ -110,7 +110,7 @@
 
 			if(part===undefined||part==="actions")
 			{
-				var controller=this.controllers.getSelectedItems()[0],
+				let controller=this.controllers.getSelectedItems()[0],
 				mapping=this.mappings.getSelectedItems()[0];
 
 				this.domElement.querySelector('[data-action="removeController"]').disabled=
@@ -126,7 +126,7 @@
 		},
 		_Click:function(event)
 		{
-			var action=event.target.dataset.action;
+			let action=event.target.dataset.action;
 			if(action!==undefined)
 			{
 				event.stopPropagation();
@@ -135,20 +135,20 @@
 		},
 		addDevice:function()
 		{
-			var index=this.domElement.querySelector(".devices").selectedIndex;
+			let index=this.domElement.querySelector(".devices").selectedIndex;
 			if(index===0)
 			{
 				this.addController(new SC.ctrlK());
 			}
 			else
 			{
-				var gamepad=navigator.getGamepads()[--index];
+				let gamepad=navigator.getGamepads()[--index];
 				this.addController(new SC.ctrlG(gamepad));
 			}
 		},
 		removeController:function()
 		{
-			var controller=this.controllers.getSelectedItems()[0];
+			let controller=this.controllers.getSelectedItems()[0];
 			if(controller)
 			{
 				this.layer.board.removeController(controller.value.controller);
@@ -161,7 +161,7 @@
 		},
 		setMapping:function()
 		{
-			var controller=this.controllers.getSelectedItems()[0],
+			let controller=this.controllers.getSelectedItems()[0],
 			mapping=this.mappings.getSelectedItems()[0];
 			if(controller&&mapping)
 			{
@@ -175,7 +175,7 @@
 		},
 		deleteMapping:function()
 		{
-			var mapping=this.mappings.getSelectedItems()[0];
+			let mapping=this.mappings.getSelectedItems()[0];
 			if(mapping&&mapping.value!==null)
 			{
 				this.mappings.removeItem(mapping.value);
@@ -196,11 +196,11 @@
 		},
 		_openControllerConfig:function(isNew)
 		{
-			var controller=this.controllers.getSelectedItems()[0];
+			let controller=this.controllers.getSelectedItems()[0];
 			if(controller&&!this.config)
 			{
 				controller=controller.value.controller;
-				var mapping=controller.getMapping();
+				let mapping=controller.getMapping();
                 this.config=new SC.config({
 					buttons:this.buttons,
 					analogSticks:this.analogSticks,

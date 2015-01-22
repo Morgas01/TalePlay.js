@@ -2,15 +2,15 @@
 	
 	//TODO change to Layer
 	
-	var AMENU=GMOD("Layer.ActionMenu");
+	let AMENU=GMOD("Layer.ActionMenu");
 	
 	
-	var GMENU=AMENU.GameMenu=µ.Class(AMENU,{
+	let GMENU=AMENU.GameMenu=µ.Class(AMENU,{
 		init:function(param)
 		{
 			param=param||{};
 			
-			var menuParam={
+			let menuParam={
 				styleClass:["panel"],
 				actions:[
 					{
@@ -62,7 +62,7 @@
 		{
 			if(item.data)
 			{
-				var p=new this.persistanceLayer({
+				let p=new this.persistanceLayer({
 					dbConn:this.dbConn,
 					saveClass:this.saveClass,
 					saveConverter:this.saveConverter,

@@ -2,13 +2,13 @@
 	
 	module("RPGPlayer");
 	
-	var RPGPlayer=GMOD("RPGPlayer");
+	let RPGPlayer=GMOD("RPGPlayer");
 	
 	test("RPGPlayer",function()
 	{
-		var board=getBoard("RPGPlayer");
+		let board=getBoard("RPGPlayer");
 		
-		var player=new RPGPlayer({
+		let player=new RPGPlayer({
 			board:board,
 			gameName:"testGame",
 			baseUrl:"RPGPlayer/",
@@ -16,7 +16,7 @@
 		});
 		
 		
-		var questlog=document.createElement("textarea");
+		let questlog=document.createElement("textarea");
 		questlog.style.width="100%";
 		questlog.style.height="80px";
 		board.domElement.parentNode.parentNode.appendChild(questlog);

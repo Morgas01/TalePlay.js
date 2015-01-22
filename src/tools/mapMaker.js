@@ -1,6 +1,6 @@
 ﻿window.addEventListener("load", function()
 {
-	var SC=µ.getModule("shortcut")({
+	let SC=µ.getModule("shortcut")({
 		download:"download",
 		find:"find",
 		Board:"Board",
@@ -12,8 +12,8 @@
 		Idb:"IDBConn"
 	});
 	
-	var board=new SC.Board(document.querySelector("#bordContainer"));
-	var kCon=new SC.kCon({
+	let board=new SC.Board(document.querySelector("#bordContainer"));
+	let kCon=new SC.kCon({
 		"buttons": {
 			" ": "0",
 			"Enter": "1"
@@ -30,9 +30,9 @@
 		}
 	});
 	board.addController(kCon);
-	var controllerLayer=new SC.Layer();
+	let controllerLayer=new SC.Layer();
 	controllerLayer.domElement.classList.add("overlay");
-	var manager=new SC.ControllerManager({
+	let manager=new SC.ControllerManager({
 		styleClass:["panel","center"],
 		buttons:2,
 		analogSticks:2,
@@ -40,7 +40,7 @@
 		dbConn:new SC.Idb("mapMaker")
 	});
 	controllerLayer.add(manager);
-	var mapMaker=new SC.MapMaker({
+	let mapMaker=new SC.MapMaker({
         board:board,
         images:[
             {url:"../Images/empty.png"},
@@ -50,7 +50,7 @@
         ]
     });
 	
-	var actions={
+	let actions={
 		save:function()
 		{
 			SC.download(JSON.stringify(mapMaker),"map.js","application/json");
@@ -68,17 +68,17 @@
 		},
 		putImages:function()
 		{
-			var dialog=document.querySelector("#addImageDialog");
-			var images=[];
+			let dialog=document.querySelector("#addImageDialog");
+			let images=[];
 			
-			var input=dialog.querySelector("input");
-			for(var i=0;i<input.files.length;i++)
+			let input=dialog.querySelector("input");
+			for(let i=0;i<input.files.length;i++)
 			{
 				images.push(input.files[i]);
 			}
 			input.value="";
 			
-			var textArea=dialog.querySelector("textarea");
+			let textArea=dialog.querySelector("textarea");
 			if(textArea.value)
 			{
 				images=images.concat(textArea.value.split("\n").map(function(val)
@@ -114,7 +114,7 @@
 	window.addEventListener("click", function(e)
 	{
 		//execute actions
-		var action=e.target.dataset.action;
+		let action=e.target.dataset.action;
 		if(action)
 		{
 			if(!actions[action])
@@ -130,7 +130,7 @@
 	
 	document.getElementById("loadInput").addEventListener("change", function(e)
 	{
-		var reader=new FileReader();
+		let reader=new FileReader();
 		reader.onload=function()
 		{
 			mapMaker.fromJSON(JSON.parse(reader.result));

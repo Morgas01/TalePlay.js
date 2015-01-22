@@ -1,13 +1,13 @@
 (function(µ,SMOD,GMOD){
 	
-	var CTRL=GMOD("Controller");
-	var DBObj=GMOD("DBObj");
+	let CTRL=GMOD("Controller");
+	let DBObj=GMOD("DBObj");
 	
-	var SC=GMOD("shortcut")({
+	let SC=GMOD("shortcut")({
 		DBField:"DBField"
 	});
 	
-	var MAPPING=CTRL.Mapping=µ.Class(DBObj,{
+	let MAPPING=CTRL.Mapping=µ.Class(DBObj,{
 		objectType:"ControllerMapping",
 		init:function(param)
 		{
@@ -17,7 +17,7 @@
 			this.addField("name",SC.DBField.TYPES.STRING,param.name||"");
 			this.addField("type",SC.DBField.TYPES.STRING,param.type||"");
 			
-			var data={
+			let data={
 					buttons:{},
 					buttonAxis:{},
 					axes:{}
@@ -32,7 +32,7 @@
 		},
 		setMapping:function(type,from,to)
 		{
-			var mapping=this.getValueOf("data")[type];
+			let mapping=this.getValueOf("data")[type];
 			if(mapping)
 			{
 				if(to===undefined||to===null)
@@ -55,7 +55,7 @@
 		},
 		hasMapping:function(type,from)
 		{
-			var mapping=this.getValueOf("data")[type];
+			let mapping=this.getValueOf("data")[type];
 			if(mapping)
 			{
 				return from in mapping;
@@ -64,7 +64,7 @@
 		},
 		setMappingAll:function(type,map)
 		{
-			for(var i in map)
+			for(let i in map)
 			{
 				this.setMapping(type, i, map[i]);
 			}
@@ -73,7 +73,7 @@
 		setButtonMapping:function(from,to){this.setMapping("buttons", from, to);},
 		getButtonMapping:function(from)
 		{
-			var to=this.getMapping("buttons", from);
+			let to=this.getMapping("buttons", from);
 			if(to===undefined)
 				to=from;
 			return to;
@@ -89,7 +89,7 @@
 		setAxisMapping:function(from,to){this.setMapping("axes", from, to);},
 		getAxisMapping:function(from)
 		{
-			var to=this.getMapping("axes", from);
+			let to=this.getMapping("axes", from);
 			if(to===undefined)
 				to=from;
 			return to;
@@ -101,17 +101,17 @@
 		
 		getReverseMapping:function()
 		{
-			var mapping=this.getValueOf("data");
-			var reverse={
+			let mapping=this.getValueOf("data");
+			let reverse={
 				buttons:{},
 				buttonAxis:{},
 				axes:{}
 			};
-			for(var type in mapping)
+			for(let type in mapping)
 			{
-				for(var i in mapping[type])
+				for(let i in mapping[type])
 				{
-					var index=mapping[type][i];
+					let index=mapping[type][i];
 					if(type==="axes"&&1/index<0)
 					{
 						index=-index;

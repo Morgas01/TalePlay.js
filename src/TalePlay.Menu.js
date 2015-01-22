@@ -1,8 +1,8 @@
 (function(µ,SMOD,GMOD){
 
-    var TALE=window.TalePlay=window.TalePlay||{};
+    let TALE=window.TalePlay=window.TalePlay||{};
 	
-	var MENU=TALE.Menu=µ.Class({
+	let MENU=TALE.Menu=µ.Class({
 		init:function(param)
 		{	
 			param=param||{};
@@ -21,11 +21,11 @@
 			}
 			if(param.selected!==undefined)
 			{
-				for(var i=0;i<param.selected.length;i++)this.addSelect(param.selected[i]);
+				for(let i=0;i<param.selected.length;i++)this.addSelect(param.selected[i]);
 			}
 			if(param.disabled!==undefined)
 			{
-				for(var i=0;i<param.disabled.length;i++)this.setDisabled(param.disabled[i],true);
+				for(let i=0;i<param.disabled.length;i++)this.setDisabled(param.disabled[i],true);
 			}
 		},
 		addItem:function(item)
@@ -35,7 +35,7 @@
 		},
 		addAll:function(items)
 		{
-			for(var i=0;i<items.length;i++)
+			for(let i=0;i<items.length;i++)
 			{
 				this.addItem(items[i]);
 			}
@@ -43,16 +43,16 @@
 		},
 		removeItem:function(item)
 		{
-			var index=this.items.indexOf(item);
+			let index=this.items.indexOf(item);
 			if(index!==-1)
 			{
 				this.items.splice(index, 1);
-				var sIndex=this.selectedIndexs.indexOf(index);
+				let sIndex=this.selectedIndexs.indexOf(index);
 				if(sIndex!==-1)
 				{
 					this.selectedIndexs.splice(sIndex, 1);
 				}
-				var dIndex=this.disabledIndexs.indexOf(index);
+				let dIndex=this.disabledIndexs.indexOf(index);
 				if(dIndex!==-1)
 				{
 					this.disabledIndexs.splice(sIndex, 1);
@@ -84,7 +84,7 @@
 		},
 		isSelected:function(item)
 		{
-			var index=this.items.indexOf(item);
+			let index=this.items.indexOf(item);
 			if(index===-1)
 			{
 				index=item;
@@ -98,7 +98,7 @@
 				return false;
 			}
 			
-			var index=this.items.indexOf(item);
+			let index=this.items.indexOf(item);
 			if(index===-1)
 			{
 				index=item;
@@ -119,7 +119,7 @@
 		},
 		removeSelect:function(item)
 		{
-			var index=this.items.indexOf(item);
+			let index=this.items.indexOf(item);
 			if(index===-1)
 			{
 				index=item;
@@ -139,14 +139,14 @@
 				return false;
 			}
 			
-			var index=isIndex?item:this.items.indexOf(item);
+			let index=isIndex?item:this.items.indexOf(item);
 			if(index===-1)
 			{
 				index=item;
 			}
 			if(this.items.hasOwnProperty(index))
 			{
-				var sIndex=this.selectedIndexs.indexOf(index);
+				let sIndex=this.selectedIndexs.indexOf(index);
 				if(sIndex===-1)
 				{
 					if(this.selectionType===MENU.SelectionTypes.SINGLE)
@@ -173,7 +173,7 @@
         },
 		setActive:function(index)
 		{
-			var min=-1,max=this.items.length-1;
+			let min=-1,max=this.items.length-1;
 			index=!(min<=index)?min:(max<index?max:index);
 			if(this.active!==index)
 			{
@@ -182,7 +182,7 @@
 		},
 		moveActive:function(val)
 		{
-			var next=this.active+val;
+			let next=this.active+val;
 			if(!this.loop)
 			{
 				next=0>next?0:next;
@@ -207,8 +207,8 @@
 		},
 		getSelectedItems:function()
 		{
-			var rtn=[];
-			for(var i=0;i<this.selectedIndexs.length;i++)
+			let rtn=[];
+			for(let i=0;i<this.selectedIndexs.length;i++)
 			{
 				rtn.push(this.getItem(this.selectedIndexs[i]));
 			}
@@ -216,7 +216,7 @@
 		},
 		setDisabled:function(item,boolen)
 		{
-			var index=this.items.indexOf(item);
+			let index=this.items.indexOf(item);
 			if(index===-1)
 			{
 				index=item;
@@ -230,7 +230,7 @@
 		},
 		isDisabled:function(item)
 		{
-			var index=this.items.indexOf(item);
+			let index=this.items.indexOf(item);
 			if(index===-1)
 			{
 				index=item;

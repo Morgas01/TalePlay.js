@@ -1,15 +1,15 @@
 (function(µ,SMOD,GMOD){
 
-    var TALE=window.TalePlay=window.TalePlay||{};
+    let TALE=window.TalePlay=window.TalePlay||{};
 	
-	var LST=GMOD("Listeners");
-	var POINT=GMOD("Math.Point");
+	let LST=GMOD("Listeners");
+	let POINT=GMOD("Math.Point");
 	
-	var SC=µ.shortcut({
+	let SC=µ.shortcut({
 		mapping:"Controller.Mapping"
 	});
 	
-	var CTRL=TALE.Controller=µ.Class(LST,{
+	let CTRL=TALE.Controller=µ.Class(LST,{
 		init:function(mapping,mappingName)
 		{
 			this.superInit(LST);
@@ -43,23 +43,22 @@
 		},
 		getAnalogStick:function(axisIndex)
 		{
-			var stickIndex=Math.floor(axisIndex/2);
-			if(this.analogSticks[stickIndex]===undefined)
+			if(this.analogSticks[axisIndex]===undefined)
 			{
-				this.analogSticks[stickIndex]=new CTRL.AnalogStick();
+				this.analogSticks[axisIndex]=new CTRL.AnalogStick();
 			}
-			return this.analogSticks[stickIndex];
+			return this.analogSticks[axisIndex];
 		},
 		setButton:function(buttonMap)
 		{
-			var changed=false,axisMap=undefined;
+			let changed=false,axisMap=undefined;
 			if(this.mapping)
 			{
-				var remapped={};
+				let remapped={};
 				axisMap={};
-				for(var i in buttonMap)
+				for(let i in buttonMap)
 				{
-					var axisIndex=this.mapping.getButtonAxisMapping(i);
+					let axisIndex=this.mapping.getButtonAxisMapping(i);
 					if(axisIndex!==undefined)
 					{
 						axisMap[Math.abs(axisIndex)]=this.mapping.convertAxisValue(axisIndex,buttonMap[i]);
@@ -72,12 +71,12 @@
 				buttonMap=remapped;
 			}
 			
-			for(var index in buttonMap)
+			for(let index in buttonMap)
 			{
-				var value=buttonMap[index];
+				let value=buttonMap[index];
 				if(this.buttons[index]===undefined||this.buttons[index]!==value)
 				{
-					var old=this.buttons[index]||0;
+					let old=this.buttons[index]||0;
 					this.buttons[index]=value;
 					this.fire("buttonChanged",{index:1*index,value:value,oldValue:old});
 					changed=true;
@@ -95,37 +94,44 @@
 		},
 		setAxis:function(axisMap,fromButton)
 		{
-			var changed=false;
+			let changed=false;
 			if(this.mapping&&!fromButton)
 			{
-				var remapped={};
-				for(var i in axisMap)
+				let remapped={};
+				for(let i in axisMap)
 				{
-					var index=this.mapping.getAxisMapping(i);
+					let index=this.mapping.getAxisMapping(i);
 					remapped[Math.abs(index)]=this.mapping.convertAxisValue(index,axisMap[i]);
 				}
 				axisMap=remapped;
 			}
 			
-			var keys=Object.keys(axisMap).sort();
-			for(var i=0;i<keys.length;i++)
+			let keys=Object.keys(axisMap);
+			while(keys.length>0)
 			{
-				var index=keys[i];
-				var aStick=this.getAnalogStick(index);
-				var old=aStick.clone();
-				if(index%2==0&&keys[i+1]===index+1)
+				let key=keys.shift(), xAxis=undefined, yAxis=undefined; index=-1;
+				let aStick=this.getAnalogStick(key>>1);
+				if(key%2==0)
 				{
-					i++;
-					aStick.set(axisMap[index],axisMap[index+1]);
+					xAxis=axisMap[key];
+					yAxis=axisMap[key*1+1]||aStick.y;
+					
+					index=keys.indexOf(key*1+1);
+					if(index!==-1) keys.splice(index,1);
 				}
 				else
 				{
-					aStick.setComponent(index,axisMap[index]);
+					xAxis=axisMap[key-1]||aStick.x;
+					yAxis=axisMap[key];
+					
+					index=keys.indexOf(key-1);
+					if(index!==-1) keys.splice(index,1);
 				}
+				aStick.set(xAxis,yAxis);
 				if(aStick.hasChanged())
 				{
 					changed=true;
-					this.fire("analogStickChanged",{index:index>>1,analogStick:aStick});
+					this.fire("analogStickChanged",{index:key>>1,analogStick:aStick});
 				}
 			}
 			if(changed&&!fromButton)
@@ -142,7 +148,7 @@
 		setDisabled:function(disabled)
 		{
 			this.disabled=disabled===true;
-			for(var i in this.listeners)
+			for(let i in this.listeners)
 			{
 				this.listeners[i].setDisabled(this.disabled);
 			}

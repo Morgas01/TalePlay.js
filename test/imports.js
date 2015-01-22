@@ -1,8 +1,8 @@
 (function(){
-	var WR=function(path){
-		document.write('<script type="text/javascript" charset="utf-8" src="'+path+'"></script>');
+	let WR=function(path){
+		document.write('<script type="application/javascript;version=1.8" charset="utf-8" src="'+path+'"></script>');
 	};
-	var CSS=function(path){
+	let CSS=function(path){
 		document.write('<link rel="stylesheet" href="'+path+'">');
 	};
 	

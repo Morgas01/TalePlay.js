@@ -1,6 +1,6 @@
 (function(µ,SMOD,GMOD){
 
-	var GUI=GMOD("GUIElement"),
+	let GUI=GMOD("GUIElement"),
 	MAP=GMOD("Map"),
 	SC=GMOD("shortcut")({
 		find:"find",
@@ -10,8 +10,13 @@
 		point:"Math.Point"
 	});
 	
+<<<<<<< HEAD
 	var cursorFilter=function(image){return image instanceof GUI.Map.Cursor};
 	var cursorGetter=function(GuiMap){return GuiMap.organizer.getFilter("cursors")};
+=======
+	let cursorFilter= image => image instanceof GUI.Map.Cursor;
+	let cursorGetter= GuiMap => GuiMap.organizer.getFilter("cursors");
+>>>>>>> master
 	
 	GUI.Map=µ.Class(GUI,{
 		init:function(param)
@@ -53,7 +58,7 @@
         addAll:function(images)
         {
         	images=[].concat(images);
-            for(var i=0;i<images.length;i++)
+            for(let i=0;i<images.length;i++)
             {
                 this.add(images[i]);
             }
@@ -95,11 +100,16 @@
 			}
 			else if(!this.paused)
 			{
+<<<<<<< HEAD
 				var now=Date.now();
 
 				var it=this.movingCursors.entries();
 				var step=null;
 				while(step=it.next(),!step.done)
+=======
+				let now=Date.now();
+				for(let [cursor, data] of this.movingCursors)
+>>>>>>> master
 				{
 					var cursor=step.value[0];
 					var data=step.value[1];
@@ -114,9 +124,9 @@
 		},
         collide:function(rect)
         {
-        	var rtn=[],
+        	let rtn=[],
         	cImages=this.organizer.getFilter("collision");
-        	for(var i=0;i<cImages.length;i++)
+        	for(let i=0;i<cImages.length;i++)
         	{
         		if(cImages[i].rect.collide(rect))
         		{
@@ -127,9 +137,9 @@
         },
         trigger:function(type,numberOrPoint,y)
         {
-        	var rtn=[],
+        	let rtn=[],
         	tImages=this.organizer.getGroupValue("trigger",type);
-        	for(var i=0;i<tImages.length;i++)
+        	for(let i=0;i<tImages.length;i++)
         	{
         		if(tImages[i].rect.contains(numberOrPoint,y))
         		{
@@ -140,11 +150,11 @@
         },
 		onAnalogStick:function(event)
 		{
-			for(var i=0;i<this.cursors.length;i++)
+			for(let i=0;i<this.cursors.length;i++)
 			{
 				if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
 				{
-					var data=this.movingCursors.get(i);
+					let data=this.movingCursors.get(this.cursors[i]);
 					if(!data)
 					{
 						data={
@@ -152,9 +162,9 @@
 							lastTime:Date.now()-performance.timing.navigationStart
 						};
 						this.movingCursors.set(this.cursors[i],data);
+						data.lastTime=Date.now()-performance.timing.navigationStart;
 					}
 					data.direction=event.analogStick.clone();
-					data.lastTime=Date.now()-performance.timing.navigationStart;
 				}
 			}
 			if(this.animationRquest===null&&!this.paused)
@@ -164,21 +174,25 @@
 		},
 		_animateCursor:function(time)
 		{
+<<<<<<< HEAD
 			var it=this.movingCursors.entries();
 			var step=null;
 			while(step=it.next(),!step.done)
+=======
+			for(let [cursor, data] of this.movingCursors)
+>>>>>>> master
 			{
 				var cursor=step.value[0];
 				var data=step.value[1];
 				if(!data.direction.equals(0)&&cursor)
 				{
-					var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
+					let timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
 		            cursor.domElement.classList.add("moving");
-					var distance=cursor.move(data.direction,timeDiff);
+					let distance=cursor.move(data.direction,timeDiff);
 
 					//step trigger
-					var stepTrigger=this.trigger("step",cursor.getPosition());
-					for(var i=0;i<stepTrigger.length;i++)
+					let stepTrigger=this.trigger("step",cursor.getPosition());
+					for(let i=0;i<stepTrigger.length;i++)
 					{
 						this.fire("trigger",{
 							triggerType:"step",
@@ -192,8 +206,8 @@
 					data.lastTime=time;
 					
 					//move map
-					var pos=cursor.getPosition();
-					var mapPos=this.map.getPosition();
+					let pos=cursor.getPosition();
+					let mapPos=this.map.getPosition();
 					if(pos.x<mapPos.x-this.threshold.x)
 					{
 						this.move(pos.x-mapPos.x+this.threshold.x,0);
@@ -230,22 +244,22 @@
 		{
 			if(event.value===1&&!this.paused)
 			{
-				for(var i=0;i<this.cursors.length;i++)
+				for(let i=0;i<this.cursors.length;i++)
 				{
-					var cursor=this.cursors[i];
+					let cursor=this.cursors[i];
 					if(!this.assignFilter||this.assignFilter(event,cursor,i))
 					{
-						var activateTrigger=this.trigger("activate",cursor.getPosition());
+						let activateTrigger=this.trigger("activate",cursor.getPosition());
 						if(activateTrigger.length===0&&cursor.direction)
 						{
-							var dir=cursor.direction;
-							var pos=new SC.point(
+							let dir=cursor.direction;
+							let pos=new SC.point(
 								cursor.rect.position.x+(dir.x===0 ? cursor.offset.x : dir.x>0 ? cursor.rect.size.x : 0),
 								cursor.rect.position.y+(dir.y===0 ? cursor.offset.y : dir.y<0 ? cursor.rect.size.y : 0)
 							);
 							activateTrigger=this.trigger("activate",pos);
 						}
-						for(var t=0;t<activateTrigger.length;t++)
+						for(let t=0;t<activateTrigger.length;t++)
 						{
 							if(activateTrigger[t].trigger.type==="activate")
 							{
@@ -264,10 +278,10 @@
 		},
 		toJSON:function()
 		{
-			var json=this.map.toJSON();
+			let json=this.map.toJSON();
 			json.cursors=this.cursors.slice();
 			json.threshold=this.threshold.clone;
-			for(var i=0;i<this.cursors.length;i++)
+			for(let i=0;i<this.cursors.length;i++)
 			{
 				json.map.images.splice(json.map.images.indexOf(this.cursors[i]),1);
 			}
@@ -276,11 +290,11 @@
 		fromJSON:function(json)
 		{
 			this.movingCursors.clear();
-			for(var i=0;i<json.images.length;i++)
+			for(let i=0;i<json.images.length;i++)
 			{
 				json.images[i]=new GUI.Map.Image().fromJSON(json.images[i]);
 			}
-			for(var i=0;i<json.cursors.length;i++)
+			for(let i=0;i<json.cursors.length;i++)
 			{
 				json.images.push(new GUI.Map.Cursor().fromJSON(json.cursors[i]));
 			}
@@ -307,7 +321,7 @@
     	},
 		toJSON:function()
 		{
-			var json=MAP.Image.prototype.toJSON.call(this);
+			let json=MAP.Image.prototype.toJSON.call(this);
 			json.collision=this.collision;
 			json.trigger=this.trigger;
 			return json;
@@ -343,7 +357,7 @@
         	this.domElement.classList.remove("up","right","down","left");
         	if(this.direction)
         	{
-	            var direction8=this.direction.getDirection8();
+	            let direction8=this.direction.getDirection8();
 	            if(direction8>=1&&(direction8<=2||direction8===8))
 	            {
 	                this.domElement.classList.add("up");
@@ -385,14 +399,14 @@
     	move:function(direction,timediff)
     	{
     		this.direction=direction;
-    		var distance=new SC.point();
+    		let distance=new SC.point();
 			if(this.map)
 			{
-				var size=this.map.getSize();
+				let size=this.map.getSize();
 				distance.set(this.direction).mul(this.speed).mul(timediff/1000)
 				.mul(1,-1);//negate y for screen coordinates
 				//map boundary
-				var pos=this.rect.position.clone().add(this.offset);
+				let pos=this.rect.position.clone().add(this.offset);
 				if(pos.x+distance.x<0)
 				{
 					distance.x=-pos.x;
@@ -412,14 +426,14 @@
 				//collision
 				if(this.collision)
 				{
-					var progress=1;
-					var rect=this.rect.clone();
+					let progress=1;
+					let rect=this.rect.clone();
 					rect.position.add(distance);
-					var collisions=this.map.gui.collide(rect);
-					for(var i=0;i<collisions.length;i++)
+					let collisions=this.map.gui.collide(rect);
+					for(let i=0;i<collisions.length;i++)
 					{
-						var cImage=collisions[i];
-						var p=null;
+						let cImage=collisions[i];
+						let p=null;
 						if(cImage===this||this.rect.contains(cImage.rect)||cImage.rect.contains(this.rect))
 						{//is self or inside
 							continue;
@@ -457,7 +471,7 @@
     	},
 		toJSON:function()
 		{
-			var json=GUI.Map.Image.prototype.toJSON.call(this);
+			let json=GUI.Map.Image.prototype.toJSON.call(this);
 			json.offset=this.offset;
 			json.speed=this.speed;
 			return json;

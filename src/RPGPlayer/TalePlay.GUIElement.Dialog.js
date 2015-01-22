@@ -1,6 +1,6 @@
 (function(µ,SMOD,GMOD){
 	
-	var GUI=GMOD("GUIElement"),
+	let GUI=GMOD("GUIElement"),
 	
 	SC=GMOD("shortcut")({
 		proxy:"proxy",
@@ -8,7 +8,7 @@
 		menu:"GUI.Menu"
 	});
 	
-	var DIALOG=GUI.Dialog=µ.Class(GUI,{
+	let DIALOG=GUI.Dialog=µ.Class(GUI,{
 		init:function(param)
 		{
 			param=param||{};
@@ -38,10 +38,10 @@
 			
 			if(this.dialogParts.length>0)
 			{
-				var dPart=this.dialogParts.shift();
+				let dPart=this.dialogParts.shift();
 				
-				var styles=["width","height","top","right","bottom","left"];
-				for(var s=0;s<styles.length;s++)
+				let styles=["width","height","top","right","bottom","left"];
+				for(let s=0;s<styles.length;s++)
 				{
 					this.domElement.style[styles[s]]=dPart[styles[s]]||"";
 				}
@@ -69,7 +69,7 @@
 			}
 			else
 			{
-				var actions;
+				let actions;
 				if(event&&event.type==="select"&&event.value.actions)
 				{
 					actions=this.actions.concat(event.value.actions)

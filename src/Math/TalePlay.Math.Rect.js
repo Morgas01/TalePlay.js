@@ -1,13 +1,13 @@
 (function(µ,SMOD,GMOD){
 
-    var TALE=window.TalePlay=window.TalePlay||{};	
+    let TALE=window.TalePlay=window.TalePlay||{};	
 	TALE.Math=TALE.Math||{};
 	
-	var SC=GMOD("shortcut")({
+	let SC=GMOD("shortcut")({
 		POINT:"Math.Point"
 	});
 	
-	var RECT=TALE.Rect=µ.Class(
+	let RECT=TALE.Rect=µ.Class(
 	{
 		init:function(position,size)
 		{
@@ -39,7 +39,7 @@
 		},
 		setAbsolute:function(x1,y1,x2,y2)
 		{
-			var _x1=Math.min(x1,x2),
+			let _x1=Math.min(x1,x2),
 			_y1=Math.min(y1,y2),
 			_x2=Math.max(x1,x2),
 			_y=Math.max(y1,y2);
@@ -58,7 +58,7 @@
 			}
 			else
 			{
-				var me=this.getAbsolute(),
+				let me=this.getAbsolute(),
 				that=rect.getAbsolute();
 				
 				return !(me.min.x>=that.max.x||me.min.y>=that.max.y||me.max.x<=that.min.x||me.max.y<=that.min.y);
@@ -66,7 +66,7 @@
 		},
         contains:function(numberOrPoint,y)
         {
-            var p=new SC.POINT(numberOrPoint,y);
+            let p=new SC.POINT(numberOrPoint,y);
             return (this.position.x <= p.x && this.position.x+this.size.x > p.x &&
                     this.position.y <= p.y && this.position.y+this.size.y > p.y);
         }

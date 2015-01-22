@@ -1,14 +1,14 @@
 (function(µ,SMOD,GMOD,HMOD){
 
-    var TALE=window.TalePlay=window.TalePlay||{};
+    let TALE=window.TalePlay=window.TalePlay||{};
 
-	var LST=GMOD("Listeners");
+	let LST=GMOD("Listeners");
 	
-    var SC=GMOD("shortcut")({
+    let SC=GMOD("shortcut")({
 	    node:"NodePatch",
     });
 	
-	var LAYER=TALE.Layer=µ.Class(LST,{
+	let LAYER=TALE.Layer=µ.Class(LST,{
 		init:function(param)
 		{
 			this.superInit(LST);
@@ -35,7 +35,7 @@
 			{
 				case LAYER.Modes.ALL:
 				default:
-					for(var i=0;i<this.GUIElements.length;i++)
+					for(let i=0;i<this.GUIElements.length;i++)
 					{
 						this.GUIElements[i][LAYER._CONTROLLER_EVENT_MAP[event.type]](event);
 					}
@@ -81,8 +81,8 @@
 		destroy:function()
 		{
 			this.nodePatch.remove();
-			var c=this.GUIElements.slice();
-			for(var i=0;i<c.length;i++)
+			let c=this.GUIElements.slice();
+			for(let i=0;i<c.length;i++)
 			{
 				c[i].destroy();
 			}

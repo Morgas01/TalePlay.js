@@ -1,14 +1,14 @@
 (function(µ,SMOD,GMOD){
 
-    var TALE=window.TalePlay=window.TalePlay||{};
+    let TALE=window.TalePlay=window.TalePlay||{};
 
-    var SC=GMOD("shortcut")({
+    let SC=GMOD("shortcut")({
         find:"find",
         Node:"NodePatch",
         point:"Math.Point",
         RECT:"Math.Rect"
     });
-    var MAP=TALE.Map=µ.Class(
+    let MAP=TALE.Map=µ.Class(
     {
         init:function(param)
         {
@@ -41,7 +41,7 @@
         addAll:function(images)
         {
         	images=[].concat(images);
-            for(var i=0;i<images.length;i++)
+            for(let i=0;i<images.length;i++)
             {
                 this.add(images[i]);
             }
@@ -83,14 +83,14 @@
         },
         update:function(noimages)
         {
-        	var pos=this.position.clone();
-            var b=this.domElement.getBoundingClientRect();
+        	let pos=this.position.clone();
+            let b=this.domElement.getBoundingClientRect();
             
             pos.sub(b.width/2,b.height/2);
             
             this.stage.style.top=-pos.y+"px";
             this.stage.style.left=-pos.x+"px";
-            for(var i=0;!noimages&&i<this.images.length;i++)
+            for(let i=0;!noimages&&i<this.images.length;i++)
             {
                 this.images[i].update();
             }
@@ -110,7 +110,7 @@
         calcSize:function(filter)
         {
         	this.size.set(0);
-        	for(var i=0;i<this.images.length;i++)
+        	for(let i=0;i<this.images.length;i++)
         	{
         		if(!filter||filter(this.images[i]))
         		{
@@ -136,9 +136,9 @@
 		fromJSON:function(json)
 		{
 			this.empty();
-			for(var i=0;i<json.images.length;i++)
+			for(let i=0;i<json.images.length;i++)
 			{
-				var image=json.images[i];
+				let image=json.images[i];
 				if(!(image instanceof MAP.Image))
 				{
 					image=new MAP.Image().fromJSON(image);

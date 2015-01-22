@@ -1,8 +1,8 @@
 (function(µ,SMOD,GMOD){
 	
-	var Layer=GMOD("Layer");
+	let Layer=GMOD("Layer");
 
-	var SC=µ.getModule("shortcut")({
+	let SC=µ.getModule("shortcut")({
 		det:"Detached",
 		rj:"Request.json",
 		debug:"debug",
@@ -17,13 +17,13 @@
 		 */
 	});
 	
-	var requestCallbacks={
+	let requestCallbacks={
 		quests:{
 			loaded:function quests_loaded(quests,self)
             {
-            	for(var i=0;i<quests.length;i++)
+            	for(let i=0;i<quests.length;i++)
             	{
-            		var quest=new RPGPlayer.Quest(quests[i]);
+            		let quest=new RPGPlayer.Quest(quests[i]);
             		self.quests.set(quest.name,quest);
             	}
             	return self;
@@ -37,7 +37,7 @@
 		dialogs:{
 			loaded:function dialogs_loaded(dialogs,self)
             {
-            	for(var i=0;i<dialogs.length;i++)
+            	for(let i=0;i<dialogs.length;i++)
             	{
             		self.dialogs.set(dialogs[i].name,dialogs[i]);
             	}
@@ -51,7 +51,7 @@
 		}
 	};
 
-    var RPGPlayer=Layer.RPGPlayer=µ.Class(Layer,{
+    let RPGPlayer=Layer.RPGPlayer=µ.Class(Layer,{
         init:function(param)
         {
             param=param||{};
@@ -104,7 +104,7 @@
         _openStartMenu:function()
         {
         	this.focused=null;
-        	var smenu=new this._StartMenu({
+        	let smenu=new this._StartMenu({
         		dbConn:this.dbConn,
         		saveClass:SC.GameSave,
         		saveConverter:RPGPlayer.saveConverter,
@@ -124,7 +124,7 @@
 			this.map.movingCursors["delete"](this.cursor);
 			this.map.setPaused(true);
 			this.focused=null;
-			var gmenu=new this._GameMenu({
+			let gmenu=new this._GameMenu({
 				dbConn:this.dbConn,
         		saveClass:SC.GameSave,
 				saveConverter:RPGPlayer.saveConverter,
@@ -164,36 +164,37 @@
 		},
 		loadSave:function(save)
 		{
-			this.cursor.url=this.imageBaseUrl+save.cursor.url;
-			this.cursor.name=save.cursor.name||"";
-			this.cursor.rect.size.set(save.cursor.size);
-			this.cursor.offset.set(save.cursor.offset);
-			this.cursor.speed.set(save.cursor.speed);
-			this.cursor.collision=save.cursor.collision!==false;
+			this.cursor.url=this.imageBaseUrl+save.getCursor().url;
+			this.cursor.name=save.getCursor().name||"";
+			this.cursor.rect.size.set(save.getCursor().size);
+			this.cursor.offset.set(save.getCursor().offset);
+			this.cursor.speed.set(save.getCursor().speed);
+			this.cursor.collision=save.getCursor().collision!==false;
 			
 			this.questsReady.complete(function (self)
             {
-				var aQ=[];
-            	for(var i=0;i<save.quests.length;i++)
+				let aQ=[];
+            	for(let i=0;i<save.getQuests().length;i++)
             	{
-            		if(self.quests.has(save.quests[i]))
+            		if(self.quests.has(save.getQuests()[i]))
             		{
-            			var quest=self.quests.get(save.quests[i]).clone();
+            			let quest=self.quests.get(save.getQuests()[i]).clone();
             			self.activeQuests.set(quest.name,quest);
             			aQ.push(quest.name);
             		}
             	}
             	return aQ;
             });
-            this._changeMap(save.map, save.position);
-            if(save.actions)
+            this._changeMap(save.getMap(), save.getPosition());
+            if(save.getActions())
             {
-            	this.doActions(save.actions);
+            	this.doActions(save.getActions());
             }
 		},
 		getSave:function()
 		{
-			var save={
+			let save={
+				"gameName":this.gameName,
 				"cursor":{
 					"url":this.cursor.url.slice(this.cursor.url.lastIndexOf("/")+1),
 					"name":this.cursor.name,
@@ -204,28 +205,28 @@
 				"position":this.cursor.getPosition(),
 				"quests":[]
 			};
-			var it=this.activeQuests.entries();
-			var step=null;
+			let it=this.activeQuests.entries();
+			let step=null;
 			while(step=it.next(),!step.done)
 			{
 				save.quests.push(step.value[0]);
 			}
 			
-			return new SC.GameSave({data:save});
+			return new SC.GameSave(save);
 		},
 		_changeMap:function(name,position)
 		{
 			this.map.setPaused(true);
 			return SC.rj(this.mapBaseUrl+name+".json",this).then(function changeMap_loaded(json,self)
 			{
-				var todo=json.cursors.concat(json.images);
+				let todo=json.cursors.concat(json.images);
 				while(todo.length>0)
 				{
-					var image=todo.shift();
+					let image=todo.shift();
 					image.url=self.imageBaseUrl+image.url;
 				}
 				json.position=position;
-				var animation=self.map.movingCursors.get(self.cursor);
+				let animation=self.map.movingCursors.get(self.cursor);
 				self.map.fromJSON(json);
 				self.cursor.setPosition(position);
 				self.map.add(self.cursor);
@@ -252,7 +253,7 @@
 		},
 		_showDialog:function(dialogName)
 		{
-			var dialog=this.dialogs.get(dialogName);
+			let dialog=this.dialogs.get(dialogName);
 			if(dialog)
 			{
 				dialog.styleClass="panel";
@@ -276,13 +277,13 @@
 		},
 		doActions:function(actions)
 		{
-			for(var i=0;i<actions.length;i++)
+			for(let i=0;i<actions.length;i++)
 			{
-				var a=actions[i];
+				let a=actions[i];
+				let quest=this.activeQuests.get(a.questName);
 				switch (a.type) 
 				{
 					case "ABORT_QUEST":
-						var quest=this.activeQuests.get(a.questName);
 						if(quest)
 						{
 							this.activeQuests["delete"](a.questName);
@@ -290,7 +291,6 @@
 						}
 						break;
 					case "RESOLVE_QUEST":
-						var quest=this.activeQuests.get(a.questName);
 						if(quest)
 						{
 							this.activeQuests["delete"](a.questName);
@@ -299,7 +299,6 @@
 						}
 						break;
 					case "ACTIVATE_QUEST":
-						var quest=this.quests.get(a.questName);
 						if(quest)
 						{
 							quest=quest.clone();
@@ -328,15 +327,15 @@
 	RPGPlayer.saveConverter=function(save,index)
 	{
 		if(!save)
-			return ["EMPTY"];
+			return [index,"EMPTY","&nbsp;"];
 		try
 		{
-			return [index,save.getTimeStamp().toLocaleString(),save.getData().map];
+			return [index,save.getTimeStamp().toLocaleString(),save.getMap()];
 		}
 		catch(error)
 		{
 			SC.debug([error,save],SC.debug.LEVEL.ERROR);
-			return "CORRUPT DATA";
+			return [index,"CORRUPT DATA","&nbsp;"];
 		}
 	};
 	SMOD("RPGPlayer",RPGPlayer);
