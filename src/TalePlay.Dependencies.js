@@ -1,6 +1,6 @@
 (function(µ,SMOD,GMOD){
     var MORGAS_PATH="Morgas/src/";
-    var t=window.TalePlay=window.TalePlay||{};
+    var t=this.TalePlay=this.TalePlay||{};
     t.dependencies= µ.dependencies.clone(MORGAS_PATH);
     t.dependencies.addConfig({
         "TalePlay.Board.js":{
