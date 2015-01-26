@@ -1,0 +1,38 @@
+/*~~~ css/structure/Map.css ~~~*/
+.Map {
+	display:inline-block;
+	height: 100%;
+	width: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+}
+.Map .stage {
+    position: absolute;
+}
+.Map .stage img {
+    position: absolute;
+}
+/*~~~ css/structure/GUIElement.TextBox.css ~~~*/
+.TextBox {
+	white-space: pre;
+}
+/*~~~ css/structure/GUIElement.Menu.css ~~~*/
+.GUIElement.Menu[data-type="VERTICAL"] .menuitem {
+    display: block;
+}
+.GUIElement.Menu[data-type="TABLE"],
+.GUIElement.Menu[data-type="GRID"] {
+    display:table;
+}
+.GUIElement.Menu[data-type="TABLE"] .menuitem,
+.GUIElement.Menu[data-type="TABLE"] .menuheader,
+.GUIElement.Menu[data-type="GRID"] .row {
+    display:table-row;
+}
+.GUIElement.Menu[data-type="TABLE"] .menuitem span,
+.GUIElement.Menu[data-type="TABLE"] .menuheader span,
+.GUIElement.Menu[data-type="GRID"] .menuitem {
+    display:table-cell;
+    padding:5px;
+}
