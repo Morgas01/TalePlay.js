@@ -164,13 +164,7 @@
 		},
 		loadSave:function(save)
 		{
-			this.cursor.url=this.imageBaseUrl+save.getCursor().url;
-			this.cursor.name=save.getCursor().name||"";
-			this.cursor.rect.size.set(save.getCursor().size);
-			this.cursor.offset.set(save.getCursor().offset);
-			this.cursor.speed.set(save.getCursor().speed);
-			this.cursor.collision=save.getCursor().collision!==false;
-			
+			this.setCursor(save.getCursor());
 			this.questsReady.complete(function (self)
             {
 				var aQ=[];
@@ -191,20 +185,23 @@
             	this.doActions(save.getActions());
             }
 		},
+		setCursor:function(cursor)
+		{
+			cursor.urls=cursor.urls.map(u => u ? this.imageBaseUrl+u : u);
+			cursor.name=cursor.name||"";
+			cursor.collision=cursor.collision!==false;
+			this.cursor.fromJSON(cursor);
+		},
 		getSave:function()
 		{
 			var save={
 				"gameName":this.gameName,
-				"cursor":{
-					"url":this.cursor.url.slice(this.cursor.url.lastIndexOf("/")+1),
-					"name":this.cursor.name,
-					"size":this.cursor.rect.size,
-					"offset":this.cursor.offset
-				},
+				"cursor":this.cursor.toJSON(),
 				"map":this.mapName,
 				"position":this.cursor.getPosition(),
 				"quests":[]
 			};
+			save.cursor.urls.map(function(u){return u ? u.slice(u.lastIndexOf("/")+1) : u;});
 			var it=this.activeQuests.entries();
 			var step=null;
 			while(step=it.next(),!step.done)

@@ -83,7 +83,7 @@
 
     // Map
     WR(testDir+"test.Morgas.Board.GUIElement.Map.js");
-    CSS(cssDir+"structure/arrow_animation.css");
+    CSS(cssDir+"structure/animations.css");
     
     //TextBox
     WR(testDir+"test.Morgas.Board.GUIElement.TextBox.js");

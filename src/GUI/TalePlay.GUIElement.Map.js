@@ -322,15 +322,26 @@
 		}
     });
 	GUI.Map.Cursor=µ.Class(GUI.Map.Image,{
-    	init:function(url,position,size,offset,name,colision,trigger,speed)
+    	init:function(urls,position,size,offset,name,colision,trigger,speed)
     	{
-    		this.superInit(GUI.Map.Image,url,position,size,name,colision,trigger);
+    		this.superInit(GUI.Map.Image,GUI.Map.Cursor.emptyImage,position,size,name,colision,trigger);
     		this.domElement.classList.add("cursor");
             this.domElement.style.zIndex=GUI.Map.Cursor.zIndexOffset;
+            
+            Object.defineProperty(this,"backUrl",{
+            	enumerable:true,
+            	get:function(){return this.domElement.style.backgroundImage;},
+            	set:function(url){this.domElement.style.backgroundImage='url("'+url+'")';}
+            });
+    		this.urls=null;
+    		this.setUrls(urls);
+    		
     		this.offset=new SC.point(this.rect.size).div(2);
     		this.setOffset(offset);
+    		
     		this.speed=new SC.point(200);
     		this.setSpeed(speed);
+    		
     		this.direction=null;
     		this.updateDirection();
     	},
@@ -344,6 +355,9 @@
         	if(this.direction)
         	{
 	            var direction8=this.direction.getDirection8();
+				if(this.urls[direction8]) this.backUrl=this.urls[direction8];
+				else if (direction8!==0&&direction8%2===0&&this.urls[direction8-1]) this.backUrl=this.urls[direction8-1];
+				else this.backUrl=this.urls[0];
 	            if(direction8>=1&&(direction8<=2||direction8===8))
 	            {
 	                this.domElement.classList.add("up");
@@ -381,6 +395,12 @@
     	setSpeed:function(numberOrPoint,y)
     	{
             this.speed.set(numberOrPoint,y);
+    	},
+    	setUrls:function(urls)
+    	{
+    		this.urls=[].concat(urls);
+    		this.backUrl=this.urls[0];
+    		if(this.domElement)this.updateDirection();
     	},
     	move:function(direction,timediff)
     	{
@@ -460,17 +480,22 @@
 			var json=GUI.Map.Image.prototype.toJSON.call(this);
 			json.offset=this.offset;
 			json.speed=this.speed;
+			delete json.url;
+			json.urls=this.urls.slice();
 			return json;
 		},
 		fromJSON:function(json)
 		{
+			json.url=GUI.Map.Cursor.emptyImage;
 			GUI.Map.Image.prototype.fromJSON.call(this,json);
 			this.offset.set(json.offset);
 			this.speed.set(json.speed);
+			this.setUrls(json.urls);
 			
 			return this;
 		}
     });
+	GUI.Map.Cursor.emptyImage="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     GUI.Map.Cursor.zIndexOffset=100;
 	SMOD("GUI.Map",GUI.Map);
 	
