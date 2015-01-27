@@ -1,7 +1,5 @@
 (function(µ,SMOD,GMOD){
 	
-	//TODO change to Layer
-	
 	var LAYER=GMOD("Layer");
 	
 	var SC=GMOD("shortcut")({
