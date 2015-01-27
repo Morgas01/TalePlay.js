@@ -86,35 +86,35 @@
 }
 
 /** Layer.Persistance **/
-.Layer.persistance {
+.Layer.Persistance {
 	background-color: #000;
 }
-.Layer.persistance .Menu:first-child {
+.Layer.Persistance .Menu:first-child {
 	border-spacing: 0 10px;
 	background-image: none;
 }
-.Layer.persistance .Menu:first-child .menuitem {
+.Layer.Persistance .Menu:first-child .menuitem {
 	height: 40px;
 }
-.Layer.persistance .Menu:first-child .menuitem span {
+.Layer.Persistance .Menu:first-child .menuitem span {
 	vertical-align: middle;
     background-color: #4444FF;
     border-width: 4px 0;
     border-style: solid;
     border-color: #FFF
 }
-.Layer.persistance .Menu:first-child .menuitem span:first-child {
+.Layer.Persistance .Menu:first-child .menuitem span:first-child {
 	border-left-width: 4px;
 	border-top-left-radius:10px;
 	border-bottom-left-radius:10px;
 }
-.Layer.persistance .Menu:first-child .menuitem span:last-child {
+.Layer.Persistance .Menu:first-child .menuitem span:last-child {
 	border-right-width: 4px;
 	border-top-right-radius:10px;
 	border-bottom-right-radius:10px;
 }
 /*
-.Layer.persistance .Menu:first-child .menuitem span:only-child {
+.Layer.Persistance .Menu:first-child .menuitem span:only-child {
 	position: absolute;
 	width: calc(100% - 8px);
 	padding: 5px 0;
