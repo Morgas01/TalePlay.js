@@ -63,9 +63,10 @@
         },
         "GUI/TalePlay.GUIElement.ControllerManager.js":{
             deps:[MORGAS_PATH+"Morgas.js","GUI/TalePlay.GUIElement.js"],
-            uses:[MORGAS_PATH+"Morgas.util.function.rescope.js","TalePlay.Controller.Keyboard.js","TalePlay.Controller.Gamepad.js","TalePlay.Controller.Mapping.js",
-                  "TalePlay.Menu.js","GUI/TalePlay.GUIElement.Menu.js",
-                  "GUI/TalePlay.GUIElement.ControllerConfig.js","css/structure/GUIElement.ControllerManager.css"]
+            uses:[MORGAS_PATH+"Morgas.util.function.rescope.js",MORGAS_PATH+"Morgas.util.function.bind.js",
+				"TalePlay.Controller.Keyboard.js","TalePlay.Controller.Gamepad.js","TalePlay.Controller.Mapping.js",
+                "TalePlay.Menu.js","GUI/TalePlay.GUIElement.Menu.js","GUI/TalePlay.GUIElement.ControllerConfig.js",
+				"css/structure/GUIElement.ControllerManager.css"]
         },
         "GUI/TalePlay.GUIElement.Map.js":{
             deps:[MORGAS_PATH+"Morgas.js","GUI/TalePlay.GUIElement.js","TalePlay.Map.js"],
