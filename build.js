@@ -6,6 +6,8 @@ require(MORGASPATH+"./src/Morgas.DependencyResolver.js");
 require(MORGASPATH+"./src/Morgas.Dependencies.js");
 require("./src/TalePlay.Dependencies.js");
 
+µ.debug.verbose=µ.debug.LEVEL.DEBUG;
+
 var fs=require("fs");
 
 var uglify=require("uglify-js2");
@@ -14,19 +16,21 @@ var minify=function(name)
 {
 	var inFile=__dirname+"/src/"+name;
 	var outFile=__dirname+"/build/"+name;
-	console.info(inFile+" => "+outFile);
+	µ.debug(inFile+" => "+outFile,µ.debug.LEVEL.INFO);
 	try
 	{
 		fs.writeFileSync(outFile,uglify.minify(inFile).code);
 	}
 	catch (e)
 	{
+		try{fs.unlinkSync(outFile)}catch (e){};
 		fs.linkSync(inFile,outFile);
 	}
 };
 var FILE_ENCODING = 'utf-8',EOL = '\n';
 var createPackage=function(name,sources)
 {
+	µ.debug("Package: "+name,µ.debug.LEVEL.INFO);
 	var packageFiles=TalePlay.dependencies.resolve(sources);
 	var packageJsFiles=packageFiles.filter(function(f){return f.indexOf(".css")===-1;})
 	.map(function(f)
@@ -56,10 +60,10 @@ for(var i=0;i<files.length;i++)
 		try{
 			minify(files[i]);
 		}catch(e){
-			console.error(e);
+			µ.debug(e,µ.debug.LEVEL.ERROR);
 		}
 	}
 }
 
 createPackage("TalePlay_FULL",Object.keys(TalePlay.dependencies.config));
-createPackage("TalePlay_RPGPlayer",["RPGPlayer/TalePlay.RPGPlayer.js"]);
+createPackage("TalePlay_RPGPlayer",["RPGPlayer/TalePlay.RPGPlayer.js","TalePlay.Board.js","TalePlay.Controller.Gamepad.js","TalePlay.Controller.Keyboard.js"]);

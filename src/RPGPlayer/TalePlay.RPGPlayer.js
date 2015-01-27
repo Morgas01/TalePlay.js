@@ -187,7 +187,8 @@
 		},
 		setCursor:function(cursor)
 		{
-			cursor.urls=cursor.urls.map(u => u ? this.imageBaseUrl+u : u);
+			var imageBaseUrl=this.imageBaseUrl;
+			cursor.urls=cursor.urls.map(function(u){return u ? imageBaseUrl+u : u});
 			cursor.name=cursor.name||"";
 			cursor.collision=cursor.collision!==false;
 			this.cursor.fromJSON(cursor);

@@ -3,7 +3,14 @@
 	//TODO change to Layer
 	
 	var AMENU=GMOD("Layer.ActionMenu");
-	
+
+	var SC=GMOD("shortcut")({
+		manager:"GUI.ControllerManager",
+		debug:"debug"
+		/* default module
+		 * Layer.Persistance
+		 */
+	});
 	
 	var GMENU=AMENU.GameMenu=µ.Class(AMENU,{
 		init:function(param)
@@ -65,13 +72,13 @@
 		},
 		openControllerManager:function(item)
 		{
-			let param={
+			var param={
 				styleClass:["panel","overlay"],
 				buttons:item.controllerLayout.buttons,
 				analogSticks:item.controllerLayout.analogSticks,
 				dbConn:this.dbConn
 			};
-			let m=new SC.manager(param);
+			var m=new SC.manager(param);
 			this.add(m);
 			m.update("controllers");
 		},

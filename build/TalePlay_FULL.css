@@ -6,7 +6,7 @@
 	height:100%;
 	width:100%;
 }
-.Board .Layer,.Board .panel,.Board .overlay , .board .center {
+.Board .Layer,.Board .panel,.Board .overlay , .Board .center {
 	position:absolute;
 }
 .Board .overlay {
@@ -15,12 +15,12 @@
     bottom:0;
     left:0;
 }
-.board .center {
+.Board .center {
 	top:50%;
 	left:50%;
 	transform:translateX(-50%) translateY(-50%);
 }
-.board .hidden {
+.Board .hidden {
 	display:none;
 }
 /*~~~ css/structure/Map.css ~~~*/
