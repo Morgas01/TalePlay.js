@@ -14,6 +14,11 @@
 				styleClass:["panel"],
 				actions:[
 					{
+						text:"Controllers",
+						action:"openControllerManager",
+						controllerLayout:param.controllerLayout||{}
+					},
+					{
 						text:"save",
 						action:"saveGame",
 						data:param.saveData
@@ -46,7 +51,7 @@
 				switch(event.index)
 				{
 					case 1:
-						this.menu.setActive(1);
+						this.menu.setActive(2);
 						break;
 					case 2:
 						AMENU.prototype.onController.call(this,event);
@@ -57,6 +62,18 @@
 			{
 				AMENU.prototype.onController.call(this,event);
 			}
+		},
+		openControllerManager:function(item)
+		{
+			let param={
+				styleClass:["panel","overlay"],
+				buttons:item.controllerLayout.buttons,
+				analogSticks:item.controllerLayout.analogSticks,
+				dbConn:this.dbConn
+			};
+			let m=new SC.manager(param);
+			this.add(m);
+			m.update("controllers");
 		},
 		saveGame:function(item)
 		{

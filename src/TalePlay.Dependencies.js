@@ -119,11 +119,12 @@
         },
         "RPGPlayer/TalePlay.Layer.ActionMenu.GameMenu.js":{
         	deps:[MORGAS_PATH+"Morgas.js","TalePlay.Layer.ActionMenu.js"],
-        	uses:[MORGAS_PATH+"Morgas.util.Request.js","TalePlay.Layer.Persistance.js"]
+        	uses:[MORGAS_PATH+"Morgas.util.Request.js","TalePlay.Layer.Persistance.js","GUI/TalePlay.GUIElement.ControllerManager.js"]
         },
 		"TalePlay.Layer.Persistance.js":{
 			deps:[MORGAS_PATH+"Morgas.js","TalePlay.Layer.js"],
-			uses:[MORGAS_PATH+"Morgas.util.function.rescope.js",MORGAS_PATH+"Morgas.util.download.js","GUI/TalePlay.GUIElement.Menu.js"]
+			uses:[MORGAS_PATH+"Morgas.util.function.rescope.js",MORGAS_PATH+"Morgas.util.download.js",
+				"GUI/TalePlay.GUIElement.Menu.js","GUI/TalePlay.GUIElement.ControllerManager.js"]
 		}
     });
 
