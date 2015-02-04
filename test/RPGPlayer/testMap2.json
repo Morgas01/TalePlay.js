@@ -223,6 +223,28 @@
 					}
 				]
 			}
+		},
+		{
+			"url": "empty.png",
+			"position": {
+				"x": 325,
+				"y": 25
+			},
+			"size": {
+				"x": 50,
+				"y": 50
+			},
+			"name": "execute yellow",
+			"collision": true,
+			"trigger": {
+				"type": "activate",
+				"value": [
+					{
+						"type": "EXECUTE",
+						"value":"hello execute!"
+					}
+				]
+			}
 		}
 	],
 	"size": {

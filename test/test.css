@@ -21,3 +21,6 @@ body > fieldset{
 .GUIElement.Map [data-name~="purple"] {
 	background-color:purple; 
 }
+.GUIElement.Map [data-name~="yellow"] {
+	background-color:yellow;
+}

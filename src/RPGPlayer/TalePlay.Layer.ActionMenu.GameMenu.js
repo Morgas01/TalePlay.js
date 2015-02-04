@@ -3,8 +3,15 @@
 	//TODO change to Layer
 	
 	let AMENU=GMOD("Layer.ActionMenu");
-	
-	
+
+	let SC=GMOD("shortcut")({
+		manager:"GUI.ControllerManager",
+		debug:"debug"
+		/* default module
+		 * Layer.Persistance
+		 */
+	});
+
 	let GMENU=AMENU.GameMenu=µ.Class(AMENU,{
 		init:function(param)
 		{
@@ -31,7 +38,7 @@
 			};
 			if(!param.saveData)
 			{
-				menuParam.disabled=[0];
+				menuParam.disabled=[1];
 			}
 			this.superInit(AMENU,menuParam);
 

@@ -24,6 +24,11 @@
 			questlog.value="";
 			player.activeQuests.forEach(function(q){questlog.value+=JSON.stringify(q,null,"\t")});
 		});
+
+		player.addListener("execute",null,function(e)
+		{
+			alert(e.action.value);
+		});
 		
         ok(true);
 	});

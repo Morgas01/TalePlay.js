@@ -77,7 +77,7 @@
 				this.domElement.dataset.gamename=this.gameName;
 				this.dbConn=new SC.idb(this.gameName);
 			}
-			this.createListener("ready quest-activate quest-complete quest-abort");
+			this.createListener("ready quest-activate quest-complete quest-abort execute");
 			
 			this.baseUrl=param.baseUrl||"";
 			this.imageBaseUrl=param.imageBaseUrl||param.baseUrl||"";
@@ -201,7 +201,7 @@
 				"position":this.cursor.getPosition(),
 				"quests":[]
 			};
-			save.cursor.urls.map(u => u ? u.slice(u.lastIndexOf("/")+1) : u);
+			save.cursor.urls=save.cursor.urls.map(u => u ? u.slice(u.lastIndexOf("/")+1) : u);
 			let it=this.activeQuests.entries();
 			let step=null;
 			while(step=it.next(),!step.done)
@@ -316,9 +316,7 @@
 						this._openGameMenu(a.enableSave);
 						break;
 					case "EXECUTE":
-						try{
-							a.value(this);
-						}catch(e){µ.debug(["doAction Error: ",a,e],0);}
+						this.fire("execute",{action:a});
 						break;
 				}
 			}
