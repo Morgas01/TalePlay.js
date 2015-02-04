@@ -22,7 +22,7 @@
 		board.domElement.parentNode.parentNode.appendChild(questlog);
 		player.addListener("quest-activate quest-complete",null,function(e){
 			questlog.value="";
-			player.activeQuests.forEach(function(q){questlog.value+=JSON.stringify(q,null,"\t")});
+			player.gameSave.getQuests().forEach(function(q){questlog.value+=JSON.stringify(q,null,"\t")});
 		});
 
 		player.addListener("execute",null,function(e)
