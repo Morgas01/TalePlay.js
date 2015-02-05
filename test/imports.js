@@ -60,6 +60,7 @@
 	CSS(cssDir+"structure/GUIElement.Menu.css");
 	CSS(cssDir+"structure/GUIElement.ControllerConfig.css");
 	CSS(cssDir+"structure/GUIElement.ControllerManager.css");
+	CSS(cssDir+"structure/GUIElement.Map.css");
 	CSS(cssDir+"structure/GUIElement.TextBox.css");
 	
 	WR("testUtil.js");
@@ -83,7 +84,6 @@
 
     // Map
     WR(testDir+"test.Morgas.Board.GUIElement.Map.js");
-    CSS(cssDir+"structure/animations.css");
     
     //TextBox
     WR(testDir+"test.Morgas.Board.GUIElement.TextBox.js");

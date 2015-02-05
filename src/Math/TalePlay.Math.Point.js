@@ -137,6 +137,12 @@
 			this.y=1/this.y;
 			return this;
 		},
+		abs:function()
+		{
+			this.x=Math.abs(this.x);
+			this.y=Math.abs(this.y);
+			return this;
+		},
 		length:function()
 		{
 			return Math.sqrt(this.x*this.x+this.y*this.y);
@@ -166,6 +172,47 @@
 				return a;
 			}
 			return 0;
+		},
+		getDirection4:function()
+		{//0:none 1:up 2:right 3:down 4:left
+			if(this.y===0&&this.x===0)
+			{
+				return 0;
+			}
+			else if(Math.abs(this.y)>Math.abs(this.x))
+			{
+				if(this.y>0)
+				{
+					return 1;
+				}
+				else
+				{
+					return 3;
+				}
+			}
+			else
+			{
+				if(this.x>0)
+				{
+					return 2;
+				}
+				else
+				{
+					return 4;
+				}
+			}
+		},
+		getDirection8:function()
+		{
+			//0:none 1:up 2:up-right 3:right 4:down-right ...
+			if(this.y===0&&this.x===0)
+			{
+				return 0;
+			}
+			else
+			{
+				return 1+Math.floor((this.getAngle()/Math.PI*4+0.5)%8);
+			}
 		},
 		doMath:function(fn,numberOrPoint,y)
 		{

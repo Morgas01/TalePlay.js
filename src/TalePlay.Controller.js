@@ -220,47 +220,6 @@
 		{
 			this.pushOld();
 			POINT.prototype.set.call(this,numberOrPoint,y);
-		},
-		getDirection4:function()
-		{//0:none 1:up 2:right 3:down 4:left
-			if(this.y===0&&this.x===0)
-			{
-				return 0;
-			}
-			else if(Math.abs(this.y)>Math.abs(this.x))
-			{
-				if(this.y>0)
-				{
-					return 1;
-				}
-				else
-				{
-					return 3;
-				}
-			}
-			else
-			{
-				if(this.x>0)
-				{
-					return 2;
-				}
-				else
-				{
-					return 4;
-				}
-			}
-		},
-		getDirection8:function()
-		{
-			//0:none 1:up 2:up-right 3:right 4:down-right ...
-			if(this.y===0&&this.x===0)
-			{
-				return 0;
-			}
-			else
-			{
-				return 1+Math.floor((this.getAngle()+Math.PI/8)/(Math.PI/4));
-			}
 		}
 	});
 	

@@ -1,8 +1,12 @@
-[data-name~="4-steps"] {
+.GUIElement.map .cursor {
+    background-size: 100%;
+}
+
+.GUIElement.map .cursor[data-name~="4-steps"] {
     background-size: 400% 100%;
     background-position: 0 0;
 }
-[data-name~="4-steps"].moving {
+.GUIElement.map .cursor[data-name~="4-steps"].moving {
     animation: FourSteps 500ms steps(4,end) infinite;
 }
 @keyframes FourSteps {
@@ -10,11 +14,11 @@
     100%    {background-position: 133.333% 0}
 }
 
-[data-name~="6-steps"] {
+.GUIElement.map .cursor[data-name~="6-steps"] {
     background-size: 600% 100%;
     background-position: 0 0;
 }
-[data-name~="6-steps"].moving {
+.GUIElement.map .cursor[data-name~="6-steps"].moving {
     animation: SixSteps 500ms steps(6,end) infinite;
 }
 @keyframes SixSteps {

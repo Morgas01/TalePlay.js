@@ -33,7 +33,7 @@
 	        ],
 	        cursors:[
 	 	    	new SC.gMap.Cursor(imagesDir+"cursor_target.svg",{x:150,y:200},{x:50,y:50},{x:25,y:25},"crossair"),
-		    	new SC.gMap.Cursor(imagesDir+"empty.png",{x:250,y:200},{x:50,y:50},{x:25,y:25},"arrow",true)
+		    	new SC.gMap.Cursor([imagesDir+"arrow_down.svg",imagesDir+"arrow_up.svg",null,imagesDir+"arrow_right.svg",null,imagesDir+"arrow_down.svg",null,imagesDir+"arrow_left.svg",null],{x:250,y:200},{x:50,y:50},{x:25,y:25},"arrow 4-steps",true,false,100)
 		    ],
 		    assignFilter:function(event,cursor,index){return event.type!=="analogStickChanged"||event.index===index;},
             threshold:75
@@ -73,6 +73,26 @@
 			eventlog.value="["+event.cursor.name+"]"+event.triggerType+" "+Date.now();
 			console.info(event);
 		});
+		
+		let animationButton=document.createElement("button");
+		animationButton.textContent="animation";
+		animationButton.addEventListener("click",function(e)
+		{
+			map.playAnimation(new SC.gMap.Cursor.Animation.Key(map.cursors[1],[
+				{x:100,y:100},
+				{x:350,y:100},
+				{x:350,y:326},
+				{x:374,y:326},
+				{x:374,y:374},
+				{x:326,y:374},
+				{x:326,y:326},
+				{x:374,y:374},
+				{x:100,y:250},
+				{x:50,y:50}
+			]));
+		})
+		board.domElement.parentNode.parentNode.appendChild(animationButton);
+		
 		ok(true);
 	});
 })();

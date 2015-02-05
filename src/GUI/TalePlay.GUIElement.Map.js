@@ -26,7 +26,7 @@
 				domElement:this.domElement,
 				images:param.images,
 				position:param.position
-			});
+			}); //note: sets class "map" to domElement
 			this.map.gui=this;
 			SC.proxy("map",[
 				"setPosition",
@@ -147,9 +147,9 @@
 							lastTime:Date.now()-performance.timing.navigationStart
 						};
 						this.movingCursors.set(this.cursors[i],data);
-						data.lastTime=Date.now()-performance.timing.navigationStart;
 					}
-					data.direction=event.analogStick.clone();
+					data.direction=event.analogStick.clonePoint()
+					.mul(1,-1);//negate y for screen coordinates;
 				}
 			}
 			if(this.animationRquest===null&&!this.paused)
@@ -161,11 +161,15 @@
 		{
 			for(let [cursor, data] of this.movingCursors)
 			{
+				let timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
+	            if(data.animation)
+	            {
+	            	data.direction=data.animation.step(timeDiff);
+	            }
 				if(!data.direction.equals(0)&&cursor)
 				{
-					let timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
 		            cursor.domElement.classList.add("moving");
-					let distance=cursor.move(data.direction,timeDiff);
+		            let distance=cursor.move(data.direction,timeDiff);
 
 					//step trigger
 					let stepTrigger=this.trigger("step",cursor.getPosition());
@@ -251,6 +255,25 @@
 						}
 					}
 				}
+			}
+		},
+		playAnimation:function(animation)
+		{
+			let data=this.movingCursors.get(animation.cursor);
+			if(!data)
+			{
+				data={
+					direction:null,
+					animation:null,
+					lastTime:Date.now()-performance.timing.navigationStart
+				};
+				this.movingCursors.set(animation.cursor,data);
+			}
+			data.animation=animation;
+
+			if(this.animationRquest===null&&!this.paused)
+			{
+				this.animationRquest=requestAnimationFrame(this._animateCursor);
 			}
 		},
 		toJSON:function()
@@ -345,10 +368,12 @@
         	this.domElement.classList.remove("up","right","down","left");
         	if(this.direction)
         	{
-	            let direction8=this.direction.getDirection8();
+        		// y axis is inverted on screen
+	            let direction8=this.direction.clone().mul(1,-1).getDirection8();
 	            if(this.urls[direction8]) this.backUrl=this.urls[direction8];
 	            else if (direction8!==0&&direction8%2===0&&this.urls[direction8-1]) this.backUrl=this.urls[direction8-1];
 	            else this.backUrl=this.urls[0];
+	            
 	            if(direction8>=1&&(direction8<=2||direction8===8))
 	            {
 	                this.domElement.classList.add("up");
@@ -400,8 +425,8 @@
 			if(this.map)
 			{
 				let size=this.map.getSize();
-				distance.set(this.direction).mul(this.speed).mul(timediff/1000)
-				.mul(1,-1);//negate y for screen coordinates
+				distance.set(this.direction).mul(this.speed).mul(timediff/1000);
+				
 				//map boundary
 				let pos=this.rect.position.clone().add(this.offset);
 				if(pos.x+distance.x<0)
@@ -488,6 +513,54 @@
     });
 	GUI.Map.Cursor.emptyImage="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     GUI.Map.Cursor.zIndexOffset=100;
+    GUI.Map.Cursor.Animation=µ.Class({
+    	init:function(cursor)
+    	{
+    		this.cursor=cursor;
+    		this.progress=0;
+    	},
+    	step:function(timeDiff)
+    	{
+    		SC.debug("Abstract GUI.Map.Cursor.Animation used",SC.debug.LEVEL.WARNING);
+    	}
+    });
+    GUI.Map.Cursor.Animation.Key=µ.Class(GUI.Map.Cursor.Animation,{ //key animation
+    	init:function(cursor,keys)
+    	{
+    		this.superInit(GUI.Map.Cursor.Animation,cursor);
+    		this.keys=keys;
+    		
+    		this.cursor.setPosition(this.keys[0]);
+    		this.progress=1;//next key
+    	},
+    	step:function(timediff)
+    	{
+    		if(this.keys[this.progress])
+    		{
+    			let dir=this.cursor.getPosition().negate().add(this.keys[this.progress]);
+    			let dist=this.cursor.speed.clone().mul(timediff/1000);
+    			if( (dist.x>Math.abs(dir.x)&&dist.y>Math.abs(dir.y)) && (this.keys.length>this.progress+1))
+    			{
+    				let remaining=dist.clone().sub(dir.abs()).div(dist);
+    				dir=new SC.point(this.keys[this.progress+1]).sub(this.keys[this.progress]).mul(remaining).add(this.keys[this.progress]);
+    				dir=this.cursor.getPosition().negate().add(dir);
+    				this.progress++;
+    			}
+    			dir.div(dist);
+    			let absX=Math.abs(dir.x),absY=Math.abs(dir.y)
+    			if(absX>1||absY>1) dir.mul(1/(absX>absY ? absX : absY));
+    			else
+    			{
+    				dir.set(0);
+    			}
+    			return dir;
+    		}
+    		else
+    		{
+    			return new SC.point();
+    		}
+    	}
+    });
 	SMOD("GUI.Map",GUI.Map);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);
