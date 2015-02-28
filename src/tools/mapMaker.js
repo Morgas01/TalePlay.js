@@ -47,21 +47,7 @@
             {url:"../Images/1.png"},
             {url:"../Images/2.png"},
             {url:"../Images/3.png"}
-        ],
-        imageLayer:{
-        	getTriggerValueHTML:function(image)
-        	{
-        		return "actions</td><td><button data-action='test'>"+(image.trigger.value||0)+"</button>";
-        	},
-        	getTriggerValue:function(tr)
-        	{
-        		return ++tr.querySelector("button").textContent;
-        	},
-        	onAction:function(image,action,event)
-        	{
-        		debugger;
-        	}
-        }
+        ]
     });
 	
 	var actions={
