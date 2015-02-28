@@ -1,6 +1,6 @@
 (function(µ,SMOD,GMOD,HMOD){
 
-    var TALE=window.TalePlay=window.TalePlay||{};
+    var TALE=this.TalePlay=this.TalePlay||{};
     
 	var SC=GMOD("shortcut")({
 		rs:"rescope",

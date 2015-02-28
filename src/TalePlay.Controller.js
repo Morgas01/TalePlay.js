@@ -1,6 +1,6 @@
 (function(µ,SMOD,GMOD){
 
-    var TALE=window.TalePlay=window.TalePlay||{};
+    var TALE=this.TalePlay=this.TalePlay||{};
 	
 	var LST=GMOD("Listeners");
 	var POINT=GMOD("Math.Point");
