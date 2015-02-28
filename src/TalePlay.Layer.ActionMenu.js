@@ -2,14 +2,14 @@
 	
 	//TODO change to Layer
 	
-	let LAYER=GMOD("Layer");
+	var LAYER=GMOD("Layer");
 	
-	let SC=GMOD("shortcut")({
+	var SC=GMOD("shortcut")({
 		Menu:"GUI.Menu",
 		debug:"debug"
 	});
 	
-	let AMENU=LAYER.ActionMenu=µ.Class(LAYER,{
+	var AMENU=LAYER.ActionMenu=µ.Class(LAYER,{
 		init:function(param)
 		{
 			param=param||{};

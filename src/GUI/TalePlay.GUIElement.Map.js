@@ -1,6 +1,6 @@
 (function(µ,SMOD,GMOD){
 
-	let GUI=GMOD("GUIElement"),
+	var GUI=GMOD("GUIElement"),
 	MAP=GMOD("Map"),
 	SC=GMOD("shortcut")({
 		find:"find",
@@ -10,8 +10,8 @@
 		point:"Math.Point"
 	});
 	
-	let cursorFilter= image => image instanceof GUI.Map.Cursor;
-	let cursorGetter= GuiMap => GuiMap.organizer.getFilter("cursors");
+	var cursorFilter= image => image instanceof GUI.Map.Cursor;
+	var cursorGetter= GuiMap => GuiMap.organizer.getFilter("cursors");
 	
 	GUI.Map=µ.Class(GUI,{
 		init:function(param)
@@ -53,7 +53,7 @@
         addAll:function(images)
         {
         	images=[].concat(images);
-            for(let i=0;i<images.length;i++)
+            for(var i=0;i<images.length;i++)
             {
                 this.add(images[i]);
             }
@@ -95,8 +95,8 @@
 			}
 			else if(!this.paused)
 			{
-				let now=Date.now();
-				for(let [cursor, data] of this.movingCursors)
+				var now=Date.now();
+				for(var [cursor, data] of this.movingCursors)
 				{
 					data.lastTime=now-performance.timing.navigationStart;
 				}
@@ -109,9 +109,9 @@
 		},
         collide:function(rect)
         {
-        	let rtn=[],
+        	var rtn=[],
         	cImages=this.organizer.getFilter("collision");
-        	for(let i=0;i<cImages.length;i++)
+        	for(var i=0;i<cImages.length;i++)
         	{
         		if(cImages[i].rect.collide(rect))
         		{
@@ -122,9 +122,9 @@
         },
         trigger:function(type,numberOrPoint,y)
         {
-        	let rtn=[],
+        	var rtn=[],
         	tImages=this.organizer.getGroupValue("trigger",type);
-        	for(let i=0;i<tImages.length;i++)
+        	for(var i=0;i<tImages.length;i++)
         	{
         		if(tImages[i].rect.contains(numberOrPoint,y))
         		{
@@ -135,11 +135,11 @@
         },
 		onAnalogStick:function(event)
 		{
-			for(let i=0;i<this.cursors.length;i++)
+			for(var i=0;i<this.cursors.length;i++)
 			{
 				if(!this.assignFilter||this.assignFilter(event,this.cursors[i],i))
 				{
-					let data=this.movingCursors.get(this.cursors[i]);
+					var data=this.movingCursors.get(this.cursors[i]);
 					if(!data)
 					{
 						data={
@@ -159,9 +159,9 @@
 		},
 		_animateCursor:function(time)
 		{
-			for(let [cursor, data] of this.movingCursors)
+			for(var [cursor, data] of this.movingCursors)
 			{
-				let timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
+				var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
 	            if(data.animation)
 	            {
 	            	data.direction=data.animation.step(timeDiff);
@@ -169,11 +169,12 @@
 				if(!data.direction.equals(0)&&cursor)
 				{
 		            cursor.domElement.classList.add("moving");
-		            let distance=cursor.move(data.direction,timeDiff);
+		            var distance=cursor.move(data.direction,timeDiff);
 
 					//step trigger
-					let stepTrigger=this.trigger("step",cursor.getPosition());
-					for(let i=0;i<stepTrigger.length;i++)
+		            //TODO step in/over/out
+					var stepTrigger=this.trigger("step",cursor.getPosition());
+					for(var i=0;i<stepTrigger.length;i++)
 					{
 						this.fire("trigger",{
 							triggerType:"step",
@@ -187,8 +188,8 @@
 					data.lastTime=time;
 					
 					//move map
-					let pos=cursor.getPosition();
-					let mapPos=this.map.getPosition();
+					var pos=cursor.getPosition();
+					var mapPos=this.map.getPosition();
 					if(pos.x<mapPos.x-this.threshold.x)
 					{
 						this.move(pos.x-mapPos.x+this.threshold.x,0);
@@ -225,22 +226,22 @@
 		{
 			if(event.value===1&&!this.paused)
 			{
-				for(let i=0;i<this.cursors.length;i++)
+				for(var i=0;i<this.cursors.length;i++)
 				{
-					let cursor=this.cursors[i];
+					var cursor=this.cursors[i];
 					if(!this.assignFilter||this.assignFilter(event,cursor,i))
 					{
-						let activateTrigger=this.trigger("activate",cursor.getPosition());
+						var activateTrigger=this.trigger("activate",cursor.getPosition());
 						if(activateTrigger.length===0&&cursor.direction)
 						{
-							let dir=cursor.direction;
-							let pos=new SC.point(
+							var dir=cursor.direction;
+							var pos=new SC.point(
 								cursor.rect.position.x+(dir.x===0 ? cursor.offset.x : dir.x>0 ? cursor.rect.size.x : 0),
 								cursor.rect.position.y+(dir.y===0 ? cursor.offset.y : dir.y<0 ? cursor.rect.size.y : 0)
 							);
 							activateTrigger=this.trigger("activate",pos);
 						}
-						for(let t=0;t<activateTrigger.length;t++)
+						for(var t=0;t<activateTrigger.length;t++)
 						{
 							if(activateTrigger[t].trigger.type==="activate")
 							{
@@ -259,7 +260,7 @@
 		},
 		playAnimation:function(animation)
 		{
-			let data=this.movingCursors.get(animation.cursor);
+			var data=this.movingCursors.get(animation.cursor);
 			if(!data)
 			{
 				data={
@@ -278,10 +279,10 @@
 		},
 		toJSON:function()
 		{
-			let json=this.map.toJSON();
+			var json=this.map.toJSON();
 			json.cursors=this.cursors.slice();
 			json.threshold=this.threshold.clone;
-			for(let i=0;i<this.cursors.length;i++)
+			for(var i=0;i<this.cursors.length;i++)
 			{
 				json.map.images.splice(json.map.images.indexOf(this.cursors[i]),1);
 			}
@@ -290,11 +291,11 @@
 		fromJSON:function(json)
 		{
 			this.movingCursors.clear();
-			for(let i=0;i<json.images.length;i++)
+			for(var i=0;i<json.images.length;i++)
 			{
 				json.images[i]=new GUI.Map.Image().fromJSON(json.images[i]);
 			}
-			for(let i=0;i<json.cursors.length;i++)
+			for(var i=0;i<json.cursors.length;i++)
 			{
 				json.images.push(new GUI.Map.Cursor().fromJSON(json.cursors[i]));
 			}
@@ -321,7 +322,7 @@
     	},
 		toJSON:function()
 		{
-			let json=MAP.Image.prototype.toJSON.call(this);
+			var json=MAP.Image.prototype.toJSON.call(this);
 			json.collision=this.collision;
 			json.trigger=this.trigger;
 			return json;
@@ -369,7 +370,7 @@
         	if(this.direction)
         	{
         		// y axis is inverted on screen
-	            let direction8=this.direction.clone().mul(1,-1).getDirection8();
+	            var direction8=this.direction.clone().mul(1,-1).getDirection8();
 	            if(this.urls[direction8]) this.backUrl=this.urls[direction8];
 	            else if (direction8!==0&&direction8%2===0&&this.urls[direction8-1]) this.backUrl=this.urls[direction8-1];
 	            else this.backUrl=this.urls[0];
@@ -421,14 +422,14 @@
     	move:function(direction,timediff)
     	{
     		this.direction=direction;
-    		let distance=new SC.point();
+    		var distance=new SC.point();
 			if(this.map)
 			{
-				let size=this.map.getSize();
+				var size=this.map.getSize();
 				distance.set(this.direction).mul(this.speed).mul(timediff/1000);
 				
 				//map boundary
-				let pos=this.rect.position.clone().add(this.offset);
+				var pos=this.rect.position.clone().add(this.offset);
 				if(pos.x+distance.x<0)
 				{
 					distance.x=-pos.x;
@@ -448,14 +449,14 @@
 				//collision
 				if(this.collision)
 				{
-					let progress=1;
-					let rect=this.rect.clone();
+					var progress=1;
+					var rect=this.rect.clone();
 					rect.position.add(distance);
-					let collisions=this.map.gui.collide(rect);
-					for(let i=0;i<collisions.length;i++)
+					var collisions=this.map.gui.collide(rect);
+					for(var i=0;i<collisions.length;i++)
 					{
-						let cImage=collisions[i];
-						let p=null;
+						var cImage=collisions[i];
+						var p=null;
 						if(cImage===this||this.rect.contains(cImage.rect)||cImage.rect.contains(this.rect))
 						{//is self or inside
 							continue;
@@ -493,7 +494,7 @@
     	},
 		toJSON:function()
 		{
-			let json=GUI.Map.Image.prototype.toJSON.call(this);
+			var json=GUI.Map.Image.prototype.toJSON.call(this);
 			json.offset=this.offset;
 			json.speed=this.speed;
 			delete json.url;
@@ -537,17 +538,17 @@
     	{
     		if(this.keys[this.progress])
     		{
-    			let dir=this.cursor.getPosition().negate().add(this.keys[this.progress]);
-    			let dist=this.cursor.speed.clone().mul(timediff/1000);
+    			var dir=this.cursor.getPosition().negate().add(this.keys[this.progress]);
+    			var dist=this.cursor.speed.clone().mul(timediff/1000);
     			if( (dist.x>Math.abs(dir.x)&&dist.y>Math.abs(dir.y)) && (this.keys.length>this.progress+1))
     			{
-    				let remaining=dist.clone().sub(dir.abs()).div(dist);
+    				var remaining=dist.clone().sub(dir.abs()).div(dist);
     				dir=new SC.point(this.keys[this.progress+1]).sub(this.keys[this.progress]).mul(remaining).add(this.keys[this.progress]);
     				dir=this.cursor.getPosition().negate().add(dir);
     				this.progress++;
     			}
     			dir.div(dist);
-    			let absX=Math.abs(dir.x),absY=Math.abs(dir.y)
+    			var absX=Math.abs(dir.x),absY=Math.abs(dir.y)
     			if(absX>1||absY>1) dir.mul(1/(absX>absY ? absX : absY));
     			else
     			{

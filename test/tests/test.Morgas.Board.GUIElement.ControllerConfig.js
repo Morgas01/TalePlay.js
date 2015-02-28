@@ -1,7 +1,7 @@
 (function() {
 	
-	let name="ControllerConfig";
-	let SC=µ.getModule("shortcut")({
+	var name="ControllerConfig";
+	var SC=µ.getModule("shortcut")({
 		Board:"Board",
 		Layer:"Layer",
 		KCon:"Controller.Keyboard",
@@ -9,7 +9,7 @@
 	});
 	module(name);
 	test(name, function() {
-		let board = getBoard(name),
+		var board = getBoard(name),
 		layer=new SC.Layer(),
 		config=new SC.Config({
 			controller:new SC.KCon(),

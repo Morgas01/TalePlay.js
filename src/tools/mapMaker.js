@@ -1,6 +1,6 @@
 ﻿window.addEventListener("load", function()
 {
-	let SC=µ.getModule("shortcut")({
+	var SC=µ.getModule("shortcut")({
 		download:"download",
 		find:"find",
 		Board:"Board",
@@ -12,8 +12,8 @@
 		Idb:"IDBConn"
 	});
 	
-	let board=new SC.Board(document.querySelector("#bordContainer"));
-	let kCon=new SC.kCon({
+	var board=new SC.Board(document.querySelector("#bordContainer"));
+	var kCon=new SC.kCon({
 		"buttons": {
 			" ": "0",
 			"Enter": "1"
@@ -30,9 +30,9 @@
 		}
 	});
 	board.addController(kCon);
-	let controllerLayer=new SC.Layer();
+	var controllerLayer=new SC.Layer();
 	controllerLayer.domElement.classList.add("overlay");
-	let manager=new SC.ControllerManager({
+	var manager=new SC.ControllerManager({
 		styleClass:["panel","center"],
 		buttons:2,
 		analogSticks:2,
@@ -40,17 +40,31 @@
 		dbConn:new SC.Idb("mapMaker")
 	});
 	controllerLayer.add(manager);
-	let mapMaker=new SC.MapMaker({
+	var mapMaker=new SC.MapMaker({
         board:board,
         images:[
             {url:"../Images/empty.png"},
             {url:"../Images/1.png"},
             {url:"../Images/2.png"},
             {url:"../Images/3.png"}
-        ]
+        ],
+        imageLayer:{
+        	getTriggerValueHTML:function(image)
+        	{
+        		return "actions</td><td><button data-action='test'>"+(image.trigger.value||0)+"</button>";
+        	},
+        	getTriggerValue:function(tr)
+        	{
+        		return ++tr.querySelector("button").textContent;
+        	},
+        	onAction:function(image,action,event)
+        	{
+        		debugger;
+        	}
+        }
     });
 	
-	let actions={
+	var actions={
 		save:function()
 		{
 			SC.download(JSON.stringify(mapMaker),"map.js","application/json");
@@ -68,17 +82,17 @@
 		},
 		putImages:function()
 		{
-			let dialog=document.querySelector("#addImageDialog");
-			let images=[];
+			var dialog=document.querySelector("#addImageDialog");
+			var images=[];
 			
-			let input=dialog.querySelector("input");
-			for(let i=0;i<input.files.length;i++)
+			var input=dialog.querySelector("input");
+			for(var i=0;i<input.files.length;i++)
 			{
 				images.push(input.files[i]);
 			}
 			input.value="";
 			
-			let textArea=dialog.querySelector("textarea");
+			var textArea=dialog.querySelector("textarea");
 			if(textArea.value)
 			{
 				images=images.concat(textArea.value.split("\n").map(function(val)
@@ -114,7 +128,7 @@
 	window.addEventListener("click", function(e)
 	{
 		//execute actions
-		let action=e.target.dataset.action;
+		var action=e.target.dataset.action;
 		if(action)
 		{
 			if(!actions[action])
@@ -130,7 +144,7 @@
 	
 	document.getElementById("loadInput").addEventListener("change", function(e)
 	{
-		let reader=new FileReader();
+		var reader=new FileReader();
 		reader.onload=function()
 		{
 			mapMaker.fromJSON(JSON.parse(reader.result));

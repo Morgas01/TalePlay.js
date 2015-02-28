@@ -1,13 +1,13 @@
 (function(µ,SMOD,GMOD,HMOD){
 	
-	let PLAYER=GMOD("RPGPlayer");
-	let DBOBJ=GMOD("DBObj");
+	var PLAYER=GMOD("RPGPlayer");
+	var DBOBJ=GMOD("DBObj");
 	
-	let SC=GMOD("shortcut")({
+	var SC=GMOD("shortcut")({
 		field:"DBField"
 	});
 	
-	let GSAVE=PLAYER.GameSave=µ.Class(DBOBJ,{
+	var GSAVE=PLAYER.GameSave=µ.Class(DBOBJ,{
 		objectType:"GameSave",
 		init:function(param)
 		{

@@ -62,7 +62,7 @@
 		</style>
 		<script>
 			window.addEventListener("load", function loaded(){
-				let SC=µ.getModule("shortcut")({
+				var SC=µ.getModule("shortcut")({
 					Board:"Board",
 					Layer:"Layer",
 					game:"Minigames.ButtonStack",
@@ -84,10 +84,10 @@
 				
 				game.addListener("finish",game,function(event)
 				{
-					let message="finish";
+					var message="finish";
 					alert(message);
 				});
-				let score={hit:0,miss:0};
+				var score={hit:0,miss:0};
 				game.addListener("hit miss",game,function(event)
 				{
 					document.querySelector("#"+event.type).textContent=++score[event.type];
@@ -101,13 +101,13 @@
 
                 while(game.buttonItems.length<25)
                 {
-                    let button=Math.floor(Math.random()*3)+1,
+                    var button=Math.floor(Math.random()*3)+1,
                     item=new SC.game.ButtonItem(button);
 
                     game.addItems(item);
                 }
 				window.addEventListener("gamepadconnected", function gamepadconnected(e){
-					let gp=new µ.Controller.Gamepad(e.gamepad);
+					var gp=new µ.Controller.Gamepad(e.gamepad);
 					board.addController(gp);
 				},false);
 			}, false);

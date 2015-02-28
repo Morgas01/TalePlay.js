@@ -48,13 +48,13 @@
 		</style>
 		<script>
 			window.addEventListener("load", function loaded(){
-				let SC=µ.getModule("shortcut")({
+				var SC=µ.getModule("shortcut")({
 					Board:"Board",
 					Layer:"Layer",
 					game:"Minigames.TicTacToe",
 					CK:"Controller.Keyboard"
 				});
-				let board=new SC.Board(document.body),
+				var board=new SC.Board(document.body),
 				layer=new SC.Layer(),
 				ctrl=new SC.CK(),
 				game=new SC.game();
@@ -66,7 +66,7 @@
 				
 				game.addListener("finish",game,function(event)
 				{
-					let message="";
+					var message="";
 					if(event.winner===0)
 					{
 						message="tie";
@@ -80,7 +80,7 @@
 				});
 				
 				window.addEventListener("gamepadconnected", function gamepadconnected(e){
-					let gp=new µ.Controller.Gamepad(e.gamepad);
+					var gp=new µ.Controller.Gamepad(e.gamepad);
 					board.addController(gp);
 				},false);
 			}, false);
