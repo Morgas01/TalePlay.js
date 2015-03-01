@@ -284,7 +284,7 @@
 			json.threshold=this.threshold.clone;
 			for(var i=0;i<this.cursors.length;i++)
 			{
-				json.map.images.splice(json.map.images.indexOf(this.cursors[i]),1);
+				json.images.splice(json.images.indexOf(this.cursors[i]),1);
 			}
 			return json;
 		},

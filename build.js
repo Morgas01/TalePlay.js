@@ -65,6 +65,17 @@ for(var i=0;i<files.length;i++)
 	}
 }
 
+var basic_package=[
+	"TalePlay.Board.js",
+	"TalePlay.Layer.js",
+	"GUI/TalePlay.GUIElement.js",
+	"TalePlay.Controller.Gamepad.js",
+	"TalePlay.Controller.Keyboard.js",
+	"GUI/TalePlay.GUIElement.ControllerManager.js",
+	"GUI/TalePlay.GUIElement.Menu.js",
+	"Math/TalePlay.Math.Point.js",
+	"Math/TalePlay.Math.Rect.js"
+];
 createPackage("TalePlay_FULL",Object.keys(TalePlay.dependencies.config));
-createPackage("TalePlay_RPGPlayer",["RPGPlayer/TalePlay.RPGPlayer.js","TalePlay.Board.js","TalePlay.Controller.Gamepad.js","TalePlay.Controller.Keyboard.js"]);
-createPackage("TalePlay_MapMaker",["TalePlay.Layer.MapMaker.js","TalePlay.Board.js","TalePlay.Controller.Gamepad.js","TalePlay.Controller.Keyboard.js"]);
+createPackage("TalePlay_RPGPlayer",basic_package.concat("RPGPlayer/TalePlay.RPGPlayer.js"));
+createPackage("TalePlay_MapMaker",basic_package.concat("TalePlay.Layer.MapMaker.js"));
