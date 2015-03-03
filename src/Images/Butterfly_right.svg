@@ -54,7 +54,7 @@
      id="layer1"
      transform="translate(0,-1002.3622)">
     <g
-       transform="matrix(-1,0,0,1,48.857245,106)"
+       transform="translate(-1.1427564,106)"
        id="g4141">
       <path
          style="fill:none;stroke:#000000;stroke-width:1.03770125px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -84,7 +84,7 @@
       </g>
     </g>
     <g
-       transform="matrix(-1,0,0,1,148.92714,104)"
+       transform="translate(-1.1427564,104)"
        id="g4145">
       <use
          transform="matrix(1.0045073,0,0,0.74372806,51.958469,237.59433)"
@@ -104,7 +104,7 @@
          x="0" />
     </g>
     <g
-       transform="matrix(-1,0,0,1,249.01415,102)"
+       transform="translate(-1.1427564,102)"
        id="g4149">
       <use
          height="200"
@@ -124,7 +124,7 @@
          x="0" />
     </g>
     <g
-       transform="matrix(-1,0,0,1,348.6622,99.99999)"
+       transform="translate(-1.1427564,99.99999)"
        id="g4153">
       <use
          height="200"
@@ -148,7 +148,7 @@
        y="0"
        xlink:href="#g4149"
        id="use4169"
-       transform="translate(99.999998,3.0000001e-7)"
+       transform="translate(99.99967,3e-7)"
        width="300"
        height="200" />
     <use
@@ -156,7 +156,7 @@
        y="0"
        xlink:href="#g4145"
        id="use4171"
-       transform="translate(200,3.0000001e-7)"
+       transform="translate(199.99984,3.0000001e-7)"
        width="300"
        height="200" />
   </g>
