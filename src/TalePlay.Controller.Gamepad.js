@@ -13,6 +13,7 @@
 			SC.rs.all(["update"],this);
 			
 			this.gamepad=gamepad;
+			this.gamepadIndex=gamepad.index;
 			this.precision=precision||1;
 			this.pollKey=null;
 			
@@ -20,17 +21,10 @@
 		},
 		update:function()
 		{
-			if(!this.gamepad.connected)
-			{
-				var gamepads=navigator.getGamepads();
-				if(gamepads[this.gamepad.index])
-				{
-					this.gamepad=gamepads[this.gamepad.index];
-				}
-			}
+			this.gamepad=navigator.getGamepads()[this.gamepadIndex];
 			if(this.gamepad.connected)
 			{
-				this.set(this.gamepad.buttons.map(b => b.value),this.gamepad.axes.map(a => a.toFixed(this.precision)*1));
+				this.set(this.gamepad.buttons.map(function(b){return b.value}),this.gamepad.axes.map(function(a){return a.toFixed(this.precision)*1}));
 			}
 			this.pollKey=requestAnimationFrame(this.update);
 		},

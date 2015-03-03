@@ -191,7 +191,8 @@
 		},
 		setCursor:function(cursor)
 		{
-			cursor.urls=cursor.urls.map(u => u ? this.imageBaseUrl+u : u);
+			var _self=this;
+			cursor.urls=cursor.urls.map(function(u){return u ? _self.imageBaseUrl+u : u});
 			cursor.name=cursor.name||"";
 			cursor.collision=cursor.collision!==false;
 			this.gameSave.getCursor().fromJSON(cursor);
@@ -204,7 +205,8 @@
 			var clone=new SC.GameSave();
 			clone.fromJSON(JSON.parse(JSON.stringify(this.gameSave)));
 			var cursor=clone.getCursor();
-			cursor.urls=cursor.urls.map(u => u ? u.slice(u.lastIndexOf("/")+1) : u);
+			var _self=this;
+			cursor.urls=cursor.urls.map(function(u){return u ? u.slice(u.lastIndexOf("/")+1) : u});
 			
 			return clone;
 		},
