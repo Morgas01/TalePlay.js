@@ -60,13 +60,13 @@
 		</style>
 		<script>
 			window.addEventListener("load", function loaded(){
-				let SC=µ.getModule("shortcut")({
+				var SC=µ.getModule("shortcut")({
 					Board:"Board",
 					Layer:"Layer",
 					game:"Minigames.TimeStroke",
 					CK:"Controller.Keyboard"
 				});
-				let board=new SC.Board(document.body),
+				var board=new SC.Board(document.body),
 				layer=new SC.Layer(),
 				ctrl=new SC.CK(),
 				game=new SC.game({zoneWidth:5});
@@ -78,10 +78,10 @@
 				
 				game.addListener("finish",game,function(event)
 				{
-					let message="finish";
+					var message="finish";
 					alert(message);
 				});
-				let score={hit:0,miss:0};
+				var score={hit:0,miss:0};
 				game.addListener("hit miss",game,function(event)
 				{
 					document.querySelector("#"+event.type).textContent=++score[event.type];
@@ -93,14 +93,14 @@
 					
 				});
 				
-				let fillItems=function()
+				var fillItems=function()
 				{
 					while(game.buttonItems.length<25)
 					{
-						let lastItem=game.buttonItems[game.buttonItems.length-1];
-						let minTime=lastItem&&lastItem.time||4000;
+						var lastItem=game.buttonItems[game.buttonItems.length-1];
+						var minTime=lastItem&&lastItem.time||4000;
 						
-						let item=new SC.game.ButtonItem(0,minTime+250+Math.random()*1000);
+						var item=new SC.game.ButtonItem(0,minTime+250+Math.random()*1000);
 						
 						game.buttonItems.push(item);
 					}
@@ -108,7 +108,7 @@
 				fillItems();
 				game.start();
 				window.addEventListener("gamepadconnected", function gamepadconnected(e){
-					let gp=new µ.Controller.Gamepad(e.gamepad);
+					var gp=new µ.Controller.Gamepad(e.gamepad);
 					board.addController(gp);
 				},false);
 			}, false);

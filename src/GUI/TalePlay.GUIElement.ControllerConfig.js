@@ -1,20 +1,20 @@
 (function(µ,SMOD,GMOD,HMOD){
 	
-	let SC=GMOD("shortcut")({
+	var SC=GMOD("shortcut")({
 		rs:"rescope",
 		mapping:"Controller.Mapping"
 	});
 	
-	let controllerTypes={
+	var controllerTypes={
 		Keyboard:1,
 		Gamepad:2
 	};
 	
-	let GUI=GMOD("GUIElement");
+	var GUI=GMOD("GUIElement");
 	
-	let getTitle=function(code)
+	var getTitle=function(code)
 	{
-		let title="";
+		var title="";
 		switch(code)
 		{
 			case 32:
@@ -85,9 +85,9 @@
 		
 		return title;
 	};
-	let getHTML=function(buttons,analogSticks,name)
+	var getHTML=function(buttons,analogSticks,name)
 	{
-		let html='';
+		var html='';
 		if(name)
 		{
 			html+='<input type="text" data-field="name"';
@@ -98,7 +98,7 @@
 			html+='>';
 		}
 		html+='<div class="buttons">';
-		for(let i=0;i<buttons;i++)
+		for(var i=0;i<buttons;i++)
 		{
 			html+=
 			'<span class="button">'+
@@ -107,7 +107,7 @@
 			'</span>';
 		}
 		html+='</div><div class="analogSticks">';
-		for(let i=0;i<analogSticks*2;i+=2)
+		for(var i=0;i<analogSticks*2;i+=2)
 		{
 			html+=
 			'<span class="analogStick">'+
@@ -126,7 +126,7 @@
 	};
 	
 	
-	let CONF=GUI.ControllerConfig=µ.Class(GUI,
+	var CONF=GUI.ControllerConfig=µ.Class(GUI,
 	{
 		init:function(param)
 		{
@@ -180,12 +180,12 @@
 				
 				if(this.oldMapping)
 				{
-					let reverseMap=this.oldMapping.getReverseMapping();
+					var reverseMap=this.oldMapping.getReverseMapping();
 	
-					let buttons=this.getButtons();
-					for(let i=0;i<buttons.length;i++)
+					var buttons=this.getButtons();
+					for(var i=0;i<buttons.length;i++)
 					{
-						let btn=buttons[i];
+						var btn=buttons[i];
 						btn.value=reverseMap.buttons[btn.dataset.button];
 						if(controller===controllerTypes.Keyboard)
 						{
@@ -193,10 +193,10 @@
 						}
 					}
 	
-					let axes=this.getAxes();
-					for(let i=0;i<axes.length;i++)
+					var axes=this.getAxes();
+					for(var i=0;i<axes.length;i++)
 					{
-						let axis=axes[i];
+						var axis=axes[i];
 						axis.value=reverseMap.axes[axis.dataset.axis];
 						if(controller===controllerTypes.Keyboard)
 						{
@@ -204,10 +204,10 @@
 						}
 					}
 	
-					let axisButtons=this.getAxisButtons();
-					for(let i=0;i<axisButtons.length;i++)
+					var axisButtons=this.getAxisButtons();
+					for(var i=0;i<axisButtons.length;i++)
 					{
-						let btnAxis=axisButtons[i];
+						var btnAxis=axisButtons[i];
 						btnAxis.value=reverseMap.buttonAxis[btnAxis.dataset.axis];
 						if(controller===controllerTypes.Keyboard)
 						{
@@ -250,7 +250,7 @@
 				event.preventDefault();
 				event.stopPropagation();
 				
-				let input=event.target;
+				var input=event.target;
 				input.value=event.code||event.key;
 				input.title=getTitle(event.code||event.key);
 			}
@@ -275,13 +275,13 @@
 					document.activeElement.dataset.axis!==undefined&&		//&& axis input
 					document.activeElement.parentNode.previousSibling.checked===false)
 			{
-				let x=Math.abs(event.analogStick.x),
+				var x=Math.abs(event.analogStick.x),
 				y=Math.abs(event.analogStick.y);
 				if(x>0.5||y>0.5)
 				{
 					if(x>y)
 					{
-						let sign="";
+						var sign="";
 						if(event.analogStick.x<0)
 						{
 							sign="-";
@@ -290,7 +290,7 @@
 					}
 					else
 					{
-						let sign="";
+						var sign="";
 						if(event.analogStick.y<0)
 						{
 							sign="-";
@@ -302,28 +302,28 @@
 		},
 		getData:function()
 		{
-			let data={
+			var data={
 					buttons:{},
 					buttonAxis:{},
 					axes:{}
 			};
-			let btns=this.getButtons();
-			for(let i=0;i<btns.length;i++)
+			var btns=this.getButtons();
+			for(var i=0;i<btns.length;i++)
 			{
-				let btn=btns[i];
+				var btn=btns[i];
 				data.buttons[btn.value]=btn.dataset.button;
 			}
-			let buttonAxis=this.getAxisButtons();
-			for(let i=0;i<buttonAxis.length;i++)
+			var buttonAxis=this.getAxisButtons();
+			for(var i=0;i<buttonAxis.length;i++)
 			{
 				data.buttonAxis[buttonAxis[i].value]=buttonAxis[i].dataset.axis;
 			}
-			let axes=this.getAxes();
-			for(let i=0;i<axes.length;i++)
+			var axes=this.getAxes();
+			for(var i=0;i<axes.length;i++)
 			{
-				let axis=axes[i];
-				let from=axis.value;
-				let to=axis.dataset.axis;
+				var axis=axes[i];
+				var from=axis.value;
+				var to=axis.dataset.axis;
 				if(1/from<0)
 				{
 					from=-from;
@@ -335,7 +335,7 @@
 		},
 		getMapping:function()
 		{
-			let type="";
+			var type="";
 			switch (this.controllerType)
 			{
 				case controllerTypes.Keyboard:
@@ -345,7 +345,7 @@
 					type="GAMEPAD";
 					break;
 			}
-			let name=this.domElement.querySelector('[data-field="name"]');
+			var name=this.domElement.querySelector('[data-field="name"]');
 			if(name)
 			{
 				name=name.value;

@@ -1,8 +1,8 @@
 (function(µ,SMOD,GMOD){
 	
-	let Layer=GMOD("Layer");
+	var Layer=GMOD("Layer");
 
-	let SC=µ.getModule("shortcut")({
+	var SC=µ.getModule("shortcut")({
 		det:"Detached",
 		rj:"Request.json",
 		debug:"debug",
@@ -17,13 +17,13 @@
 		 */
 	});
 	
-	let requestCallbacks={
+	var requestCallbacks={
 		quests:{
 			loaded:function quests_loaded(quests,self)
             {
-            	for(let i=0;i<quests.length;i++)
+            	for(var i=0;i<quests.length;i++)
             	{
-            		let quest=new RPGPlayer.Quest(quests[i]);
+            		var quest=new RPGPlayer.Quest(quests[i]);
             		self.quests.set(quest.name,quest);
             	}
             	return self;
@@ -37,7 +37,7 @@
 		dialogs:{
 			loaded:function dialogs_loaded(dialogs,self)
             {
-            	for(let i=0;i<dialogs.length;i++)
+            	for(var i=0;i<dialogs.length;i++)
             	{
             		self.dialogs.set(dialogs[i].name,dialogs[i]);
             	}
@@ -51,7 +51,7 @@
 		}
 	};
 
-    let RPGPlayer=Layer.RPGPlayer=µ.Class(Layer,{
+    var RPGPlayer=Layer.RPGPlayer=µ.Class(Layer,{
         init:function(param)
         {
             param=param||{};
@@ -104,7 +104,7 @@
         _openStartMenu:function()
         {
         	this.focused=null;
-        	let smenu=new this._StartMenu({
+        	var smenu=new this._StartMenu({
         		dbConn:this.dbConn,
         		saveClass:SC.GameSave,
         		saveConverter:RPGPlayer.saveConverter,
@@ -124,7 +124,7 @@
 			this.map.movingCursors["delete"](this.gameSave.getCursor());
 			this.map.setPaused(true);
 			this.focused=null;
-			let gmenu=new this._GameMenu({
+			var gmenu=new this._GameMenu({
 				dbConn:this.dbConn,
         		saveClass:SC.GameSave,
 				saveConverter:RPGPlayer.saveConverter,
@@ -165,12 +165,12 @@
 		loadSave:function(save)
 		{
 			this.setCursor(save.getCursor());
-			let activeQuests=this.gameSave.getQuests();
+			var activeQuests=this.gameSave.getQuests();
 			activeQuests.length=0;
 			this.questsReady.complete(function (self)
             {
-				let saveQuests=save.getQuests();
-            	for(let i=0;i<saveQuests.length;i++)
+				var saveQuests=save.getQuests();
+            	for(var i=0;i<saveQuests.length;i++)
             	{
             		if(self.quests.has(saveQuests[i]))
             		{
@@ -201,9 +201,9 @@
 			this.gameSave.setTimeStamp(new Date());
 			this.gameSave.setPosition(this.gameSave.getCursor().getPosition());
 			
-			let clone=new SC.GameSave();
+			var clone=new SC.GameSave();
 			clone.fromJSON(JSON.parse(JSON.stringify(this.gameSave)));
-			let cursor=clone.getCursor();
+			var cursor=clone.getCursor();
 			cursor.urls=cursor.urls.map(u => u ? u.slice(u.lastIndexOf("/")+1) : u);
 			
 			return clone;
@@ -213,14 +213,14 @@
 			this.map.setPaused(true);
 			return SC.rj(this.mapBaseUrl+name+".json",this).then(function changeMap_loaded(json,_self)
 			{
-				let todo=json.cursors.concat(json.images);
+				var todo=json.cursors.concat(json.images);
 				while(todo.length>0)
 				{
-					let image=todo.shift();
+					var image=todo.shift();
 					image.url=_self.imageBaseUrl+image.url;
 				}
 				json.position=position;
-				let animation=_self.map.movingCursors.get(_self.gameSave.getCursor());
+				var animation=_self.map.movingCursors.get(_self.gameSave.getCursor());
 				_self.map.fromJSON(json);
 				_self.gameSave.getCursor().setPosition(position);
 				_self.map.add(_self.gameSave.getCursor());
@@ -247,7 +247,7 @@
 		},
 		_showDialog:function(dialogName)
 		{
-			let dialog=this.dialogs.get(dialogName);
+			var dialog=this.dialogs.get(dialogName);
 			if(dialog)
 			{
 				dialog.styleClass="panel";
@@ -271,12 +271,12 @@
 		},
 		doActions:function(actions)
 		{
-			for(let i=0;i<actions.length;i++)
+			for(var i=0;i<actions.length;i++)
 			{
-				let a=actions[i];
-				let activeQuests=this.gameSave.getQuests();
-				let questIndex=null;
-				let quest=null;
+				var a=actions[i];
+				var activeQuests=this.gameSave.getQuests();
+				var questIndex=null;
+				var quest=null;
 				switch (a.type) 
 				{
 					case "ABORT_QUEST":

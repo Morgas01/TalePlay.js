@@ -1,14 +1,14 @@
 (function(µ,SMOD,GMOD,HMOD){
 
-    let TALE=window.TalePlay=window.TalePlay||{};
+    var TALE=this.TalePlay=this.TalePlay||{};
     
-	let SC=GMOD("shortcut")({
+	var SC=GMOD("shortcut")({
 		rs:"rescope",
         node:"NodePatch"
 	});
 	
-	let CTRL_EVENTS="analogStickChanged buttonChanged";
-	let BOARD=TALE.Board=µ.Class({
+	var CTRL_EVENTS="analogStickChanged buttonChanged";
+	var BOARD=TALE.Board=µ.Class({
 		init:function(container)
 		{
 			this.controllers=[];
@@ -34,6 +34,8 @@
 			this.keyTrigger.classList.add("keyTrigger");
 			this.keyTrigger.style.position="absolute";
 			this.keyTrigger.style.zIndex="-1";
+			this.keyTrigger.style.height=this.keyTrigger.style.width="0";
+			this.keyTrigger.style.resize="none";
 			
 			this.domElement.addEventListener("click", this.focus, false);
 			
@@ -65,7 +67,7 @@
 		},
 		removeController:function(controller)
 		{
-			for(let i=this.controllers.length-1;i>=0;i--)
+			for(var i=this.controllers.length-1;i>=0;i--)
 			{
 				if(this.controllers[i].controller===controller)
 				{
@@ -88,9 +90,9 @@
 		{
 			if(!this.disabled&&this.layers.length>0)
 			{
-				let args=Array.prototype.slice.call(arguments,0);
+				var args=Array.prototype.slice.call(arguments,0);
 				event.player=null;
-				for(let i=this.controllers.length-1;i>=0;i--)
+				for(var i=this.controllers.length-1;i>=0;i--)
 				{
 					if(this.controllers[i].controller===event.source)
 					{

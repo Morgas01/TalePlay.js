@@ -2,9 +2,9 @@
 	
 	//TODO change to Layer
 	
-	let AMENU=GMOD("Layer.ActionMenu");
+	var AMENU=GMOD("Layer.ActionMenu");
 
-	let SC=GMOD("shortcut")({
+	var SC=GMOD("shortcut")({
 		manager:"GUI.ControllerManager",
 		debug:"debug"
 		/* default module
@@ -12,12 +12,12 @@
 		 */
 	});
 
-	let GMENU=AMENU.GameMenu=µ.Class(AMENU,{
+	var GMENU=AMENU.GameMenu=µ.Class(AMENU,{
 		init:function(param)
 		{
 			param=param||{};
 			
-			let menuParam={
+			var menuParam={
 				styleClass:["panel"],
 				actions:[
 					{
@@ -72,13 +72,13 @@
 		},
 		openControllerManager:function(item)
 		{
-			let param={
+			var param={
 				styleClass:["panel","overlay"],
 				buttons:item.controllerLayout.buttons,
 				analogSticks:item.controllerLayout.analogSticks,
 				dbConn:this.dbConn
 			};
-			let m=new SC.manager(param);
+			var m=new SC.manager(param);
 			this.add(m);
 			m.update("controllers");
 		},
@@ -86,7 +86,7 @@
 		{
 			if(item.data)
 			{
-				let p=new this.persistanceLayer({
+				var p=new this.persistanceLayer({
 					dbConn:this.dbConn,
 					saveClass:this.saveClass,
 					saveConverter:this.saveConverter,

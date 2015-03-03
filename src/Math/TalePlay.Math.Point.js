@@ -1,9 +1,13 @@
 (function(µ,SMOD,GMOD){
 
-    let TALE=window.TalePlay=window.TalePlay||{};	
+    var TALE=this.TalePlay=this.TalePlay||{};
 	TALE.Math=TALE.Math||{};
 	
-	let POINT=TALE.Math.Point=µ.Class({
+	var SC=GMOD("shortcut")({
+		debug:"debug"
+	});
+	
+	var POINT=TALE.Math.Point=µ.Class({
 		init:function(numberOrPoint,y)
 		{
 			this.x=0;
@@ -17,7 +21,7 @@
 				this.x=1*numberOrPoint.x;
 				this.y=1*numberOrPoint.y;
 			}
-			else if (typeof numberOrPoint==="number")
+			else if (numberOrPoint!==undefined)
 			{
 				this.x=1*numberOrPoint;
 				if(y===undefined)
@@ -25,6 +29,10 @@
 					y=numberOrPoint;
 				}
 				this.y=1*y;
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
 			}
 			return this;
 		},
@@ -43,7 +51,7 @@
 			{
 				return this.x==numberOrPoint.x&&this.y==numberOrPoint.y;
 			}
-			else if (typeof numberOrPoint==="number")
+			else if (numberOrPoint!==undefined)
 			{
 				if(y===undefined)
 				{
@@ -60,7 +68,7 @@
 				this.x+=1*numberOrPoint.x;
 				this.y+=1*numberOrPoint.y;
 			}
-			else if (typeof numberOrPoint==="number")
+			else if (numberOrPoint!==undefined)
 			{
 				this.x+=1*numberOrPoint;
 				if(y===undefined)
@@ -68,6 +76,10 @@
 					y=numberOrPoint;
 				}
 				this.y+=1*y;
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
 			}
 			return this;
 		},
@@ -78,7 +90,7 @@
 				this.x-=numberOrPoint.x;
 				this.y-=numberOrPoint.y;
 			}
-			else if (typeof numberOrPoint==="number")
+			else if (numberOrPoint!==undefined)
 			{
 				this.x-=numberOrPoint;
 				if(y===undefined)
@@ -86,6 +98,10 @@
 					y=numberOrPoint;
 				}
 				this.y-=y;
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
 			}
 			return this;
 		},
@@ -96,7 +112,7 @@
 				this.x*=numberOrPoint.x;
 				this.y*=numberOrPoint.y;
 			}
-			else if (typeof numberOrPoint==="number")
+			else if (numberOrPoint!==undefined)
 			{
 				this.x*=numberOrPoint;
 				if(y===undefined)
@@ -104,6 +120,10 @@
 					y=numberOrPoint;
 				}
 				this.y*=y;
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
 			}
 			return this;
 		},
@@ -114,7 +134,7 @@
 				this.x/=numberOrPoint.x;
 				this.y/=numberOrPoint.y;
 			}
-			else if (typeof numberOrPoint==="number")
+			else if (numberOrPoint!==undefined)
 			{
 				this.x/=numberOrPoint;
 				if(y===undefined)
@@ -122,6 +142,10 @@
 					y=numberOrPoint;
 				}
 				this.y/=y;
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
 			}
 			return this;
 		},
@@ -149,7 +173,7 @@
 		},
 		normalize:function()
 		{
-			let l=this.length();
+			var l=this.length();
 			if(l)
 			{
 				this.div(l);
@@ -160,7 +184,7 @@
 		{
 			if(this.y!==0||this.x!==0)
 			{
-				let a=Math.asin(this.y/this.length());
+				var a=Math.asin(this.y/this.length());
 				if(this.x>=0)
 				{
 					a=Math.PI/2-a;
@@ -221,7 +245,7 @@
 				this.x=fn(this.x,1*numberOrPoint.x);
 				this.y=fn(this.y,1*numberOrPoint.y);
 			}
-			else if (typeof numberOrPoint==="number")
+			else if (numberOrPoint!==undefined)
 			{
 				this.x=fn(this.x,1*numberOrPoint);
 				if(y===undefined)
@@ -229,6 +253,10 @@
 					y=1*numberOrPoint;
 				}
 				this.y=fn(this.y,y);
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
 			}
 			return this;
 		}

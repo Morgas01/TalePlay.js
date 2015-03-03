@@ -1,13 +1,13 @@
 (function() {
-	let name="Map";
-	let SC=µ.getModule("shortcut")({
+	var name="Map";
+	var SC=µ.getModule("shortcut")({
 		Board:"Board",
 		Layer:"Layer",
 		gMap:"GUI.Map"
 	});
 	module(name);
 	test(name, function() {
-		let board = getBoard(name),
+		var board = getBoard(name),
 		layer=new SC.Layer(),
 		map=new SC.gMap({
         	images:[
@@ -33,7 +33,7 @@
 	        ],
 	        cursors:[
 	 	    	new SC.gMap.Cursor(imagesDir+"cursor_target.svg",{x:150,y:200},{x:50,y:50},{x:25,y:25},"crossair"),
-		    	new SC.gMap.Cursor([imagesDir+"arrow_down.svg",imagesDir+"arrow_up.svg",null,imagesDir+"arrow_right.svg",null,imagesDir+"arrow_down.svg",null,imagesDir+"arrow_left.svg",null],{x:250,y:200},{x:50,y:50},{x:25,y:25},"arrow 4-steps",true,false,100)
+		    	new SC.gMap.Cursor([imagesDir+"Butterfly_down.svg",imagesDir+"Butterfly_up.svg",null,imagesDir+"Butterfly_right.svg",null,imagesDir+"Butterfly_down.svg",null,imagesDir+"Butterfly_left.svg",null],{x:250,y:200},{x:50,y:50},{x:25,y:25},"Butterfly 6-steps",true,false,100)
 		    ],
 		    assignFilter:function(event,cursor,index){return event.type!=="analogStickChanged"||event.index===index;},
             threshold:75
@@ -42,16 +42,16 @@
 		//"viewport" smaller than map
 		map.domElement.style.width=map.domElement.style.height="250px";
 		//collision
-		let collide=new SC.gMap.Image(imagesDir+"empty.png",{x:25,y:25},{x:50,y:50},"collide",true);
+		var collide=new SC.gMap.Image(imagesDir+"empty.png",{x:25,y:25},{x:50,y:50},"collide",true);
 		collide.domElement.style.backgroundColor="black";
 		//trigger activate
-		let activate=new SC.gMap.Image(imagesDir+"empty.png",{x:325,y:25},{x:50,y:50},"trigger_activate",false,{type:"activate",value:"activate"});
+		var activate=new SC.gMap.Image(imagesDir+"empty.png",{x:325,y:25},{x:50,y:50},"trigger_activate",false,{type:"activate",value:"activate"});
 		activate.domElement.style.backgroundColor="orange";
 		//trigger step
-		let step=new SC.gMap.Image(imagesDir+"empty.png",{x:325,y:325},{x:50,y:50},"trigger_step",false,{type:"step",value:"step"});
+		var step=new SC.gMap.Image(imagesDir+"empty.png",{x:325,y:325},{x:50,y:50},"trigger_step",false,{type:"step",value:"step"});
 		step.domElement.style.backgroundColor="green";
 		//trigger move
-		let move=new SC.gMap.Image(imagesDir+"empty.png",{x:25,y:325},{x:50,y:50},"trigger_move",true,{type:"move",value:"move"});
+		var move=new SC.gMap.Image(imagesDir+"empty.png",{x:25,y:325},{x:50,y:50},"trigger_move",true,{type:"move",value:"move"});
 		move.domElement.style.backgroundColor="blue";
 		
 		map.addAll([collide,activate,step,move]);
@@ -63,7 +63,7 @@
         map.setPosition(200,200);
 		map.update();
 		
-		let eventlog=document.createElement("textarea");
+		var eventlog=document.createElement("textarea");
 		eventlog.style.width="100%";
 		eventlog.style.height="20px";
 		board.domElement.parentNode.parentNode.appendChild(eventlog);
@@ -74,7 +74,7 @@
 			console.info(event);
 		});
 		
-		let animationButton=document.createElement("button");
+		var animationButton=document.createElement("button");
 		animationButton.textContent="animation";
 		animationButton.addEventListener("click",function(e)
 		{
