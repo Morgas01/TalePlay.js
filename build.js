@@ -35,12 +35,16 @@ var createPackage=function(name,sources)
 	var packageJsFiles=packageFiles.filter(function(f){return f.indexOf(".css")===-1;})
 	.map(function(f)
 	{
-		var file=__dirname+"/build/"+f;
-		if(f.indexOf("Morgas/")===0) file=__dirname+"/src/"+f.replace("/src/","/build/");
+		var file=__dirname+"/src/"+f;
 		return "//"+f+EOL+fs.readFileSync(file, FILE_ENCODING);
 	})
 	.join(EOL);
 	fs.writeFileSync(__dirname+"/build/"+name+".js",packageJsFiles);
+	try
+	{
+		var minPackage=uglify.minify(__dirname+"/build/"+name+".js")
+		fs.writeFileSync(__dirname+"/build/"+name+"-min.js",packageFiles);
+	} catch(e){console.log("could not minify "+name+".js");}
 
 	var packageCssFiles=packageFiles.filter(function(f){return f.indexOf(".css")!==-1;})
 		.map(function(f)

@@ -1,7 +1,374 @@
 //Morgas/src/Morgas.js
-(function(e){Morgas={version:"0.3"},µ=Morgas,µ.revert=function(){return µ=e},µ.constantFunctions={ndef:function(){return void 0},nul:function(){return null},f:function(){return!1},t:function(){return!0},zero:function(){return 0},"boolean":function(e){return!!e}},function(){var e={};µ.setModule=function(t,n){return e[t]&&µ.debug("module "+t+" is overwritten",2),e[t]=n},µ.hasModule=function(t){return!!e[t]},µ.getModule=function(t){return e[t]||µ.debug("module "+t+" is not defined\n use µ.hasModule to check for existence",0),e[t]}}();var t=µ.setModule,n=µ.getModule,o=µ.hasModule;µ.debug=function(e,t){t||(t=0),µ.debug.verbose!==!1&&µ.debug.verbose>=t&&("function"==typeof e&&(e=e()),µ.debug.out(e,t))},t("debug",µ.debug),µ.debug.LEVEL={OFF:!1,ERROR:0,WARNING:1,INFO:2,DEBUG:3},µ.debug.verbose=µ.debug.LEVEL.WARNING,µ.getDebug=function(e){µ.debug.verbose=e},µ.setDebug=function(e){µ.debug.verbose=e},µ.debug.out=function(e,t){switch(t){case 0:console.error(e);break;case 1:console.warn(e);break;case 2:console.info(e);break;case 3:default:console.log(e)}},µ.shortcut=function(e,t,u,r){t||(t={});for(var i in e)(function(e,i){var s=void 0;Object.defineProperty(t,i,{configurable:!1,enumerable:!0,get:function(){return(null==s||r)&&("function"==typeof e?s=e(u):u&&o("goPath")?s=n("goPath")(u,e):o(e)?s=n(e):n("debug")("shortcut: could not evaluate "+e)),s}})})(e[i],i);return t},t("shortcut",µ.shortcut);var u=µ.Class=function(e,t){var u=function(){this.init.apply(this,arguments),o("Listeners")&&this instanceof n("Listeners")&&this.setState(".created")};"function"!=typeof e&&(t=e,e=r),e&&(u.prototype=Object.create(e.prototype),u.prototype.constructor=u);for(var i in t)u.prototype[i]=t[i];return u};t("Class",u);var r=µ.BaseClass=u({init:function(){},superInit:function(e){e.prototype.init.apply(this,[].slice.call(arguments,1))},superInitApply:function(e,t){this.superInit.apply(this,[e].concat([].slice.call(t)))}});t("Base",r)})(this.µ);
+﻿(function MorgasInit(oldµ){
+	Morgas={version:"0.3"};
+	µ=Morgas;
+	/**
+	 * revert "µ" to its old value
+	 */
+	µ.revert=function()
+	{
+		return µ=oldµ;
+	};
+	
+	µ.constantFunctions={
+			"ndef":function(){return undefined},
+			"nul":function(){return null},
+			"f":function(){return false},
+			"t":function(){return true;},
+			"zero":function(){return 0;},
+			"boolean":function(val){return !!val}
+		};
+
+	/** Modules
+	 *	Every class and utility function should define a Module, which can
+	 *	be replaced by any other function or class that has similar structure.
+	 *
+	 *	However they should NEVER only define a Module! It should only be used to
+	 *	shortcut paths and ensure flexibility.
+	 */
+	(function(){
+		var modules={};
+		µ.setModule=function(key,value)
+		{
+			if(modules[key])
+			{
+				µ.debug("module "+key+" is overwritten",2);
+			}
+			return modules[key]=value;
+		};
+		µ.hasModule=function(key)
+		{
+			return !!modules[key];
+		};
+		µ.getModule=function(key)
+		{
+			if(!modules[key])
+				µ.debug("module "+key+" is not defined\n use µ.hasModule to check for existence",0);
+			return modules[key];
+		};
+	})();
+	var SMOD=µ.setModule,GMOD=µ.getModule,HMOD=µ.hasModule;
+	
+	/**
+	 * Debug message if it's verbose is >= the current verbose.
+	 * If a message is a function its return value will be logged.
+	 * 
+	 * Set µ.debug.verbose to any number >= 0 to control wich events should be logged.
+	 * Set it to False to turn it off.
+	 * 
+	 * Set µ.debug.out to any function you like to log the events and errors.
+	 */
+	µ.debug=function(msg,verbose)
+	{
+		if(!verbose)
+		{
+			verbose=0;
+		}
+		if(µ.debug.verbose!==false&&µ.debug.verbose>=verbose)
+		{
+			if(typeof msg == "function")
+				msg=msg();
+				
+			µ.debug.out(msg,verbose);
+		}
+	};
+	SMOD("debug",µ.debug);
+	
+	µ.debug.LEVEL={
+		OFF:false,
+		ERROR:0,
+		WARNING:1,
+		INFO:2,
+		DEBUG:3
+	};
+	µ.debug.verbose=µ.debug.LEVEL.WARNING;
+	µ.getDebug=function(debug){µ.debug.verbose=debug};
+	µ.setDebug=function(debug){µ.debug.verbose=debug};
+	µ.debug.out=function(msg,verbose)
+	{
+		switch(verbose)
+		{
+			case 0:
+				console.error(msg);
+				break;
+			case 1:
+				console.warn(msg);
+				break;
+			case 2:
+				console.info(msg);
+				break;
+			case 3:
+			default:
+				console.log(msg);
+		}
+	};
+	
+	/** shortcut
+	 * creates an object that will evaluate its values defined in {map} on its first call.
+	 * when {context} is provided and {map.value} is not a function it will treated as a path from {context}
+	 *
+	 * uses goPath
+	 *
+	 * map:	{key:("moduleOrPath",function)}
+	 * context: any (optional)
+	 * target: {} (optional)
+	 *
+	 * returns {key:value}
+	 */
+	µ.shortcut=function(map,target,context,dynamic)
+	{
+		if(!target)
+		{
+			target={};
+		}
+		for(var m in map){(function(path,key)
+		{
+			var value=undefined;
+			Object.defineProperty(target,key,{
+				configurable:false,
+				enumerable:true,
+				get:function()
+				{
+					if(value==null||dynamic)
+					{
+						if(typeof path=="function")
+							value=path(context);
+						else if(context&&HMOD("goPath"))
+							value=GMOD("goPath")(context,path);
+						else if (HMOD(path))
+							value=GMOD(path);
+						else
+							GMOD("debug")("shortcut: could not evaluate "+path)
+					}
+					return value;
+				}
+			});
+		})(map[m],m)}
+		return target;
+	};
+	SMOD("shortcut",µ.shortcut);
+	
+	/** Class function
+	 * Designed to create JavaScript Classes
+	 * 
+	 *  It does the inheritance, checks for arguments,
+	 *  adds the core patch to it and calls the init() method.
+	 *  
+	 *  
+	 *  To create a class do this:
+	 *  
+	 *  myClass=µ.Class(mySuperClass,myPrototype)
+	 *  
+	 *  OR
+	 *  
+	 *  myClass=µ.Class(mySuperClass)
+	 *  myClass.protoype.init=function()
+	 *  {
+	 *  	//call constructor of superclass
+	 *  	mySuperClass.prototype.init.call(this,arg1,arg2...);
+	 *  	//or this.superInit(mySuperClass,arg1,arg2...);
+	 *  	//or this.superInitApply(mySuperClass,arguments);
+	 *  
+	 *  	//your constructor
+	 *  }
+	 *  
+	 *  You also can derive this classes with "ordinary" classes like this:
+	 *  
+	 *  myClass=µ.Class(mySuperClass,myPrototype)
+	 *  mySubClass=function()
+	 *  {
+	 *  	//whatever you like
+	 *  }
+	 *  mySubClass.protoytpe=new myClass(µ._EXTEND);
+	 *  mySubClass.prototype.constructor=mySubClass;
+	 *  
+	 *  @param	superClass	(optional)	default: µ.BaseClass
+	 *  @param	prototype	(optional)
+	 */
+	var CLASS=µ.Class=function ClassFunc(superClass,prot)
+	{
+		var newClass = function ClassConstructor()
+		{
+			this.init.apply(this,arguments);
+			if(HMOD("Listeners")&&this instanceof GMOD("Listeners"))
+			{
+				this.setState(".created");
+			}
+		};
+
+		if(typeof superClass !== "function")
+		{
+			prot=superClass;
+			superClass=BASE;
+		}
+		if(superClass)
+		{
+			newClass.prototype=Object.create(superClass.prototype);
+			newClass.prototype.constructor=newClass;
+		}
+		for(var i in prot)
+		{
+			newClass.prototype[i]=prot[i];
+		}
+		return newClass;
+	};
+	SMOD("Class",CLASS);
+	
+	/** Base Class
+	 *	allows to check of being a class ( foo instanceof µ.BaseClass )
+	 */
+	var BASE=µ.BaseClass=CLASS(
+	{
+		init:function baseInit(){},
+		superInit:function superInit(_class/*,arg1,arg2,...,argN*/)
+		{
+			_class.prototype.init.apply(this,[].slice.call(arguments,1));
+		},
+		superInitApply:function superInitApply(_class,args)
+		{
+			this.superInit.apply(this,[_class].concat([].slice.call(args)));
+		}
+	});
+	SMOD("Base",BASE);
+})(this.µ);
+
 //TalePlay.Board.js
-(function(e,t,r,l){var o=this.TalePlay=this.TalePlay||{},s=r("shortcut")({rs:"rescope",node:"NodePatch"}),i="analogStickChanged buttonChanged",a=o.Board=e.Class({init:function(e){this.controllers=[],this.nodePatch=new s.node(this,{children:"layers",addChild:"addLayer",removeChild:"removeLayer",hasChild:"hasLayer"}),this.disabled=!1,this.playerDisabled={},s.rs.all(["focus"],this),this.domElement=document.createElement("div"),this.domElement.classList.add("Board"),this.keyTrigger=document.createElement("textarea"),this.domElement.appendChild(this.keyTrigger),this.keyTrigger.classList.add("keyTrigger"),this.keyTrigger.style.position="absolute",this.keyTrigger.style.zIndex="-1",this.keyTrigger.style.height=this.keyTrigger.style.width="0",this.keyTrigger.style.resize="none",this.domElement.addEventListener("click",this.focus,!1),e&&e.appendChild(this.domElement)},setDisabled:function(){},setPlayerDisabled:function(){},addController:function(e,t){this.removeController(e),this.controllers.push({controller:e,player:t||1}),e.addListener(i,this,"_ctrlCallback"),l("Controller.Keyboard")&&e instanceof r("Controller.Keyboard")&&e.setDomElement(this.keyTrigger)},removeController:function(e){for(var t=this.controllers.length-1;t>=0;t--)if(this.controllers[t].controller===e)return e.removeListener(i,this,"_ctrlCallback"),l("Controller.Keyboard")&&e instanceof r("Controller.Keyboard")&&e.setDomElement(),this.controllers.splice(t,1),!0;return!1},setControllerDisabled:function(){},_ctrlCallback:function(e){if(!this.disabled&&this.layers.length>0){Array.prototype.slice.call(arguments,0),e.player=null;for(var t=this.controllers.length-1;t>=0;t--)if(this.controllers[t].controller===e.source){e.player=t;break}this.playerDisabled[e.player]||this.layers[this.layers.length-1].onController(e)}},addLayer:function(e){return l("Layer")&&e instanceof r("Layer")&&this.nodePatch.addChild(e)?(this.domElement.appendChild(e.domElement),!0):!1},removeLayer:function(e){return this.nodePatch.removeChild(e)?(e.domElement.remove(),!0):!1},focus:function(e){(!e||"INPUT"!==e.target.tagName&&"SELECT"!==e.target.tagName&&"TEXTAREA"!==e.target.tagName)&&this.keyTrigger.focus()}});t("Board",a)})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+(function(µ,SMOD,GMOD,HMOD){
+
+    var TALE=this.TalePlay=this.TalePlay||{};
+    
+	var SC=GMOD("shortcut")({
+		rs:"rescope",
+        node:"NodePatch"
+	});
+	
+	var CTRL_EVENTS="analogStickChanged buttonChanged";
+	var BOARD=TALE.Board=µ.Class({
+		init:function(container)
+		{
+			this.controllers=[];
+			this.nodePatch=new SC.node(this,{
+				children:"layers",
+				addChild:"addLayer",
+				removeChild:"removeLayer",
+				hasChild:"hasLayer"
+			});
+			//this.layers=[];
+			
+			this.disabled=false;
+			this.playerDisabled={};
+			
+
+			SC.rs.all(["focus"],this);
+			
+			this.domElement=document.createElement("div");
+			this.domElement.classList.add("Board");
+			
+			this.keyTrigger=document.createElement("textarea");
+			this.domElement.appendChild(this.keyTrigger);
+			this.keyTrigger.classList.add("keyTrigger");
+			this.keyTrigger.style.position="absolute";
+			this.keyTrigger.style.zIndex="-1";
+			this.keyTrigger.style.height=this.keyTrigger.style.width="0";
+			this.keyTrigger.style.resize="none";
+			
+			this.domElement.addEventListener("click", this.focus, false);
+			
+			if(container)
+			{
+				container.appendChild(this.domElement);
+			}
+		},
+		setDisabled:function()
+		{
+			//TODO
+		},
+		setPlayerDisabled:function()
+		{
+			//TODO
+		},
+		addController:function(controller,player)
+		{
+			this.removeController(controller);
+			this.controllers.push({controller:controller,player:player||1});
+			controller.addListener(CTRL_EVENTS,this,"_ctrlCallback");
+			//TODO no key events on a div
+			/**/
+			if(HMOD("Controller.Keyboard")&&controller instanceof GMOD("Controller.Keyboard"))
+			{
+				controller.setDomElement(this.keyTrigger);
+			}
+			//*/
+		},
+		removeController:function(controller)
+		{
+			for(var i=this.controllers.length-1;i>=0;i--)
+			{
+				if(this.controllers[i].controller===controller)
+				{
+					controller.removeListener(CTRL_EVENTS,this,"_ctrlCallback");
+					if(HMOD("Controller.Keyboard")&&controller instanceof GMOD("Controller.Keyboard"))
+					{
+						controller.setDomElement();
+					}
+					this.controllers.splice(i,1);
+					return true;
+				}
+			}
+			return false;
+		},
+		setControllerDisabled:function()
+		{
+			//TODO
+		},
+		_ctrlCallback:function(event)
+		{
+			if(!this.disabled&&this.layers.length>0)
+			{
+				var args=Array.prototype.slice.call(arguments,0);
+				event.player=null;
+				for(var i=this.controllers.length-1;i>=0;i--)
+				{
+					if(this.controllers[i].controller===event.source)
+					{
+						event.player=i;
+						break;
+					}
+				}
+				if(!this.playerDisabled[event.player])
+				{
+					this.layers[this.layers.length-1].onController(event);
+				}
+			}
+		},
+		addLayer:function(layer)
+		{
+			if(HMOD("Layer")&&layer instanceof GMOD("Layer")&&this.nodePatch.addChild(layer))
+			{
+				this.domElement.appendChild(layer.domElement);
+				return true;
+			}
+			return false;
+		},
+		removeLayer:function(layer)
+		{
+			if(this.nodePatch.removeChild(layer))
+			{
+				layer.domElement.remove();
+				return true;
+			}
+			return false;
+		},
+		focus:function(event)
+		{
+			if(!event||(event.target.tagName!=="INPUT"&&event.target.tagName!=="SELECT"&&event.target.tagName!=="TEXTAREA"))
+			{
+				this.keyTrigger.focus();
+			}
+		}
+	});
+	SMOD("Board",BOARD);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
 //Morgas/src/Morgas.Listeners.js
 (function(µ,SMOD,GMOD){
 	
@@ -139,8 +506,9 @@
 			if(!this.disabled)
 			{
 				var run=true;
-                for(var [scope,entry] of this.listeners)
+                for(var entries=this.listeners.entries(),entryStep=entries.next();!entryStep.done;entryStep=entries.next())
                 {
+                	var scope=entryStep.value[0],entry=entryStep.value[1];
                     var it=entry.first.values();
                     var step=undefined;
                     var value=undefined;
@@ -406,13 +774,724 @@
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);
 //TalePlay.Layer.js
-(function(e,t,s,r){var o=this.TalePlay=this.TalePlay||{},l=s("Listeners"),n=s("shortcut")({node:"NodePatch"}),i=o.Layer=e.Class(l,{init:function(e){this.superInit(l),e=e||{},this.nodePatch=new n.node(this,{parent:"board",children:"GUIElements",addChild:"add",removeChild:"remove",hasChild:"has"},!0),this.mode=e.mode||i.Modes.ALL,this.domElement=document.createElement("div"),this.domElement.classList.add("Layer"),this.focused=null},onController:function(e){switch(this.mode){case i.Modes.ALL:default:for(var t=0;this.GUIElements.length>t;t++)this.GUIElements[t][i._CONTROLLER_EVENT_MAP[e.type]](e);break;case i.Modes.FIRST:this.GUIElements.length>0&&this.GUIElements[0][i._CONTROLLER_EVENT_MAP[e.type]](e);break;case i.Modes.LAST:this.GUIElements.length>0&&this.GUIElements[this.GUIElements.length-1][i._CONTROLLER_EVENT_MAP[e.type]](e);break;case i.Modes.FOCUSED:this.focused&&this.focused[i._CONTROLLER_EVENT_MAP[e.type]](e)}},add:function(e,t){return r("GUIElement")&&e instanceof s("GUIElement")&&this.nodePatch.addChild(e)?("string"==typeof t&&(t=this.domElement.querySelector(t)),t||(t=this.domElement),t.appendChild(e.domElement),!0):!1},remove:function(e){return this.nodePatch.removeChild(e)?(e.domElement.remove(),e.removeListener("all",this),!0):!1},destroy:function(){this.nodePatch.remove();for(var e=this.GUIElements.slice(),t=0;e.length>t;t++)e[t].destroy();l.prototype.destroy.call(this)}});i.Modes={ALL:0,FIRST:1,LAST:2,FOCUSED:3},i._CONTROLLER_EVENT_MAP={analogStickChanged:"onAnalogStick",buttonChanged:"onButton"},t("Layer",i)})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+(function(µ,SMOD,GMOD,HMOD){
+
+    var TALE=this.TalePlay=this.TalePlay||{};
+
+	var LST=GMOD("Listeners");
+	
+    var SC=GMOD("shortcut")({
+	    node:"NodePatch",
+    });
+	
+	var LAYER=TALE.Layer=µ.Class(LST,{
+		init:function(param)
+		{
+			this.superInit(LST);
+			param=param||{};
+			this.nodePatch=new SC.node(this,{
+				parent:"board",
+				children:"GUIElements",
+				addChild:"add",
+				removeChild:"remove",
+		        hasChild:"has"
+			},true);
+			//this.board=null;
+			//this.GUIElements=[];
+			
+			this.mode=param.mode||LAYER.Modes.ALL;
+			this.domElement=document.createElement("div");
+			this.domElement.classList.add("Layer");
+			
+			this.focused=null;
+		},
+		onController:function(event)
+		{
+			switch(this.mode)
+			{
+				case LAYER.Modes.ALL:
+				default:
+					for(var i=0;i<this.GUIElements.length;i++)
+					{
+						this.GUIElements[i][LAYER._CONTROLLER_EVENT_MAP[event.type]](event);
+					}
+					break;
+				case LAYER.Modes.FIRST:
+					if(this.GUIElements.length>0) this.GUIElements[0][LAYER._CONTROLLER_EVENT_MAP[event.type]](event);
+					break;
+				case LAYER.Modes.LAST:
+					if(this.GUIElements.length>0) this.GUIElements[this.GUIElements.length-1][LAYER._CONTROLLER_EVENT_MAP[event.type]](event);
+					break;
+				case LAYER.Modes.FOCUSED:
+					if(this.focused) this.focused[LAYER._CONTROLLER_EVENT_MAP[event.type]](event);
+					break;
+			}
+		},
+		add:function(guiElement,target)
+		{
+			if(HMOD("GUIElement")&&guiElement instanceof GMOD("GUIElement")&&this.nodePatch.addChild(guiElement))
+			{
+				if(typeof target==="string")
+				{
+					target=this.domElement.querySelector(target);
+				}
+				if(!target)
+				{
+					target=this.domElement;
+				}
+				target.appendChild(guiElement.domElement);
+				return true;
+			}
+			return false;
+		},
+		remove:function(guiElement)
+		{
+			if(this.nodePatch.removeChild(guiElement))
+			{
+				guiElement.domElement.remove();
+				guiElement.removeListener("all",this);
+				return true;
+			}
+			return false;
+		},
+		destroy:function()
+		{
+			this.nodePatch.remove();
+			var c=this.GUIElements.slice();
+			for(var i=0;i<c.length;i++)
+			{
+				c[i].destroy();
+			}
+			LST.prototype.destroy.call(this);
+		}
+	});
+	LAYER.Modes={
+		ALL:0,
+		FIRST:1,
+		LAST:2,
+		FOCUSED:3
+	};
+	LAYER._CONTROLLER_EVENT_MAP={
+			"analogStickChanged":"onAnalogStick",
+			"buttonChanged":"onButton"
+	};
+	SMOD("Layer",LAYER);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
 //GUI/TalePlay.GUIElement.js
-(function(t,e,i){var s=this.TalePlay=this.TalePlay||{},n=i("Listeners"),o=i("shortcut")({sc:"shortcut",node:"NodePatch",Layer:"Layer"}),a=s.GUIElement=t.Class(n,{init:function(t){t=t||{},this.superInit(n),this.nodePatch=new o.node(this,{parent:"parent",children:"children",addChild:"addChild",removeChild:"removeChild"},!0),o.sc({layer:function(t){for(var e=t.parent;e&&!(e instanceof o.Layer);)e=e.parent;return e}},this,this.nodePatch,!0),this.domElement=document.createElement(t.element||"div"),this.addStyleClass("GUIElement"),t.styleClass&&this.addStyleClass(t.styleClass)},addStyleClass:function(t){var e=this.domElement.classList;Array.isArray(t)?e.add.apply(e,t):e.add(t)},removeStyleClass:function(t){var e=this.domElement.classList;Array.isArray(t)?e.remove.apply(e,t):e.remove(t)},addChild:function(t,e){return t instanceof a&&this.nodePatch.addChild(t)?("string"==typeof e&&(e=this.domElement.querySelector(e)),e||(e=this.domElement),e.appendChild(t.domElement),!0):!1},removeChild:function(t){return this.nodePatch.removeChild(t)?(t.domElement.remove(),t.removeListener("all",this),!0):!1},onAnalogStick:function(){},onButton:function(){},destroy:function(){this.nodePatch.remove();for(var t=this.children.slice(),e=0;t.length>e;e++)t[e].destroy();n.prototype.destroy.call(this)}});e("GUIElement",a)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+    var TALE=this.TalePlay=this.TalePlay||{};
+
+	var LST=GMOD("Listeners");
+	var SC=GMOD("shortcut")({
+		sc:"shortcut",
+        node:"NodePatch",
+        Layer:"Layer"
+    });
+	
+	var GE=TALE.GUIElement=µ.Class(LST,{
+		init:function(param)
+		{
+			param=param||{};
+			this.superInit(LST);
+			this.nodePatch=new SC.node(this,{
+		        parent:"parent",
+		        children:"children",
+		        addChild:"addChild",
+		        removeChild:"removeChild"
+			},true);
+			
+			SC.sc({layer:function(node)
+			{
+				var layer=node.parent;
+				while(layer&&!(layer instanceof SC.Layer))
+				{
+					layer=layer.parent
+				}
+				return layer;
+			}},this,this.nodePatch,true);
+			//this.layer=null;
+
+			this.domElement=document.createElement(param.element||"div");
+			this.addStyleClass("GUIElement");
+			
+			if (param.styleClass)
+			{
+				this.addStyleClass(param.styleClass);
+			}
+		},
+		addStyleClass:function(styleClass)
+		{
+			var list=this.domElement.classList;
+			if(Array.isArray(styleClass))
+			{
+				list.add.apply(list,styleClass);
+			}
+			else
+			{
+				list.add(styleClass);
+			}
+		},
+		removeStyleClass:function(styleClass)
+		{
+			var list=this.domElement.classList;
+			if(Array.isArray(styleClass))
+			{
+				list.remove.apply(list,styleClass);
+			}
+			else
+			{
+				list.remove(styleClass);
+			}
+		},
+		addChild:function(guiElement,target)
+		{
+			if(guiElement instanceof GE&&this.nodePatch.addChild(guiElement))
+			{
+				if(typeof target==="string")
+				{
+					target=this.domElement.querySelector(target);
+				}
+				if(!target)
+				{
+					target=this.domElement;
+				}
+				target.appendChild(guiElement.domElement);
+				return true;
+			}
+			return false;
+		},
+		removeChild:function(guiElement)
+		{
+			if(this.nodePatch.removeChild(guiElement))
+			{
+				guiElement.domElement.remove();
+				guiElement.removeListener("all",this);
+				return true;
+			}
+			return false;
+		},
+		onAnalogStick:function(event)
+		{
+			//overwrite when needed
+		},
+		onButton:function(event)
+		{
+			//overwrite when needed
+		},
+		destroy:function()
+		{
+			this.nodePatch.remove();
+			var c=this.children.slice();
+			for(var i=0;i<c.length;i++)
+			{
+				c[i].destroy();
+			}
+			LST.prototype.destroy.call(this);
+		}
+	});
+	
+	SMOD("GUIElement",GE);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //Math/TalePlay.Math.Point.js
-(function(t,e,i){var s=this.TalePlay=this.TalePlay||{};s.Math=s.Math||{};var n=i("shortcut")({debug:"debug"}),o=s.Math.Point=t.Class({init:function(t,e){this.x=0,this.y=0,this.set(t,e)},set:function(t,e){return"object"==typeof t&&null!==t?(this.x=1*t.x,this.y=1*t.y):void 0!==t&&(this.x=1*t,void 0===e&&(e=t),this.y=1*e),(isNaN(this.x)||isNaN(this.y))&&n.debug(["Point became NaN",this],n.debug.LEVEL.WARNING),this},clone:function(t){return t||(t=new o),t.set(this.x,this.y),t},equals:function(t,e){return"object"==typeof t&&null!==t?this.x==t.x&&this.y==t.y:void 0!==t?(void 0===e&&(e=t),this.x==t&&this.y==e):!1},add:function(t,e){return"object"==typeof t&&null!==t?(this.x+=1*t.x,this.y+=1*t.y):void 0!==t&&(this.x+=1*t,void 0===e&&(e=t),this.y+=1*e),(isNaN(this.x)||isNaN(this.y))&&n.debug(["Point became NaN",this],n.debug.LEVEL.WARNING),this},sub:function(t,e){return"object"==typeof t&&null!==t?(this.x-=t.x,this.y-=t.y):void 0!==t&&(this.x-=t,void 0===e&&(e=t),this.y-=e),(isNaN(this.x)||isNaN(this.y))&&n.debug(["Point became NaN",this],n.debug.LEVEL.WARNING),this},mul:function(t,e){return"object"==typeof t&&null!==t?(this.x*=t.x,this.y*=t.y):void 0!==t&&(this.x*=t,void 0===e&&(e=t),this.y*=e),(isNaN(this.x)||isNaN(this.y))&&n.debug(["Point became NaN",this],n.debug.LEVEL.WARNING),this},div:function(t,e){return"object"==typeof t&&null!==t?(this.x/=t.x,this.y/=t.y):void 0!==t&&(this.x/=t,void 0===e&&(e=t),this.y/=e),(isNaN(this.x)||isNaN(this.y))&&n.debug(["Point became NaN",this],n.debug.LEVEL.WARNING),this},negate:function(){return this.x=-this.x,this.y=-this.y,this},invert:function(){return this.x=1/this.x,this.y=1/this.y,this},abs:function(){return this.x=Math.abs(this.x),this.y=Math.abs(this.y),this},length:function(){return Math.sqrt(this.x*this.x+this.y*this.y)},normalize:function(){var t=this.length();return t&&this.div(t),this},getAngle:function(){if(0!==this.y||0!==this.x){var t=Math.asin(this.y/this.length());return this.x>=0?t=Math.PI/2-t:t+=1.5*Math.PI,t}return 0},getDirection4:function(){return 0===this.y&&0===this.x?0:Math.abs(this.y)>Math.abs(this.x)?this.y>0?1:3:this.x>0?2:4},getDirection8:function(){return 0===this.y&&0===this.x?0:1+Math.floor((4*(this.getAngle()/Math.PI)+.5)%8)},doMath:function(t,e,i){return"object"==typeof e&&null!==e?(this.x=t(this.x,1*e.x),this.y=t(this.y,1*e.y)):void 0!==e&&(this.x=t(this.x,1*e),void 0===i&&(i=1*e),this.y=t(this.y,i)),(isNaN(this.x)||isNaN(this.y))&&n.debug(["Point became NaN",this],n.debug.LEVEL.WARNING),this}});e("Math.Point",o)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+    var TALE=this.TalePlay=this.TalePlay||{};
+	TALE.Math=TALE.Math||{};
+	
+	var SC=GMOD("shortcut")({
+		debug:"debug"
+	});
+	
+	var POINT=TALE.Math.Point=µ.Class({
+		init:function(numberOrPoint,y)
+		{
+			this.x=0;
+			this.y=0;
+			this.set(numberOrPoint,y);
+		},
+		set:function(numberOrPoint,y)
+		{
+			if(typeof numberOrPoint==="object"&&numberOrPoint!==null)
+			{
+				this.x=1*numberOrPoint.x;
+				this.y=1*numberOrPoint.y;
+			}
+			else if (numberOrPoint!==undefined)
+			{
+				this.x=1*numberOrPoint;
+				if(y===undefined)
+				{
+					y=numberOrPoint;
+				}
+				this.y=1*y;
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+			}
+			return this;
+		},
+		clone:function(cloning)
+		{
+			if(!cloning)
+			{
+				cloning=new POINT();
+			}
+			cloning.set(this.x,this.y);
+			return cloning;
+		},
+		equals:function(numberOrPoint,y)
+		{
+			if(typeof numberOrPoint==="object"&&numberOrPoint!==null)
+			{
+				return this.x==numberOrPoint.x&&this.y==numberOrPoint.y;
+			}
+			else if (numberOrPoint!==undefined)
+			{
+				if(y===undefined)
+				{
+					y=numberOrPoint;
+				}
+				return this.x==numberOrPoint&&this.y==y;
+			}
+			return false;
+		},
+		add:function(numberOrPoint,y)
+		{
+			if(typeof numberOrPoint==="object"&&numberOrPoint!==null)
+			{
+				this.x+=1*numberOrPoint.x;
+				this.y+=1*numberOrPoint.y;
+			}
+			else if (numberOrPoint!==undefined)
+			{
+				this.x+=1*numberOrPoint;
+				if(y===undefined)
+				{
+					y=numberOrPoint;
+				}
+				this.y+=1*y;
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+			}
+			return this;
+		},
+		sub:function(numberOrPoint,y)
+		{
+			if(typeof numberOrPoint==="object"&&numberOrPoint!==null)
+			{
+				this.x-=numberOrPoint.x;
+				this.y-=numberOrPoint.y;
+			}
+			else if (numberOrPoint!==undefined)
+			{
+				this.x-=numberOrPoint;
+				if(y===undefined)
+				{
+					y=numberOrPoint;
+				}
+				this.y-=y;
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+			}
+			return this;
+		},
+		mul:function(numberOrPoint,y)
+		{
+			if(typeof numberOrPoint==="object"&&numberOrPoint!==null)
+			{
+				this.x*=numberOrPoint.x;
+				this.y*=numberOrPoint.y;
+			}
+			else if (numberOrPoint!==undefined)
+			{
+				this.x*=numberOrPoint;
+				if(y===undefined)
+				{
+					y=numberOrPoint;
+				}
+				this.y*=y;
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+			}
+			return this;
+		},
+		div:function(numberOrPoint,y)
+		{
+			if(typeof numberOrPoint==="object"&&numberOrPoint!==null)
+			{
+				this.x/=numberOrPoint.x;
+				this.y/=numberOrPoint.y;
+			}
+			else if (numberOrPoint!==undefined)
+			{
+				this.x/=numberOrPoint;
+				if(y===undefined)
+				{
+					y=numberOrPoint;
+				}
+				this.y/=y;
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+			}
+			return this;
+		},
+		negate:function()
+		{
+			this.x=-this.x;
+			this.y=-this.y;
+			return this;
+		},
+		invert:function()
+		{
+			this.x=1/this.x;
+			this.y=1/this.y;
+			return this;
+		},
+		abs:function()
+		{
+			this.x=Math.abs(this.x);
+			this.y=Math.abs(this.y);
+			return this;
+		},
+		length:function()
+		{
+			return Math.sqrt(this.x*this.x+this.y*this.y);
+		},
+		normalize:function()
+		{
+			var l=this.length();
+			if(l)
+			{
+				this.div(l);
+			}
+			return this;
+		},
+		getAngle:function()
+		{
+			if(this.y!==0||this.x!==0)
+			{
+				var a=Math.asin(this.y/this.length());
+				if(this.x>=0)
+				{
+					a=Math.PI/2-a;
+				}
+				else
+				{
+					a+=Math.PI*1.5;
+				}
+				return a;
+			}
+			return 0;
+		},
+		getDirection4:function()
+		{//0:none 1:up 2:right 3:down 4:left
+			if(this.y===0&&this.x===0)
+			{
+				return 0;
+			}
+			else if(Math.abs(this.y)>Math.abs(this.x))
+			{
+				if(this.y>0)
+				{
+					return 1;
+				}
+				else
+				{
+					return 3;
+				}
+			}
+			else
+			{
+				if(this.x>0)
+				{
+					return 2;
+				}
+				else
+				{
+					return 4;
+				}
+			}
+		},
+		getDirection8:function()
+		{
+			//0:none 1:up 2:up-right 3:right 4:down-right ...
+			if(this.y===0&&this.x===0)
+			{
+				return 0;
+			}
+			else
+			{
+				return 1+Math.floor((this.getAngle()/Math.PI*4+0.5)%8);
+			}
+		},
+		doMath:function(fn,numberOrPoint,y)
+		{
+			if(typeof numberOrPoint==="object"&&numberOrPoint!==null)
+			{
+				this.x=fn(this.x,1*numberOrPoint.x);
+				this.y=fn(this.y,1*numberOrPoint.y);
+			}
+			else if (numberOrPoint!==undefined)
+			{
+				this.x=fn(this.x,1*numberOrPoint);
+				if(y===undefined)
+				{
+					y=1*numberOrPoint;
+				}
+				this.y=fn(this.y,y);
+			}
+			if(isNaN(this.x)||isNaN(this.y))
+			{
+				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+			}
+			return this;
+		}
+	});
+	
+	SMOD("Math.Point",POINT);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //TalePlay.Controller.js
-(function(t,e,i){var s=this.TalePlay=this.TalePlay||{},n=i("Listeners"),o=i("Math.Point"),r=t.shortcut({mapping:"Controller.Mapping"}),a=s.Controller=t.Class(n,{init:function(t,e){this.superInit(n),this.disabled=!1,this.analogSticks={},this.buttons={},this.mapping=null,this.setMapping(t,e),this.createListener("changed analogStickChanged buttonChanged")},getMapping:function(){return this.mapping},setMapping:function(t,e){t?(t instanceof r.mapping||(t=new r.mapping({data:t,name:e||"default"})),this.mapping=t):this.mapping=null},getAnalogStick:function(t){return void 0===this.analogSticks[t]&&(this.analogSticks[t]=new a.AnalogStick),this.analogSticks[t]},setButton:function(t){var e=!1,i=void 0;if(this.mapping){var s={};i={};for(var n in t){var o=this.mapping.getButtonAxisMapping(n);void 0!==o?i[Math.abs(o)]=this.mapping.convertAxisValue(o,t[n]):s[this.mapping.getButtonMapping(n)]=t[n]}t=s}for(var r in t){var a=t[r];if(void 0===this.buttons[r]||this.buttons[r]!==a){var l=this.buttons[r]||0;this.buttons[r]=a,this.fire("buttonChanged",{index:1*r,value:a,oldValue:l}),e=!0}}return i&&(e=this.setAxis(i,!0)||e),e&&this.fire("changed"),e},setAxis:function(t,e){var i=!1;if(this.mapping&&!e){var s={};for(var n in t){var o=this.mapping.getAxisMapping(n);s[Math.abs(o)]=this.mapping.convertAxisValue(o,t[n])}t=s}for(var r=Object.keys(t);r.length>0;){var a=r.shift(),l=void 0,h=void 0;o=-1;var d=this.getAnalogStick(a>>1);0==a%2?(l=t[a],h=t[1*a+1]||d.y,o=r.indexOf(1*a+1),-1!==o&&r.splice(o,1)):(l=t[a-1]||d.x,h=t[a],o=r.indexOf(a-1),-1!==o&&r.splice(o,1)),d.set(l,h),d.hasChanged()&&(i=!0,this.fire("analogStickChanged",{index:a>>1,analogStick:d}))}return i&&!e&&this.fire("changed"),i},set:function(t,e){this.setButton(t),this.setAxis(e)},setDisabled:function(t){this.disabled=t===!0;for(var e in this.listeners)this.listeners[e].setDisabled(this.disabled)},destroy:function(){},toString:function(){return JSON.stringify(this)},toJSON:function(){return{buttons:this.buttons,analogSticks:this.analogSticks}}});a.AnalogStick=t.Class(o,{init:function(t,e){this.old={x:0,y:0},this.superInit(o,t,e)},clone:function(t){return t||(t=new a.AnalogStick),o.prototype.clone.call(this,t),t.old.x=this.old.x,t.old.y=this.old.y,t},clonePoint:function(){return o.prototype.clone.call(this)},pushOld:function(){return this.old.x=this.x,this.old.y=this.y,this},hasChanged:function(){return!this.equals(this.old)},getDifference:function(){return new o(this.old).sub(this)},setComponent:function(t,e){return this.pushOld(),0===t%2?this.x=e:this.y=e,this},set:function(t,e){this.pushOld(),o.prototype.set.call(this,t,e)}}),e("Controller",a)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+    var TALE=this.TalePlay=this.TalePlay||{};
+	
+	var LST=GMOD("Listeners");
+	var POINT=GMOD("Math.Point");
+	
+	var SC=µ.shortcut({
+		mapping:"Controller.Mapping"
+	});
+	
+	var CTRL=TALE.Controller=µ.Class(LST,{
+		init:function(mapping,mappingName)
+		{
+			this.superInit(LST);
+			
+			this.disabled=false;
+			this.analogSticks={};
+			this.buttons={};
+			this.mapping=null;
+			
+			this.setMapping(mapping,mappingName);
+			this.createListener("changed analogStickChanged buttonChanged");
+		},
+		getMapping:function()
+		{
+			return this.mapping;
+		},
+		setMapping:function(mapping,mappingName)
+		{
+			if(mapping)
+			{
+				if(!(mapping instanceof SC.mapping))
+				{
+					mapping=new SC.mapping({data:mapping,name:mappingName||"default"});
+				}
+				this.mapping=mapping;
+			}
+			else
+			{
+				this.mapping=null;
+			}
+		},
+		getAnalogStick:function(axisIndex)
+		{
+			if(this.analogSticks[axisIndex]===undefined)
+			{
+				this.analogSticks[axisIndex]=new CTRL.AnalogStick();
+			}
+			return this.analogSticks[axisIndex];
+		},
+		setButton:function(buttonMap)
+		{
+			var changed=false,axisMap=undefined;
+			if(this.mapping)
+			{
+				var remapped={};
+				axisMap={};
+				for(var i in buttonMap)
+				{
+					var axisIndex=this.mapping.getButtonAxisMapping(i);
+					if(axisIndex!==undefined)
+					{
+						axisMap[Math.abs(axisIndex)]=this.mapping.convertAxisValue(axisIndex,buttonMap[i]);
+					}
+					else
+					{
+						remapped[this.mapping.getButtonMapping(i)]=buttonMap[i];
+					}
+				}
+				buttonMap=remapped;
+			}
+			
+			for(var index in buttonMap)
+			{
+				var value=buttonMap[index];
+				if(this.buttons[index]===undefined||this.buttons[index]!==value)
+				{
+					var old=this.buttons[index]||0;
+					this.buttons[index]=value;
+					this.fire("buttonChanged",{index:1*index,value:value,oldValue:old});
+					changed=true;
+				}
+			}
+			if(axisMap)
+			{
+				changed=this.setAxis(axisMap,true)||changed;
+			}
+			if(changed)
+			{
+				this.fire("changed");
+			}
+			return changed;
+		},
+		setAxis:function(axisMap,fromButton)
+		{
+			var changed=false;
+			if(this.mapping&&!fromButton)
+			{
+				var remapped={};
+				for(var i in axisMap)
+				{
+					var index=this.mapping.getAxisMapping(i);
+					remapped[Math.abs(index)]=this.mapping.convertAxisValue(index,axisMap[i]);
+				}
+				axisMap=remapped;
+			}
+			
+			var keys=Object.keys(axisMap);
+			while(keys.length>0)
+			{
+				var key=keys.shift(), xAxis=undefined, yAxis=undefined; index=-1;
+				var aStick=this.getAnalogStick(key>>1);
+				if(key%2==0)
+				{
+					xAxis=axisMap[key];
+					yAxis=axisMap[key*1+1]||aStick.y;
+					
+					index=keys.indexOf(key*1+1);
+					if(index!==-1) keys.splice(index,1);
+				}
+				else
+				{
+					xAxis=axisMap[key-1]||aStick.x;
+					yAxis=axisMap[key];
+					
+					index=keys.indexOf(key-1);
+					if(index!==-1) keys.splice(index,1);
+				}
+				aStick.set(xAxis,yAxis);
+				if(aStick.hasChanged())
+				{
+					changed=true;
+					this.fire("analogStickChanged",{index:key>>1,analogStick:aStick});
+				}
+			}
+			if(changed&&!fromButton)
+			{
+				this.fire("changed");
+			}
+			return changed;
+		},
+		set:function(buttons,axes)
+		{
+			this.setButton(buttons);
+			this.setAxis(axes);
+		},
+		setDisabled:function(disabled)
+		{
+			this.disabled=disabled===true;
+			for(var i in this.listeners)
+			{
+				this.listeners[i].setDisabled(this.disabled);
+			}
+		},
+		destroy:function()
+		{
+			//TODO;
+		},
+		toString:function()
+		{
+			return JSON.stringify(this);
+		},
+		toJSON:function()
+		{
+			return {buttons:this.buttons,analogSticks:this.analogSticks};
+		}
+	});
+	//TODO use Math.Point
+	CTRL.AnalogStick=µ.Class(POINT,{
+		init:function(x,y)
+		{
+			this.old={x:0,y:0};
+			this.superInit(POINT,x,y);
+		},
+		clone:function(cloning)
+		{
+			if(!cloning)
+			{
+				cloning=new CTRL.AnalogStick();
+			}
+			POINT.prototype.clone.call(this,cloning);
+			cloning.old.x=this.old.x;
+			cloning.old.y=this.old.y;
+			return cloning;
+		},
+		clonePoint:function()
+		{
+			return POINT.prototype.clone.call(this);
+		},
+		pushOld:function()
+		{
+			this.old.x=this.x;
+			this.old.y=this.y;
+			return this;
+		},
+		hasChanged:function()
+		{
+			return !this.equals(this.old);
+		},
+		getDifference:function()
+		{
+			return new POINT(this.old).sub(this);
+		},
+		setComponent:function(index,value)
+		{
+			this.pushOld();
+			
+			if(index%2===0)
+			{
+				this.x=value;
+			}
+			else
+			{
+				this.y=value;
+			}
+			return this;
+		},
+		set:function(numberOrPoint,y)
+		{
+			this.pushOld();
+			POINT.prototype.set.call(this,numberOrPoint,y);
+		}
+	});
+	
+	
+	SMOD("Controller",CTRL);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //TalePlay.Controller.Gamepad.js
 (function(µ,SMOD,GMOD){
 
@@ -472,9 +1551,394 @@
 	SMOD("Controller.Gamepad",GP);
 })(Morgas,Morgas.setModule,Morgas.getModule);
 //TalePlay.Controller.Keyboard.js
-(function(t,e,n){var i=n("Controller"),s=t.shortcut({rescope:"rescope"});i.Keyboard=t.Class(i,{init:function(t,e,n){this.superInit(i,void 0!==t?t:i.Keyboard.stdMapping,e),s.rescope.all(["onKeyDown","onKeyUp"],this),this.domElement=null,this.setDomElement(n||window)},setMapping:function(t){i.prototype.setMapping.call(this,t),this.mapping&&this.mapping.setValueOf("type","Keyboard")},setDomElement:function(t){this.domElement&&(this.domElement.removeEventListener("keydown",this.onKeyDown,!1),this.domElement.removeEventListener("keyup",this.onKeyUp,!1),this.domElement=null),t&&(this.domElement=t,t.addEventListener("keydown",this.onKeyDown,!1),t.addEventListener("keyup",this.onKeyUp,!1))},onKeyDown:function(t){this.onKey(t,1)},onKeyUp:function(t){this.onKey(t,0)},onKey:function(t,e){if(!this.disabled&&this.mapping&&(this.mapping.hasButtonMapping(t.code||t.key)||this.mapping.hasButtonAxisMapping(t.code||t.key))){t.preventDefault(),t.stopPropagation();var n={};n[t.code||t.key]=e,this.setButton(n)}},destroy:function(){this.setDomElement(),i.prototype.destroy.call(this)}}),i.Keyboard.stdMapping={buttons:{1:"2",2:"3",3:"4",4:"5",5:"6",6:"7"," ":"0",Shift:"1",Pause:"8",Enter:"9"},buttonAxis:{w:"1",d:"0",s:"-1",a:"-0",Up:"3",Right:"2",Down:"-3",Left:"-2"},axes:{}},e("Controller.Keyboard",i.Keyboard)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+	var CTRL=GMOD("Controller");
+	
+	var SC=µ.shortcut({
+		rescope:"rescope"
+	});
+	
+	CTRL.Keyboard=µ.Class(CTRL,{
+		init:function(mapping,mappingName,domElement)
+		{
+			this.superInit(CTRL,mapping!==undefined ? mapping : CTRL.Keyboard.stdMapping,mappingName);
+			
+			SC.rescope.all(["onKeyDown","onKeyUp"],this);
+			
+			this.domElement=null;
+			this.setDomElement(domElement||window)
+		},
+		setMapping:function(mapping)
+		{
+			CTRL.prototype.setMapping.call(this, mapping);
+			if(this.mapping)
+			{
+				this.mapping.setValueOf("type","Keyboard");
+			}
+		},
+		setDomElement:function(domElement)
+		{
+			if(this.domElement)
+			{
+				this.domElement.removeEventListener("keydown", this.onKeyDown, false);
+				this.domElement.removeEventListener("keyup", this.onKeyUp, false);
+				this.domElement=null;
+			}
+			if(domElement)
+			{
+				this.domElement=domElement;
+				domElement.addEventListener("keydown", this.onKeyDown, false);
+				domElement.addEventListener("keyup", this.onKeyUp, false);
+			}
+		},
+		onKeyDown:function(event)
+		{
+			this.onKey(event,1);
+		},
+		onKeyUp:function(event)
+		{
+			this.onKey(event,0);
+		},
+		onKey:function(event,value)
+		{
+			if(!this.disabled&&this.mapping)
+			{
+				if(this.mapping.hasButtonMapping(event.code||event.key)||this.mapping.hasButtonAxisMapping(event.code||event.key))
+				{
+					event.preventDefault();
+					event.stopPropagation();
+					
+					var map={};
+					map[event.code||event.key]=value;
+					this.setButton(map);
+				}
+			}
+		},
+		destroy:function()
+		{
+			this.setDomElement();
+			CTRL.prototype.destroy.call(this);
+		}
+	});
+	CTRL.Keyboard.stdMapping={
+		"buttons": {
+			"1": "2",
+			"2": "3",
+			"3": "4",
+			"4": "5",
+			"5": "6",
+			"6": "7",
+			" ": "0",
+			"Shift": "1",
+			"Pause": "8",
+			"Enter": "9"
+		},
+		"buttonAxis": {
+			"w": "1",
+			"d": "0",
+			"s": "-1",
+			"a": "-0",
+			"Up": "3",
+			"Right": "2",
+			"Down": "-3",
+			"Left": "-2"
+		},
+		"axes": {}
+	};
+	SMOD("Controller.Keyboard",CTRL.Keyboard)
+
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //GUI/TalePlay.GUIElement.ControllerManager.js
-(function(t,e,i){var s=i("GUIElement"),n=i("shortcut")({rs:"rescope",bind:"bind",mapping:"Controller.Mapping",ctrlK:"Controller.Keyboard",ctrlG:"Controller.Gamepad",GMenu:"GUI.Menu",config:"GUI.ControllerConfig"}),o='<table><tr><td class="DeviceActions"><select class="devices"></select><button data-action="addDevice">add Device</button><button data-action="removeController">remove Controller</button></td><td class="MappingActions"><button data-action="newMapping">New</button><button data-action="setMapping">Set</button><button data-action="editMapping">Edit</button><button data-action="deleteMapping">Delete</button></td></tr><tr><td class="controllers"></td><td class="mappings"></td></tr></table><button data-action="close">OK</button>',a=s.ControllerManager=t.Class(s,{init:function(t){t=t||{},t.styleClass=t.styleClass||"overlay",this.superInit(s,t),this.addStyleClass("ControllerManager"),n.rs.all(["_Click","_playerChanged","_mappingsLoaded"],this),this.domElement.addEventListener("click",this._Click),this.buttons=void 0!==t.buttons?t.buttons:10,this.analogSticks=void 0!==t.analogSticks?t.analogSticks:2,this.controllers=new n.GMenu({type:n.GMenu.Types.TABLE,header:["No.","Device","Mapping","Player"],selectionType:n.GMenu.SelectionTypes.SINGLE,converter:a.controllerConverter}),this.controllers.addListener("select",this,"_MenuSelect"),t.mappings=t.mappings||[],t.mappings.unshift(null),this.mappings=new n.GMenu({type:n.GMenu.Types.TABLE,header:["Name","Type"],selectionType:n.GMenu.SelectionTypes.SINGLE,converter:a.mappingConverter,items:t.mappings}),this.mappings.addListener("select",this,"_MenuSelect"),this.dbConn=t.dbConn||null,this.dbConn&&this.dbConn.load(n.mapping,{}).complete(this._mappingsLoaded),this.config=null,this.domElement.innerHTML=o,this.domElement.querySelector(".controllers").addEventListener("change",this._playerChanged),this.domElement.querySelector(".controllers").appendChild(this.controllers.domElement),this.domElement.querySelector(".mappings").appendChild(this.mappings.domElement),this.update(),this._gamepadListener=n.bind(this.update,this,"devices"),window.addEventListener("gamepadconnected",this._gamepadListener)},update:function(t){if(void 0===t||"devices"===t){for(var e="<option>Keyboard</option>",i=navigator.getGamepads(),s=0;i.length>s;s++)i[s]&&(e+="<option>"+i[s].id+"</option>");this.domElement.querySelector(".devices").innerHTML=e}if(this.layer&&this.layer.board&&(void 0===t||"controllers"===t)&&this.controllers.clear().addAll(this.layer.board.controllers),void 0===t||"actions"===t){var n=this.controllers.getSelectedItems()[0],o=this.mappings.getSelectedItems()[0];this.domElement.querySelector('[data-action="removeController"]').disabled=this.domElement.querySelector('[data-action="newMapping"]').disabled=!n,this.domElement.querySelector('[data-action="setMapping"]').disabled=!n||!o,this.domElement.querySelector('[data-action="editMapping"]').disabled=!n||!n.value.controller.getMapping(),this.domElement.querySelector('[data-action="deleteMapping"]').disabled=!o}},_mappingsLoaded:function(t){this.mappings.addAll(t)},_Click:function(t){var e=t.target.dataset.action;void 0!==e&&(t.stopPropagation(),this[e]())},addDevice:function(){var t=this.domElement.querySelector(".devices").selectedIndex;if(0===t)this.addController(new n.ctrlK);else{var e=navigator.getGamepads()[--t];this.addController(new n.ctrlG(e))}},removeController:function(){var t=this.controllers.getSelectedItems()[0];t&&(this.layer.board.removeController(t.value.controller),this.update("controllers"))},newMapping:function(){this._openControllerConfig(!0)},setMapping:function(){var t=this.controllers.getSelectedItems()[0],e=this.mappings.getSelectedItems()[0];t&&e&&(t.value.controller.setMapping(e.value),this.update("controllers"))},editMapping:function(){this._openControllerConfig(!1)},deleteMapping:function(){var t=this.mappings.getSelectedItems()[0];t&&null!==t.value&&(this.mappings.removeItem(t.value),this.dbConn&&void 0!==t.value.getID()&&this.dbConn["delete"](n.mapping,t.value))},addController:function(t){this.layer.board.addController(t),this.update("controllers")},_MenuSelect:function(){this.update("actions")},_openControllerConfig:function(t){var e=this.controllers.getSelectedItems()[0];if(e&&!this.config){e=e.value.controller;var i=e.getMapping();if(this.config=new n.config({buttons:this.buttons,analogSticks:this.analogSticks,controller:e,name:!!t}),t)e.setMapping(null);else if(!i)return!1;return this.config.addStyleClass("panel","overlay"),this.layer.add(this.config),this.config.addListener("submit:once",this,function(s){switch(!0){case"ok"===s.value:t?(i=s.source.getMapping(),this.mappings.addItem(i)):i.setValueOf("data",s.source.getData()),this.dbConn&&(t||void 0!==i.getID())&&this.dbConn.save(i);case!!t:e.setMapping(i)}s.source.destroy(),this.config=null,this.update("controllers")}),!0}return!1},close:function(){this.layer&&this.layer.board&&this.layer.board.focus(),this.destroy()},_playerChanged:function(t){void 0!==t.target.dataset.controllerindex&&(this.layer.board.controllers[t.target.dataset.controllerindex].player=1*t.target.value||1)},destroy:function(){s.prototype.destroy.call(this),window.removeEventListener("gamepadconnected",this._gamepadListener)}});a.controllerConverter=function(t,e){return[e,t.controller instanceof n.ctrlK?"Keyboard":t.controller.gamepad.id,t.controller.mapping&&t.controller.mapping.getValueOf("name")||"None",'<input type="number" min="1" value="'+t.player+'" data-controllerindex="'+e+'" >']},a.mappingConverter=function(t){return t?[t.getValueOf("name"),t.getValueOf("type")]:["none",""]},e("GUI.ControllerManager",a)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+	
+	//TODO change to Layer
+	
+	var GUI=GMOD("GUIElement");
+	
+	var SC=GMOD("shortcut")({
+		rs:"rescope",
+		bind:"bind",
+		mapping:"Controller.Mapping",
+		ctrlK:"Controller.Keyboard",
+		ctrlG:"Controller.Gamepad",
+		GMenu:"GUI.Menu",
+		config:"GUI.ControllerConfig"
+	});
+	
+	var template=
+	'<table>'+
+		'<tr>'+
+			'<td class="DeviceActions">'+
+				'<select class="devices"></select>'+
+				'<button data-action="addDevice">add Device</button>'+
+				'<button data-action="removeController">remove Controller</button>'+
+			'</td>'+
+			'<td class="MappingActions">'+
+				'<button data-action="newMapping">New</button>'+
+				'<button data-action="setMapping">Set</button>'+
+				'<button data-action="editMapping">Edit</button>'+
+				'<button data-action="deleteMapping">Delete</button>'+
+			'</td>'+
+		'</tr>'+
+		'<tr>'+
+			'<td class="controllers"></td>'+
+			'<td class="mappings"></td>'+
+		'</tr>'+
+	'</table>'+
+	'<button data-action="close">OK</button>';
+	var MANAGER=GUI.ControllerManager=µ.Class(GUI,{
+		init:function(param)
+		{
+			param=param||{};
+			param.styleClass=param.styleClass||"overlay";
+			
+			this.superInit(GUI,param);
+			this.addStyleClass("ControllerManager");
+			SC.rs.all(["_Click","_playerChanged","_mappingsLoaded"],this);
+			this.domElement.addEventListener("click",this._Click);
+
+			this.buttons=param.buttons!==undefined ? param.buttons : 10;
+			this.analogSticks=param.analogSticks!==undefined ? param.analogSticks : 2;
+
+			this.controllers=new SC.GMenu({
+				type:SC.GMenu.Types.TABLE,
+				header:["No.","Device","Mapping","Player"],
+				selectionType:SC.GMenu.SelectionTypes.SINGLE,
+				converter:MANAGER.controllerConverter
+			});
+			this.controllers.addListener("select",this,"_MenuSelect");
+
+			param.mappings=param.mappings||[];
+			param.mappings.unshift(null);
+			this.mappings=new SC.GMenu({
+				type:SC.GMenu.Types.TABLE,
+				header:["Name","Type"],
+				selectionType:SC.GMenu.SelectionTypes.SINGLE,
+				converter:MANAGER.mappingConverter,
+				items:param.mappings
+			});
+			this.mappings.addListener("select",this,"_MenuSelect");
+			
+			this.dbConn=param.dbConn||null;
+			if(this.dbConn)
+			{
+				this.dbConn.load(SC.mapping,{}).complete(this._mappingsLoaded);
+			}
+
+            this.config=null;
+			
+			this.domElement.innerHTML=template;
+
+			this.domElement.querySelector(".controllers").addEventListener("change",this._playerChanged);
+			this.domElement.querySelector(".controllers").appendChild(this.controllers.domElement);
+			this.domElement.querySelector(".mappings").appendChild(this.mappings.domElement);
+			
+			this.update();
+			
+			this._gamepadListener=SC.bind(this.update,this,"devices");
+			window.addEventListener("gamepadconnected",this._gamepadListener);
+		},
+		update:function(part)
+		{
+			if(part===undefined||part==="devices")
+			{
+				var html='<option>Keyboard</option>';
+				var gamepads=navigator.getGamepads();
+				for(var i=0;i<gamepads.length;i++)
+				{
+					if(gamepads[i])
+					{
+						html+='<option>'+gamepads[i].id+'</option>';
+					}
+				}
+				this.domElement.querySelector(".devices").innerHTML=html;
+			}
+
+			if(this.layer&&this.layer.board&&(part===undefined||part==="controllers"))
+			{
+				this.controllers.clear().addAll(this.layer.board.controllers)
+			}
+
+			if(part===undefined||part==="actions")
+			{
+				var controller=this.controllers.getSelectedItems()[0],
+				mapping=this.mappings.getSelectedItems()[0];
+
+				this.domElement.querySelector('[data-action="removeController"]').disabled=
+					this.domElement.querySelector('[data-action="newMapping"]').disabled=!controller;
+				this.domElement.querySelector('[data-action="setMapping"]').disabled=!controller||!mapping;
+				this.domElement.querySelector('[data-action="editMapping"]').disabled=!controller||!controller.value.controller.getMapping();
+				this.domElement.querySelector('[data-action="deleteMapping"]').disabled=!mapping;
+			}
+		},
+		_mappingsLoaded:function(mappings)
+		{
+			this.mappings.addAll(mappings);
+		},
+		_Click:function(event)
+		{
+			var action=event.target.dataset.action;
+			if(action!==undefined)
+			{
+				event.stopPropagation();
+				this[action]();
+			}
+		},
+		addDevice:function()
+		{
+			var index=this.domElement.querySelector(".devices").selectedIndex;
+			if(index===0)
+			{
+				this.addController(new SC.ctrlK());
+			}
+			else
+			{
+				var gamepad=navigator.getGamepads()[--index];
+				this.addController(new SC.ctrlG(gamepad));
+			}
+		},
+		removeController:function()
+		{
+			var controller=this.controllers.getSelectedItems()[0];
+			if(controller)
+			{
+				this.layer.board.removeController(controller.value.controller);
+				this.update("controllers");
+			}
+		},
+		newMapping:function()
+		{
+			this._openControllerConfig(true);
+		},
+		setMapping:function()
+		{
+			var controller=this.controllers.getSelectedItems()[0],
+			mapping=this.mappings.getSelectedItems()[0];
+			if(controller&&mapping)
+			{
+				controller.value.controller.setMapping(mapping.value);
+				this.update("controllers");
+			}
+		},
+		editMapping:function()
+		{
+			this._openControllerConfig(false);
+		},
+		deleteMapping:function()
+		{
+			var mapping=this.mappings.getSelectedItems()[0];
+			if(mapping&&mapping.value!==null)
+			{
+				this.mappings.removeItem(mapping.value);
+				if(this.dbConn&&mapping.value.getID()!==undefined)
+				{
+					this.dbConn["delete"](SC.mapping,mapping.value);
+				}
+			}
+		},
+		addController:function(controller)
+		{
+			this.layer.board.addController(controller);
+			this.update("controllers");
+		},
+		_MenuSelect:function()
+		{
+			this.update("actions");
+		},
+		_openControllerConfig:function(isNew)
+		{
+			var controller=this.controllers.getSelectedItems()[0];
+			if(controller&&!this.config)
+			{
+				controller=controller.value.controller;
+				var mapping=controller.getMapping();
+                this.config=new SC.config({
+					buttons:this.buttons,
+					analogSticks:this.analogSticks,
+					controller:controller,
+					name:!!isNew
+				});
+				if(isNew)
+				{
+					controller.setMapping(null);
+				}
+				else if (!mapping)
+				{
+					return false;
+				}
+				this.config.addStyleClass("panel","overlay");
+				this.layer.add(this.config);
+				this.config.addListener("submit:once",this,function(event)
+				{
+					switch(true)
+					{
+						case event.value==="ok":
+							if(isNew)//make new mapping
+							{
+								mapping=event.source.getMapping();
+								this.mappings.addItem(mapping);
+							}
+							else//update mapping
+							{
+								mapping.setValueOf("data",event.source.getData());
+							}
+							if(this.dbConn&&(isNew||mapping.getID()!==undefined))
+							{
+								this.dbConn.save(mapping);
+							}
+						case !!isNew://reset old mapping or set new
+							controller.setMapping(mapping);
+					}
+					event.source.destroy();
+                    this.config=null;
+					this.update("controllers");
+				});
+				return true;
+			}
+			return false;
+		},
+		close:function()
+		{
+			if(this.layer&&this.layer.board)this.layer.board.focus();
+			this.destroy();
+		},
+		_playerChanged:function(event)
+		{
+			if(event.target.dataset.controllerindex!==undefined)
+			{
+				this.layer.board.controllers[event.target.dataset.controllerindex].player=1*event.target.value||1;
+			}
+		},
+		destroy:function()
+		{
+			GUI.prototype.destroy.call(this);
+			window.removeEventListener("gamepadconnected",this._gamepadListener);
+		}
+	});
+	MANAGER.controllerConverter=function(item,index,selected)
+	{
+		return [
+			index,
+			(item.controller instanceof SC.ctrlK)?"Keyboard":item.controller.gamepad.id,
+			((item.controller.mapping&&item.controller.mapping.getValueOf("name"))||"None"),
+			'<input type="number" min="1" value="'+item.player+'" data-controllerindex="'+index+'" >'
+	    ];
+	};
+	MANAGER.mappingConverter=function(item,index,selected)
+	{
+		if(!item)
+		{
+			return ["none",""];
+		}
+		else
+		{
+			return [item.getValueOf("name"),item.getValueOf("type")];
+		}
+	};
+	SMOD("GUI.ControllerManager",MANAGER);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //GUI/TalePlay.GUIElement.Menu.js
 (function(µ,SMOD,GMOD){
 	
@@ -841,7 +2305,81 @@
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);
 //Math/TalePlay.Math.Rect.js
-(function(t,e,i){var s=this.TalePlay=this.TalePlay||{};s.Math=s.Math||{};var n=i("shortcut")({POINT:"Math.Point"}),o=s.Rect=t.Class({init:function(t,e){this.position=new n.POINT,this.size=new n.POINT,this.setPosition(t),this.setSize(e)},clone:function(){return new o(this.position,this.size)},setPosition:function(t,e){return this.position.set(t,e),this},setSize:function(t,e){return this.size.set(t,e),this},set:function(t,e,i,s){return this.position.set(t,e),this.size.set(i,s),this},setAbsolute:function(t,e,i,s){var n=Math.min(t,i),o=Math.min(e,s),a=Math.max(t,i);return Math.max(e,s),this.set(n,o,a-n,_y2-o),this},getAbsolute:function(){return{min:this.position.clone(),max:this.position.clone().add(this.size)}},collide:function(t){if(t===this)return!0;var e=this.getAbsolute(),i=t.getAbsolute();return!(e.min.x>=i.max.x||e.min.y>=i.max.y||i.min.x>=e.max.x||i.min.y>=e.max.y)},contains:function(t,e){var i=new n.POINT(t,e);return i.x>=this.position.x&&this.position.x+this.size.x>i.x&&i.y>=this.position.y&&this.position.y+this.size.y>i.y}});e("Math.Rect",o)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+    var TALE=this.TalePlay=this.TalePlay||{};
+	TALE.Math=TALE.Math||{};
+	
+	var SC=GMOD("shortcut")({
+		POINT:"Math.Point"
+	});
+	
+	var RECT=TALE.Rect=µ.Class(
+	{
+		init:function(position,size)
+		{
+			this.position=new SC.POINT();
+			this.size=new SC.POINT();
+			
+			this.setPosition(position);
+			this.setSize(size);
+		},
+		clone:function()
+		{
+			return new RECT(this.position,this.size);
+		},
+		setPosition:function(x,y)
+		{
+			this.position.set(x,y);
+			return this;
+		},
+		setSize:function(x,y)
+		{
+			this.size.set(x,y);
+			return this;
+		},
+		set:function(posX,posY,sizeX,sizeY)
+		{
+			this.position.set(posX,posY);
+			this.size.set(sizeX,sizeY);
+			return this;
+		},
+		setAbsolute:function(x1,y1,x2,y2)
+		{
+			var _x1=Math.min(x1,x2),
+			_y1=Math.min(y1,y2),
+			_x2=Math.max(x1,x2),
+			_y=Math.max(y1,y2);
+			this.set(_x1, _y1, _x2-_x1, _y2-_y1);
+			return this;
+		},
+		getAbsolute:function()
+		{
+			return {min:this.position.clone(),max:this.position.clone().add(this.size)};
+		},
+		collide:function(rect)
+		{
+			if(rect===this)
+			{
+				return true;
+			}
+			else
+			{
+				var me=this.getAbsolute(),
+				that=rect.getAbsolute();
+				
+				return !(me.min.x>=that.max.x||me.min.y>=that.max.y||me.max.x<=that.min.x||me.max.y<=that.min.y);
+			}
+		},
+        contains:function(numberOrPoint,y)
+        {
+            var p=new SC.POINT(numberOrPoint,y);
+            return (this.position.x <= p.x && this.position.x+this.size.x > p.x &&
+                    this.position.y <= p.y && this.position.y+this.size.y > p.y);
+        }
+	});
+	SMOD("Math.Rect",RECT);
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //TalePlay.Layer.MapMaker.js
 (function(µ,SMOD,GMOD){
 	
@@ -1105,25 +2643,2043 @@
 	SMOD("MapMaker",MapMaker);
 })(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.util.function.rescope.js
-(function(t,e){var n=t.util=t.util||{},o=n.function||{};o.rescope=function(t,e){return function(){return t.apply(e,arguments)}},o.rescope.all=function(t,e){t=t||Object.keys(e);for(var n=0;t.length>n;n++)e[t[n]]=o.rescope(e[t[n]],e)},e("rescope",o.rescope)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+	
+	var util=µ.util=µ.util||{};
+	var uFn=util.function||{};
+	
+	/** rescope
+	 * faster than bind but only changes the scope.
+	 */
+	uFn.rescope=function(fn,scope)
+	{
+		return function()
+		{
+			return fn.apply(scope,arguments);
+		}
+	};
+	uFn.rescope.all=function(keys,scope)
+	{	
+		keys=keys||Object.keys(scope);
+		for(var i=0;i<keys.length;i++)
+		{
+			scope[keys[i]]=uFn.rescope(scope[keys[i]],scope);
+		}
+	};
+	SMOD("rescope",uFn.rescope);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.Patch.js
-(function(t,e){var n=function(t){return void 0!==this.getPatch(t)},o=function(t){return this.patches[t.patchID||t.prototype.patchID]},c=function(){this.patch(this._patchParam,!1),delete this._patchParam},s=t.Patch=t.Class({init:function(t,e,s){null==t.patches&&(t.patches={},t.hasPatch=n,t.getPatch=o),t.hasPatch(this)||(this.instance=t,t.patches[this.patchID]=this,"function"==typeof this.instance.addListener?(this._patchParam=e,this.instance.addListener(".created:once",this,c),s&&this.patchNow()):this.patch(e,!0))},patchNow:function(){this.instance.patches[this.patchID]===this&&"function"==typeof this.instance.removeListener&&this.instance.removeListener(".created",this)&&this.patch(this._patchParam,!1)},patch:function(){},superPatch:function(t){t.prototype.patch.apply(this,[].slice.call(arguments,1))},superPatchApply:function(t,e){this.superPatch.apply(this,[t].concat([].slice.call(e)))}});e("Patch",s),s.hasPatch=function(t,e){return t.hasPatch?t.hasPatch(e):!1},s.getPatch=function(t,e){return t&&t.getPatch?t.getPatch(e):null}})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+	/**Patch Class
+	 * Adds functionality to an instance
+	 * 
+	 * Patches add themself in a the "patches" map of the instance with their patchID
+	 * The core patch adds the "patches" map and the functions "hasPatch" and "getPatch"
+	 * 
+	 * Normaly a Patch does not add functions direct to the instance but uses listeners
+	 * 
+	 * 
+	 * To create a new patch do sth. like this
+	 * 
+	 * var myPatch=µ.Class(µ.patch,
+	 * {
+	 * 		patchID:"myPatchID",
+	 * 		patch:function(param,noListeners)
+	 * 		{
+	 * 			this.superPatch(µ.patch);//call super.patch // in case of µ.Patch its not necessary 
+	 * 			//your constructor after instance is created
+	 * 		}
+	 * }
+	 * 
+	 * The "patch" function is called on the create event (when the constructor of the instance is finished)
+	 * If the instance has no listeners, "noListeners" is true and "patch" was called immediately
+	 * 
+	 * If you want to override the init function do it like this:
+	 * 
+	 * var myPatch=µ.Class(mySuperPatch,
+	 * {
+	 * 		patchID:"myPatchID",
+	 * 		init:function(instance,param)
+	 * 		{
+	 * 			//call constructor of superclass
+	 * 			this.superInit(mySuperPatch,instance,param);
+	 * 			//or this.superInitApply(mySuperPatch,arguments);
+	 * 
+	 * 			if(this.instance!=null)
+	 * 			{
+	 * 				//your constructor
+	 * 				//post patch:  this.instance.addListener("created",function(param,noListeners){}) 
+	 * 			}
+	 * 		},
+	 * 		patch:function(param,noListeners)
+	 * 		{
+	 * 			this.superPatch(mySuperPatch,param,noListeners);
+	 * 			//post constructor
+	 * 		}
+	 * }  
+	 */
+	var _hasPatch=function hasPatch(patch)
+	{
+		return this.getPatch(patch)!==undefined;
+	};
+	var _getPatch=function getPatch(patch)
+	{
+		return this.patches[patch.patchID||patch.prototype.patchID];
+	};
+	var _callPatch=function()
+	{
+		this.patch(this._patchParam,false);
+		delete this._patchParam;
+	};
+	
+	var PATCH=µ.Patch=µ.Class(
+	{
+		init:function Patchinit(instance,param,doPatchNow)
+		{
+			if(instance.patches==null)
+			{
+				instance.patches={};
+				instance.hasPatch=_hasPatch;
+				instance.getPatch=_getPatch;
+			}
+			if(!instance.hasPatch(this))
+			{
+				this.instance=instance;
+				instance.patches[this.patchID]=this;
+				if(typeof this.instance.addListener==="function")//instanceof Listeners or has Listeners attached
+				{
+					this._patchParam=param;
+					this.instance.addListener(".created:once",this,_callPatch);
+					if(doPatchNow) this.patchNow();
+				}
+				else
+				{
+					this.patch(param,true);
+				}
+			}
+		},
+		patchNow:function()
+		{
+			if(this.instance.patches[this.patchID]===this&&typeof this.instance.removeListener==="function"&&this.instance.removeListener(".created",this))
+			{
+				this.patch(this._patchParam,false);
+			}
+		},
+		patch:function patch(param,noListeners){},
+		superPatch:function superPatch(_class/*,arg1,arg2,...,argN*/)
+		{
+			_class.prototype.patch.apply(this,[].slice.call(arguments,1));
+		},
+		superPatchApply:function superPatchApply(_class,args)
+		{
+			this.superPatch.apply(this,[_class].concat([].slice.call(args)));
+		}
+	});
+	SMOD("Patch",PATCH);
+	PATCH.hasPatch=function(instance, patch)
+	{
+		if(instance.hasPatch)
+			return instance.hasPatch(patch);
+		return false;
+	};
+	PATCH.getPatch=function(instance, patch)
+	{
+		if(instance&&instance.getPatch)
+			return instance.getPatch(patch);
+		return null;
+	};
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.NodePatch.js
-(function(e,t,n){var i=n("Patch"),s=n("shortcut")({p:"proxy",d:"debug"}),r=e.NodePatch=e.Class(i,{patchID:"NodePatch",patch:function(e){this.parent=null,this.children=[],e=e||{},this.aliasMap={};for(var t={},n=0;r.Aliases.length>n;n++){var i=r.Aliases[n];i in e&&(this.aliasMap[i]=e[i],void 0===this.instance[this.aliasMap[i]]&&(t[i]=this.aliasMap[i]))}s.p(a,t,this.instance);for(var n=0;r.Symbols.length>n;n++){var c=r.Symbols[n];c in e&&o(this,c,e[c])}},addChild:function(e,t){var n,i=a(e),r=this.children.indexOf(e);if(!i)return s.d([e," is not a Node"]),!1;if(-1===r){if(void 0!==t?this.children.splice(t,0,e):(t=this.children.length,this.children.push(e)),null!==i.parent&&i.parent!==this.instance)if(n=i.aliasMap.remove){if(!e[n]())return s.d(["rejected remove child ",e," from old parent ",i.parent],s.d.LEVEL.INFO),this.children.splice(t,1),!1}else i.remove();if(n=i.aliasMap.setParent){if(!e[n](this.instance))return s.d(["rejected to set parent",this.instance," of child ",e],s.d.LEVEL.INFO),this.children.splice(t,1),!1}else i.setParent(this.instance)}return!0},removeChild:function(e){var t=this.children.indexOf(e);if(-1!==t){this.children.splice(t,1);var n=a(e);if(n&&n.parent===this.instance){var i=n.aliasMap.remove;if(i){if(!e[i]())return s.d(["rejected remove child ",e," from parent ",this.instance],s.d.LEVEL.INFO),this.children.splice(t,0,e),!1}else n.remove()}}return!0},setParent:function(e){var t,n=a(e);if(!n)return s.d([e," is not a Node"]),!1;if(e&&this.parent!==e){if(null!==this.parent)if(t=childPatch.aliasMap.remove){if(!child[t]())return s.d(["rejected remove child ",child," from old parent ",childPatch.parent],s.d.LEVEL.INFO),this.children.splice(index,1),!1}else childPatch.remove();if(this.parent=e,t=n.aliasMap.addChild,-1===n.children.indexOf(this.instance))if(t){if(!this.parent[t](this.instance))return s.d(["rejected to add child ",this.instance," to parent ",e],s.d.LEVEL.INFO),this.parent=null,!1}else n.addChild(this.instance)}return!0},remove:function(){if(null!==this.parent){var e=this.parent,t=a(e);if(this.parent=null,-1!==t.children.indexOf(this.instance)){var n=t.aliasMap.removeChild;if(n){if(!e[n](this.instance))return this.parent=e,s.d(["rejected to remove child ",this.instance," from parent ",this.parent],s.d.LEVEL.INFO),!1}else t.removeChild(this.instance)}}return!0},hasChild:function(e){return-1!==this.children.indexOf(e)},isChildOf:function(e){return a(e),e&&e.hasChild(this.instance)}});r.Aliases=["addChild","removeChild","remove","setParent","hasChild"],r.Symbols=["parent","children"],r.BasicAliases={parent:"parent",children:"children",addChild:"addChild",removeChild:"removeChild",remove:"remove",setParent:"setParent",hasChild:"hasChild"},r.Basic=e.Class({init:function(e){e=e||{};for(var t={},n=0,i=Object.keys(r.BasicAliases);i.length>n;n++){var s=i[n],a=e[s];void 0===a&&(a=r.BasicAliases[s]),null!==a&&(t[s]=""+a)}new r(this,t)}});var a=function(e){return"string"==typeof e&&(e=this),e instanceof r?e:i.getPatch(e,r)},o=function(e,t,n){"function"!=typeof e[t]?Object.defineProperty(e.instance,n,{get:function(){return e[t]},set:function(n){e[t]=n}}):e.instance[n]=e[t]};t("NodePatch",r)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+    var Patch=GMOD("Patch");
+	var SC=GMOD("shortcut")({
+		p:"proxy",
+        d:"debug"
+	});
+
+	var NODE=µ.NodePatch=µ.Class(Patch,{
+		patchID:"NodePatch",
+		patch:function(aliasMap)
+		{
+
+			this.parent=null;
+			this.children=[];
+
+			aliasMap=aliasMap||{};
+            this.aliasMap={};
+            var proxyMap={};
+			for (var i=0;i<NODE.Aliases.length;i++)
+			{
+                var target=NODE.Aliases[i];
+                if(target in aliasMap)
+                {
+                    this.aliasMap[target]=aliasMap[target];
+                    if(this.instance[this.aliasMap[target]]===undefined)
+                    {
+                        proxyMap[target]=this.aliasMap[target];
+                    }
+                }
+			}
+            SC.p(getNode,proxyMap,this.instance);
+
+			for (var i=0;i<NODE.Symbols.length;i++)
+			{
+                var symbol=NODE.Symbols[i];
+                if(symbol in aliasMap)
+                {
+                    setSymbol(this,symbol,aliasMap[symbol])
+                }
+			}
+		},
+		addChild:function(child,index)
+		{
+			var childPatch=getNode(child),alias;
+            var childIndex=this.children.indexOf(child);
+            if(!childPatch)
+            {//is not a Node
+            	SC.d([child," is not a Node"]);
+            	return false;
+            }
+            else if(childIndex===-1)
+			{//has not that child jet
+				if(index!==undefined)
+				{
+					this.children.splice(index,0,child);
+				}
+				else
+				{
+                    index=this.children.length;
+					this.children.push(child);
+				}
+				if(childPatch.parent!==null&&childPatch.parent!==this.instance)
+				{//has other parent
+					//remove other parent
+                    alias=childPatch.aliasMap.remove;
+                    if(alias)
+                    {
+                        if(!child[alias]())
+                        {//won't var go of parent
+                            SC.d(["rejected remove child ",child," from old parent ",childPatch.parent],SC.d.LEVEL.INFO);
+                            this.children.splice(index,1);
+                            return false;
+                        }
+                    }
+                    else
+                    {
+					    childPatch.remove();
+                    }
+				}
+				//add to parent
+				alias=childPatch.aliasMap.setParent;
+                if(alias)
+                {
+                    if(!child[alias](this.instance))
+                    {//won't attach to me
+                        SC.d(["rejected to set parent",this.instance," of child ",child],SC.d.LEVEL.INFO);
+                        this.children.splice(index,1);
+                        return false;
+                    }
+                }
+                else
+                {
+                    childPatch.setParent(this.instance);
+                }
+			}
+			return true;
+		},
+		removeChild:function(child)
+		{
+			var index=this.children.indexOf(child);
+			if(index!==-1)
+			{//has child
+				this.children.splice(index, 1);
+				var childPatch=getNode(child);
+				if(childPatch&&childPatch.parent===this.instance)
+				{//is still parent of child
+					var alias=childPatch.aliasMap.remove;
+	                if(alias)
+	                {
+	                    if(!child[alias]())
+	                    {//won't var go of me
+	                        SC.d(["rejected remove child ",child," from parent ",this.instance],SC.d.LEVEL.INFO);
+	                        this.children.splice(index,0,child);
+	                        return false;
+	                    }
+	                }
+	                else
+	                {
+					    childPatch.remove();
+	                }
+                }
+			}
+			return true;
+		},
+		setParent:function(parent)
+		{
+			var parentPatch=getNode(parent),alias;
+			if(!parentPatch)
+			{//is not a Node
+            	SC.d([parent," is not a Node"]);
+            	return false;
+			}
+			if(parent&&this.parent!==parent)
+			{
+				if(this.parent!==null)
+				{//has other parent
+					//remove other parent
+                    alias=childPatch.aliasMap.remove;
+                    if(alias)
+                    {
+                        if(!child[alias]())
+                        {//won't var go of parent
+                            SC.d(["rejected remove child ",child," from old parent ",childPatch.parent],SC.d.LEVEL.INFO);
+                            this.children.splice(index,1);
+                            return false;
+                        }
+                    }
+                    else
+                    {
+					    childPatch.remove();
+                    }
+				}
+				this.parent=parent;
+				alias=parentPatch.aliasMap.addChild;
+				if(parentPatch.children.indexOf(this.instance)===-1)
+				{//not already called from addChild
+					if(alias)
+					{
+						if(!this.parent[alias](this.instance))
+						{//won't accept me
+							SC.d(["rejected to add child ",this.instance," to parent ",parent],SC.d.LEVEL.INFO);
+							this.parent=null;
+							return false;
+						}
+					}
+					else
+					{
+						parentPatch.addChild(this.instance);
+					}
+				}
+			}
+            return true;
+
+		},
+		remove:function()
+		{
+			if(this.parent!==null)
+			{
+				var oldParent=this.parent;
+				var oldParentPatch=getNode(oldParent);
+				this.parent=null;
+				if(oldParentPatch.children.indexOf(this.instance)!==-1)
+				{//is still old parents child
+					var alias=oldParentPatch.aliasMap.removeChild;
+					if(alias)
+					{
+						if(!oldParent[alias](this.instance))
+						{//I won't var go of parent
+							this.parent=oldParent;
+							SC.d(["rejected to remove child ",this.instance," from parent ",this.parent],SC.d.LEVEL.INFO);
+							return false;
+						}
+					}
+					else
+					{
+						oldParentPatch.removeChild(this.instance);
+					}
+				}
+			}
+			return true;
+		},
+		hasChild:function(child)
+		{
+			return this.children.indexOf(child)!==-1;
+		},
+        isChildOf:function(parent)
+        {
+            var parentPatch=getNode(parent);
+            return parent&&parent.hasChild(this.instance);
+        }
+	});
+	NODE.Aliases=["addChild","removeChild","remove","setParent","hasChild"];
+    NODE.Symbols=["parent","children"];
+    NODE.BasicAliases={
+        parent:"parent",
+        children:"children",
+        addChild:"addChild",
+        removeChild:"removeChild",
+        remove:"remove",
+        setParent:"setParent",
+        hasChild:"hasChild"
+    };
+	NODE.Basic=µ.Class({
+		init:function(aliasMap)
+		{
+			aliasMap=aliasMap||{};
+			var map={};
+            for(var i=0,targets=Object.keys(NODE.BasicAliases);i<targets.length;i++)
+			{
+            	var target=targets[i];
+				var alias=aliasMap[target];
+				if(alias===undefined)
+				{
+					alias=NODE.BasicAliases[target];
+				}
+				if(alias!==null)
+				{
+					map[target]=""+alias;
+				}
+			}
+			new NODE(this,map);
+		}
+	});
+	
+	var getNode=function(obj)
+	{
+        if(typeof obj==="string")
+        {//used as proxy getter
+            obj=this
+        }
+        if(obj instanceof NODE)
+        {
+            return obj;
+        }
+        else
+        {
+        	return Patch.getPatch(obj,NODE);
+        }
+	};
+	//TODO replace with GMOD("shortcut") dynamic
+    var setSymbol=function(node,symbol,alias)
+    {
+        if(typeof node[symbol]!=="function")
+        {
+            Object.defineProperty(node.instance,alias,{
+                get:function()
+                {
+                    return node[symbol];
+                },
+                set:function(arg)
+                {
+                    node[symbol]=arg;
+                }
+            })
+        }
+        else
+        {
+            node.instance[alias]=node[symbol];
+        }
+    };
+	
+	SMOD("NodePatch",NODE);
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/DB/Morgas.DB.js
-(function(t,e,n){var r,s,i,a,o=n("shortcut")({debug:"debug",det:"Detached"}),u=t.DB=t.DB||{};r=u.Connector=t.Class({init:function(){o.det.detacheAll(this,["save","load","delete","destroy"])},save:function(){throw Error("abstract Class DB.Connector")},load:function(){throw Error("abstract Class DB.Connector")},"delete":function(){throw Error("abstract Class DB.Connector")},destroy:function(){throw Error("abstract Class DB.Connector")},saveChildren:function(t,e){return this.save(t.getChildren(e))},saveFriendships:function(t,e){var n=t.relations[e],s=t.friends[e];if(!s)return o.debug("no friends in relation "+e+" found",2),new o.det.complete(!1);var i=s[0].relations[n.targetRelationName],a=t.getID();if(null==a)return o.debug("friend id is null",2),new o.det.complete(!1);for(var u=[],h=0;s.length>h;h++){var c=s[h].getID();null!=c&&u.push(c)}if(0===u.length)return o.debug("no friend with friend id found"),new o.det.complete(!1);var f=r.getFriendTableName(t.objectType,e,s[0].objectType,n.targetRelationName),d=t.objectType+"_ID",p=s[0].objectType+"_ID",g=[];n.relatedClass===i.relatedClass&&(p+=2);for(var h=0;u.length>h;h++)g.push(new l(f,d,a,p,u[h]));return this.save(g)},loadParent:function(t,e){var n=t.relations[e],r=n.relatedClass,s=n.fieldName;return this.load(r,{ID:t.getValueOf(s)}).then(function(n){var r=n[0];r.addChild(e,t),this.complete(r)})},loadChildren:function(t,e,n){var r=t.relations[e],s=rel.relatedClass,i=r.fieldName;return n[i]=this.getID(),this.load(s,n).then(function(e){t.addChildren(e),this.complete(e)})},loadFriends:function(t,e,n){var s=this,i=t.relations[e],a=i.relatedClass,u=(new a).relations[i.targetRelationName],h=t.objectType+"_ID",c=a.prototype.objectType+"_ID",f=r.getFriendTableName(t.objectType,e,a.prototype.objectType,i.targetRelationName),d={};i.relatedClass===u.relatedClass&&(c+=2),d[h]=t.getID();var p=l.Generator(f,h,c),g=this.load(p,d);return i.relatedClass===u.relatedClass&&(g=g.then(function(t){var e=this;d[c]=d[h],delete d[h],s.load(p,d).then(function(n){for(var r=0;n.length>r;r++){var s=n[r].fields[h].value;n[r].fields[h].value=n[r].fields[c].value,n[r].fields[c].value=s}e.complete(t.concat(n))},o.debug)},o.debug)),g.then(function(t){return n.ID=t.map(function(t){return t.fields[c].value}),s.load(a,n)},o.debug)},deleteFriendships:function(t,e){var n=t.relations[e],s=t.friends[e];if(!s)return o.debug("no friends in relation "+e+" found",2),new o.det.complete(!1);var i=s[0].relations[n.targetRelationName],a=t.getID();if(null==a)return o.debug("friend id is null",2),new o.det.complete(!1);for(var u=[],h=0;s.length>h;h++){var c=s[h].getID();null!=c&&u.push(c)}if(0===u.length)return o.debug("no friend with friend id found"),new o.det.complete(!1);var f=r.getFriendTableName(t.objectType,e,s[0].objectType,n.targetRelationName),d=t.objectType+"_ID",p=s[0].objectType+"_ID",g=[];if(n.relatedClass===i.relatedClass){p+=2;var v={};v[d]=u,v[p]=a,g.push(v)}var v={};v[d]=a,v[p]=u,g.push(v);for(var y=[],m=l.Generator(f,d,p),h=0;g.length>h;h++)y.push(this["delete"](m,g[h]));return new o.det(y)}}),r.sortObjs=function(t){for(var e={friend:{},fresh:{},preserved:{}},n=0;t.length>n;n++){var r=t[n],s=r instanceof l?"friend":void 0===r.getID()?"fresh":"preserved",i=r.objectType;void 0===e[s][i]&&(e[s][i]=[]),e[s][i].push(r)}return e},r.getDeletePattern=function(t,e){var n=typeof e;if(("number"===n||e instanceof u.Object)&&(e=[e]),Array.isArray(e)){for(var r=0;e.length>r;r++)e[r]instanceof t&&(e[r]=e[r].getID());e={ID:e}}return e},r.getFriendTableName=function(t,e,n,r){return[t,e,n,r].sort().join("_")},e("DBConn",r),s=u.Object=t.Class({objectType:null,init:function(t){if(t=t||{},null==this.objectType)throw"DB.Object: objectType not defined";this.fields={},this.relations={},this.parents={},this.children={},this.friends={},this.addField("ID",a.TYPES.INT,t.ID,{UNIQUE:!0,AUTOGENERATE:!0})},addRelation:function(t,e,n,r,s){this.relations[t]=new i(e,n,r||t,s)},addField:function(t,e,n,r){this.fields[t]=new a(e,n,r)},getValueOf:function(t){return this.fields[t].getValue()},setValueOf:function(t,e){"ID"!=t&&this.fields[t].setValue(e)},setID:function(t){this.fields.ID.setValue(t);for(var e in this.children)for(var n=this.children[e],r=0;n.length>r;r++)n[r]._setParent(this.relations[e],this)},getID:function(){return this.getValueOf("ID")},getParent:function(t){return this.parents[t]},_setParent:function(t,e){var n=this.relations[t.targetRelationName];this.parents[t.targetRelationName]=e,this.setValueOf(n.fieldName,e.getValueOf(t.fieldName))},_add:function(t,e,n){var r=t[e]=t[e]||[];-1==r.indexOf(n)&&r.push(n)},_get:function(t,e){return(t[e]||[]).slice(0)},addChild:function(t,e){this.relations[t].type==i.TYPES.CHILD&&(this._add(this.children,t,e),e._setParent(this.relations[t],this))},addChildren:function(t,e){for(var n=0;e.length>n;n++)this.addChild(t,e[n])},getChildren:function(t){return this._get(this.children,t)},addFriend:function(t,e){this.relations[t].type==i.TYPES.FRIEND&&(this._add(this.friends,t,e),e._add(e.friends,this.relations[t].targetRelationName,this))},addFriends:function(t,e){for(var n=0;e.length>n;n++)this.addFriend(t,e[n])},getFriends:function(t){return this._get(this.friends,t)},toJSON:function(){var t={};for(var e in this.fields)t[e]=this.fields[e].toJSON();return t},fromJSON:function(t){for(var e in this.fields)void 0!==t[e]&&this.fields[e].fromJSON(t[e]);return this},toString:function(){return JSON.stringify(this)}}),e("DBObj",s);var l=u.Firendship=t.Class({init:function(t,e,n,r,s){this.objectType=t,this.fields={},this.fields[e]=new a(a.TYPES.INT,n),this.fields[r]=new a(a.TYPES.INT,s)},toJSON:s.prototype.toJSON,fromJSON:s.prototype.fromJSON});l.Generator=function(e,n,r){return t.Class(l,{objectType:e,init:function(){this.superInit(l,e,n,null,r,null)}})},e("DBFriend",l),i=u.Relation=t.Class({init:function(t,e,n,r){if(null==r){if(e==i.TYPES.PARENT)throw"DB.Relation: "+e+" relation needs a fieldName";r="ID"}this.type=e,this.relatedClass=t,this.fieldName=r,this.targetRelationName=n}}),i.TYPES={PARENT:-1,FRIEND:0,CHILD:1},e("DBRel",i),a=u.Field=t.Class({init:function(t,e,n){this.type=t,this.value=e,this.options=n||{}},setValue:function(t){this.value=t},getValue:function(){return this.value},toJSON:function(){switch(this.type){case a.TYPES.DATE:var t=this.getValue();if(t instanceof Date)return t.getUTCFullYear()+","+t.getUTCMonth()+","+t.getUTCDate()+","+t.getUTCHours()+","+t.getUTCMinutes()+","+t.getUTCSeconds()+","+t.getUTCMilliseconds();break;default:return this.getValue()}},fromJSON:function(t){switch(this.type){case a.TYPES.DATE:this.value=new Date(Date.UTC.apply(Date,t.split(",")));break;default:this.value=t}},toString:function(){return JSON.stringify(this)},fromString:function(t){switch(this.type){case a.TYPES.BOOL:this.value=!!~~t;break;case a.TYPES.INT:this.value=~~t;break;case a.TYPES.DOUBLE:this.value=1*t;break;case a.TYPES.DATE:this.fromJSON(JSON.parse(t));break;case a.TYPES.STRING:case a.TYPES.JSON:default:this.value=JSON.parse(t)}}}),a.TYPES={BOOL:0,INT:1,DOUBLE:2,STRING:3,DATE:4,JSON:5,BLOB:6},e("DBField",a)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+	/**
+	 * Depends on	: Morgas
+	 * Uses			: util.object, Detached
+	 *
+	 * Database Classes
+	 *
+	 */
+
+	var SC=GMOD("shortcut")({
+		debug:"debug",
+		det:"Detached"
+	});
+	
+	var DB=µ.DB=µ.DB||{};
+	
+	var DBC,TRAN,STMT,DBOBJECT,REL,FIELD;
+	
+	DBC=DB.Connector=µ.Class(
+	{
+		/* override these */
+		init:function()
+		{
+			SC.det.detacheAll(this,["save","load","delete","destroy"]);
+		},
+		
+		save:function(signal,objs)
+		{
+			/*
+			objs=[].concat(objs);
+			var sortedObjs=DBC.sortObjs(objs);
+			*/
+			throw new Error("abstract Class DB.Connector");
+		},
+		load:function(signal,objClass,pattern)
+		{
+			throw new Error("abstract Class DB.Connector");
+		},
+		"delete":function(signal,objClass,toDelete)
+		{
+			/*
+			var toDelete=DBC.getDeletePattern(objClass,toDelete);
+			*/
+			throw new Error("abstract Class DB.Connector");
+		},
+		destroy:function()
+		{
+			throw new Error("abstract Class DB.Connector");
+		},
+		
+		/* these should be same for everyone*/
+		saveChildren:function(obj,relationName)
+		{
+			return this.save(obj.getChildren(relationName));
+		},
+		saveFriendships:function(obj,relationName)
+		{
+			var rel=obj.relations[relationName],
+				friends=obj.friends[relationName];
+			if(!friends)
+			{
+				SC.debug("no friends in relation "+relationName+" found",2);
+				return new SC.det.complete(false);
+			}
+			var fRel=friends[0].relations[rel.targetRelationName],
+				id=obj.getID();
+			if(id==null)
+			{
+				SC.debug("friend id is null",2);
+				return new SC.det.complete(false);
+			}
+			var fids=[];
+			for(var i=0;i<friends.length;i++)
+			{
+				var fid=friends[i].getID();
+				if(fid!=null)
+					fids.push(fid);
+			}
+			if(fids.length===0)
+			{
+				SC.debug("no friend with friend id found");
+				return new SC.det.complete(false);
+			}
+			var tableName=DBC.getFriendTableName(obj.objectType,relationName,friends[0].objectType,rel.targetRelationName),
+				idName=obj.objectType+"_ID",
+				fidName=friends[0].objectType+"_ID",
+				toSave=[];
+			if (rel.relatedClass===fRel.relatedClass)
+			{
+				fidName+=2;
+			}
+			for(var i=0;i<fids.length;i++)
+			{
+				toSave.push(new DBFRIEND(tableName,idName,id,fidName,fids[i]));
+			}
+			return this.save(toSave);
+		},
+		
+		loadParent:function(obj,relationName)
+		{
+			var relation=obj.relations[relationName],
+				parentClass=relation.relatedClass,
+				fieldName=relation.fieldName;
+			return this.load(parentClass,{ID:obj.getValueOf(fieldName)}).then(function(result)
+			{
+				var parent=result[0];
+				parent.addChild(relationName,obj);
+				this.complete(parent);
+			});
+		},
+		loadChildren:function(obj,relationName,pattern)
+		{
+			var relation=obj.relations[relationName],
+				childClass=rel.relatedClass,
+				fieldName=relation.fieldName;
+			pattern[fieldName]=this.getID();
+			return this.load(childClass,pattern).then(function(children)
+			{
+				obj.addChildren(children);
+				this.complete(children);
+			});
+		},
+		loadFriends:function(obj,relationName,pattern)
+		{
+			var _self=this,
+				rel=obj.relations[relationName],
+				friendClass=rel.relatedClass,
+				fRel=new friendClass().relations[rel.targetRelationName],
+				id=obj.objectType+"_ID",
+				fid=friendClass.prototype.objectType+"_ID",
+				type=DBC.getFriendTableName(obj.objectType,relationName,friendClass.prototype.objectType,rel.targetRelationName),
+				fPattern={};
+			
+			if (rel.relatedClass===fRel.relatedClass)
+			{
+				fid+=2;
+			}
+			fPattern[id]=obj.getID();
+			var friendship=DBFRIEND.Generator(type,id,fid);
+			
+			var p=this.load(friendship,fPattern);
+			
+			if (rel.relatedClass===fRel.relatedClass)
+			{
+				p=p.then(function(results)
+				{
+					var signal=this;
+					fPattern[fid]=fPattern[id];
+					delete fPattern[id];
+					_self.load(friendship,fPattern).then(function(results2)
+					{
+						for(var i=0;i<results2.length;i++)
+						{
+							var t=results2[i].fields[id].value;
+							results2[i].fields[id].value=results2[i].fields[fid].value;
+							results2[i].fields[fid].value=t;
+						}
+						signal.complete(results.concat(results2));
+					},SC.debug);
+				},SC.debug)
+			}
+			return p.then(function(results)
+			{
+				pattern.ID=results.map(function(val)
+				{
+					return val.fields[fid].value;
+				});
+				return _self.load(friendClass,pattern);
+			},SC.debug);
+		},
+		deleteFriendships:function(obj,relationName)
+		{
+			var rel=obj.relations[relationName],
+				friends=obj.friends[relationName];
+			if(!friends)
+			{
+				SC.debug("no friends in relation "+relationName+" found",2);
+				return new SC.det.complete(false);
+			}
+			var fRel=friends[0].relations[rel.targetRelationName],
+				id=obj.getID();
+			if(id==null)
+			{
+				SC.debug("friend id is null",2);
+				return new SC.det.complete(false);
+			}
+			var fids=[];
+			for(var i=0;i<friends.length;i++)
+			{
+				var fid=friends[i].getID();
+				if(fid!=null)
+					fids.push(fid);
+			}
+			if(fids.length===0)
+			{
+				SC.debug("no friend with friend id found");
+				return new SC.det.complete(false);
+			}
+			var tableName=DBC.getFriendTableName(obj.objectType,relationName,friends[0].objectType,rel.targetRelationName),
+				idName=obj.objectType+"_ID",
+				fidName=friends[0].objectType+"_ID",
+				toDelete=[];
+			if (rel.relatedClass===fRel.relatedClass)
+			{
+				fidName+=2;
+				var pattern={};
+				pattern[idName]=fids;
+				pattern[fidName]=id;
+				toDelete.push(pattern);
+			}
+			var pattern={};
+			pattern[idName]=id;
+			pattern[fidName]=fids;
+			toDelete.push(pattern);
+			
+			var wait=[],
+			fClass=DBFRIEND.Generator(tableName,idName,fidName);
+			for(var i=0;i<toDelete.length;i++)
+			{
+				wait.push(this["delete"](fClass,toDelete[i]));
+			}
+			return new SC.det(wait)
+		}
+	});
+
+	DBC.sortObjs=function(objs)
+	{
+		var rtn={friend:{},fresh:{},preserved:{}};
+		for(var i=0;i<objs.length;i++)
+		{
+			var obj=objs[i],
+			type=(obj instanceof DBFRIEND ? "friend" :(obj.getID()===undefined ? "fresh" : "preserved")),
+			objType=obj.objectType;
+			
+			if(rtn[type][objType]===undefined)
+			{
+				rtn[type][objType]=[];
+			}
+			rtn[type][objType].push(obj);
+		}
+		return rtn;
+	};
+	//make toDelete a Pattern from Number, DB.Object or Array
+	DBC.getDeletePattern=function(objClass,toDelete)
+	{
+		var type=typeof toDelete;
+		if(type==="number" || toDelete instanceof DB.Object)
+		{
+			toDelete=[toDelete];
+		}
+		if(Array.isArray(toDelete))
+		{
+			for(var i=0;i<toDelete.length;i++)
+			{
+				if(toDelete[i] instanceof objClass)
+				{
+					toDelete[i]=toDelete[i].getID();
+				}
+			}
+			toDelete={ID:toDelete};
+		}
+		return toDelete;
+	};
+	DBC.getFriendTableName=function(objType,relationName,friendType,friendRelationName)
+	{
+		return [objType,relationName,friendType,friendRelationName].sort().join("_");
+	};
+	SMOD("DBConn",DBC);
+	
+	DBOBJECT=DB.Object=µ.Class(
+	{
+		objectType:null,
+		init:function(param)
+		{
+			param=param||{};
+			if(this.objectType==null)
+				throw "DB.Object: objectType not defined";
+						
+			this.fields={};
+			
+			this.relations={};
+			this.parents={};	//n:1
+			this.children={};	//1:n
+			this.friends={};	//n:m
+			
+			this.addField("ID",FIELD.TYPES.INT,param.ID,{UNIQUE:true,AUTOGENERATE:true});
+		},
+		addRelation:function(name,relatedClass,type,targetRelationName,fieldName)
+		{
+			this.relations[name]=new REL(relatedClass,type,targetRelationName||name,fieldName);
+		},
+		addField:function(name,type,value,options)
+		{
+			this.fields[name]=new FIELD(type,value,options);
+		},
+		getValueOf:function(fieldName){return this.fields[fieldName].getValue();},
+		setValueOf:function(fieldName,val){if(fieldName!="ID")this.fields[fieldName].setValue(val);},
+		setID:function(val)
+		{
+			this.fields["ID"].setValue(val);
+			for(var c in this.children)
+			{
+				var children=this.children[c];
+				for(var i=0;i<children.length;i++)
+				{
+					children[i]._setParent(this.relations[c],this);
+				}
+			}
+		},
+		getID:function(){return this.getValueOf("ID");},
+		getParent:function(relationName)
+		{
+			return this.parents[relationName];
+		},
+		_setParent:function(pRel,parent)
+		{
+			var cRel=this.relations[pRel.targetRelationName];
+			this.parents[pRel.targetRelationName]=parent;
+			this.setValueOf(cRel.fieldName,parent.getValueOf(pRel.fieldName));
+		},
+		_add:function(container,relationName,value)
+		{
+			var c=container[relationName]=container[relationName]||[];
+			if(c.indexOf(value)==-1)
+				c.push(value);
+		},
+		_get:function(container,relationName)
+		{
+			return (container[relationName]||[]).slice(0);
+		},
+		addChild:function(relationName,child)
+		{
+			if(this.relations[relationName].type==REL.TYPES.CHILD)
+			{
+				this._add(this.children,relationName,child);
+				child._setParent(this.relations[relationName],this);
+			}
+		},
+		addChildren:function(relationName,children)
+		{
+			for(var i=0;i<children.length;i++)
+			{
+				this.addChild(relationName,children[i]);
+			}
+		},
+		getChildren:function(relationName)
+		{
+			return this._get(this.children,relationName);
+		},
+		addFriend:function(relationName,friend)
+		{
+			if(this.relations[relationName].type==REL.TYPES.FRIEND)
+			{
+				this._add(this.friends,relationName,friend);
+				friend._add(friend.friends,this.relations[relationName].targetRelationName,this);
+			}
+		},
+		addFriends:function(relationName,friends)
+		{
+			for(var i=0;i<friends.length;i++)
+			{
+				this.addFriend(relationName,friends[i]);
+			}
+		},
+		getFriends:function(relationName)
+		{
+			return this._get(this.friends,relationName);
+		},
+		toJSON:function()
+		{
+			var rtn={};
+			for(var f in this.fields)
+			{
+				rtn[f]=this.fields[f].toJSON();
+			}
+			return rtn;
+		},
+		fromJSON:function(jsonObject)
+		{
+			for(var i in this.fields)
+			{
+				if(jsonObject[i]!==undefined)
+				{
+					this.fields[i].fromJSON(jsonObject[i]);
+				}
+			}
+			return this;
+		},
+		toString:function()
+		{
+			return JSON.stringify(this);
+		}
+	});
+	SMOD("DBObj",DBOBJECT);
+	
+	var DBFRIEND=DB.Firendship=µ.Class(
+	{
+		init:function(type,fieldName1,value1,fieldName2,value2)
+		{
+			this.objectType=type;
+			this.fields={};
+			this.fields[fieldName1]=new FIELD(FIELD.TYPES.INT,value1);
+			this.fields[fieldName2]=new FIELD(FIELD.TYPES.INT,value2);
+		},
+		toJSON:DBOBJECT.prototype.toJSON,
+		fromJSON:DBOBJECT.prototype.fromJSON
+	});
+	DBFRIEND.Generator=function(type,fieldname1,fieldname2)
+	{
+		return µ.Class(DBFRIEND,
+		{
+			objectType:type,
+			init:function(){
+				this.superInit(DBFRIEND,type,fieldname1,null,fieldname2,null);
+			}
+		});
+	};
+	SMOD("DBFriend",DBFRIEND);
+	
+	REL=DB.Relation=µ.Class(
+	{
+		init:function(relatedClass,type,targetRelationName,fieldName)
+		{
+			if(fieldName==null)
+			{
+				if(type==REL.TYPES.PARENT)
+					throw "DB.Relation: "+type+" relation needs a fieldName";
+				else
+					fieldName="ID";
+			}
+			this.type=type;
+			this.relatedClass=relatedClass;
+			this.fieldName=fieldName;
+			this.targetRelationName=targetRelationName;
+		}
+	});
+	REL.TYPES={
+		"PARENT"	:-1,
+		"FRIEND"	:0,
+		"CHILD"		:1
+	};
+	SMOD("DBRel",REL);
+	
+	FIELD=DB.Field=µ.Class(
+	{
+		init:function(type,value,options)
+		{
+			this.type=type;
+			this.value=value;
+			this.options=options||{};	// depends on connector
+		},
+		setValue:function(val)
+		{
+			this.value=val;
+		},
+		getValue:function(){return this.value;},
+		toJSON:function()
+		{
+			switch(this.type)
+			{
+				case FIELD.TYPES.DATE:
+					var date=this.getValue();
+					if(date instanceof Date)
+						return date.getUTCFullYear()+","+date.getUTCMonth()+","+date.getUTCDate()+","+date.getUTCHours()+","+date.getUTCMinutes()+","+date.getUTCSeconds()+","+date.getUTCMilliseconds();
+					break;
+				default:
+					return this.getValue();
+			}
+		},
+		fromJSON:function(jsonObj)
+		{
+			switch(this.type)
+			{
+				case FIELD.TYPES.DATE:
+					this.value=new Date(Date.UTC.apply(Date,jsonObj.split(",")));
+					break;
+				default:
+					this.value=jsonObj;
+			}
+		},
+		toString:function()
+		{
+			return JSON.stringify(this);
+		},
+		fromString:function(val)
+		{
+			switch(this.type)
+			{
+				case FIELD.TYPES.BOOL:
+					this.value=!!(~~val);
+					break;
+				case FIELD.TYPES.INT:
+					this.value=~~val;
+					break;
+				case FIELD.TYPES.DOUBLE:
+					this.value=1*val;
+					break;
+				case FIELD.TYPES.DATE:
+					this.fromJSON(JSON.parse(val));
+					break;
+				case FIELD.TYPES.STRING:
+				case FIELD.TYPES.JSON:
+				default:
+					this.value=JSON.parse(val);
+					break;
+			}
+		}
+	});
+	FIELD.TYPES={
+		"BOOL"		:0,
+		"INT"		:1,
+		"DOUBLE"	:2,
+		"STRING"	:3,
+		"DATE"		:4,
+		"JSON"		:5,
+		"BLOB"		:6
+	};
+	SMOD("DBField",FIELD);
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //TalePlay.Controller.Mapping.js
-(function(t,e,i){var n=i("Controller"),s=i("DBObj"),o=i("shortcut")({DBField:"DBField"}),a=n.Mapping=t.Class(s,{objectType:"ControllerMapping",init:function(t){t=t||{},this.superInit(s,t),this.addField("name",o.DBField.TYPES.STRING,t.name||""),this.addField("type",o.DBField.TYPES.STRING,t.type||"");var e={buttons:{},buttonAxis:{},axes:{}};t.data&&(e.buttons=t.data.buttons||e.buttons,e.buttonAxis=t.data.buttonAxis||e.buttonAxis,e.axes=t.data.axes||e.axes),this.addField("data",o.DBField.TYPES.JSON,e)},setMapping:function(t,e,i){var n=this.getValueOf("data")[t];n&&(void 0===i||null===i?delete n[e]:n[e]=i)},getMapping:function(t,e){return this.getValueOf("data")[t][e]},removeMapping:function(t,e){this.setMapping(t,e)},hasMapping:function(t,e){var i=this.getValueOf("data")[t];return i?e in i:!1},setMappingAll:function(t,e){for(var i in e)this.setMapping(t,i,e[i])},setButtonMapping:function(t,e){this.setMapping("buttons",t,e)},getButtonMapping:function(t){var e=this.getMapping("buttons",t);return void 0===e&&(e=t),e},removeButtonMapping:function(t){this.removeMapping("buttons",t)},hasButtonMapping:function(t){return this.hasMapping("buttons",t)},setButtonAxisMapping:function(t,e){this.setMapping("buttonAxis",t,e)},getButtonAxisMapping:function(t){return this.getMapping("buttonAxis",t)},removeButtonAxisMapping:function(t){this.removeMapping("buttonAxis",t)},hasButtonAxisMapping:function(t){return this.hasMapping("buttonAxis",t)},setAxisMapping:function(t,e){this.setMapping("axes",t,e)},getAxisMapping:function(t){var e=this.getMapping("axes",t);return void 0===e&&(e=t),e},removeAxisMapping:function(t){this.removeMapping("axes",t)},hasAxisMapping:function(t){return this.hasMapping("axes",t)},convertAxisValue:function(t,e){return Math.sign(1/t)*e},getReverseMapping:function(){var t=this.getValueOf("data"),e={buttons:{},buttonAxis:{},axes:{}};for(var i in t)for(var n in t[i]){var s=t[i][n];"axes"===i&&0>1/s?(s=-s,n="-"+n):0===s&&0>1/s&&(s="-0"),e[i][s]=n}return e}});e("Controller.Mapping",a)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+	
+	var CTRL=GMOD("Controller");
+	var DBObj=GMOD("DBObj");
+	
+	var SC=GMOD("shortcut")({
+		DBField:"DBField"
+	});
+	
+	var MAPPING=CTRL.Mapping=µ.Class(DBObj,{
+		objectType:"ControllerMapping",
+		init:function(param)
+		{
+			param=param||{};
+			this.superInit(DBObj,param);
+			
+			this.addField("name",SC.DBField.TYPES.STRING,param.name||"");
+			this.addField("type",SC.DBField.TYPES.STRING,param.type||"");
+			
+			var data={
+					buttons:{},
+					buttonAxis:{},
+					axes:{}
+			};
+			if(param.data)
+			{
+				data.buttons=param.data.buttons||data.buttons;
+				data.buttonAxis=param.data.buttonAxis||data.buttonAxis;
+				data.axes=param.data.axes||data.axes;
+			}
+			this.addField("data",SC.DBField.TYPES.JSON,  data);
+		},
+		setMapping:function(type,from,to)
+		{
+			var mapping=this.getValueOf("data")[type];
+			if(mapping)
+			{
+				if(to===undefined||to===null)
+				{
+					delete mapping[from];
+				}
+				else
+				{
+					mapping[from]=to;
+				}
+			}
+		},
+		getMapping:function(type,from)
+		{
+			return this.getValueOf("data")[type][from];
+		},
+		removeMapping:function(type,from)
+		{
+			this.setMapping(type, from);
+		},
+		hasMapping:function(type,from)
+		{
+			var mapping=this.getValueOf("data")[type];
+			if(mapping)
+			{
+				return from in mapping;
+			}
+			return false;
+		},
+		setMappingAll:function(type,map)
+		{
+			for(var i in map)
+			{
+				this.setMapping(type, i, map[i]);
+			}
+		},
+
+		setButtonMapping:function(from,to){this.setMapping("buttons", from, to);},
+		getButtonMapping:function(from)
+		{
+			var to=this.getMapping("buttons", from);
+			if(to===undefined)
+				to=from;
+			return to;
+		},
+		removeButtonMapping:function(from){this.removeMapping("buttons", from)},
+		hasButtonMapping:function(from){return this.hasMapping("buttons", from)},
+
+		setButtonAxisMapping:function(from,to){this.setMapping("buttonAxis", from, to);},
+		getButtonAxisMapping:function(from){return this.getMapping("buttonAxis", from)},
+		removeButtonAxisMapping:function(from){this.removeMapping("buttonAxis", from)},
+		hasButtonAxisMapping:function(from){return this.hasMapping("buttonAxis", from)},
+
+		setAxisMapping:function(from,to){this.setMapping("axes", from, to);},
+		getAxisMapping:function(from)
+		{
+			var to=this.getMapping("axes", from);
+			if(to===undefined)
+				to=from;
+			return to;
+		},
+		removeAxisMapping:function(from){this.removeMapping("axes", from)},
+		hasAxisMapping:function(from){return this.hasMapping("axes", from)},
+		
+		convertAxisValue:function(index,value){return Math.sign(1/index)*value;},
+		
+		getReverseMapping:function()
+		{
+			var mapping=this.getValueOf("data");
+			var reverse={
+				buttons:{},
+				buttonAxis:{},
+				axes:{}
+			};
+			for(var type in mapping)
+			{
+				for(var i in mapping[type])
+				{
+					var index=mapping[type][i];
+					if(type==="axes"&&1/index<0)
+					{
+						index=-index;
+						i="-"+i;
+					}
+					else if(index===0&&1/index<0)
+					{
+						index="-0";
+					}
+					reverse[type][index]=i;
+				}
+			}
+			return reverse;
+		}
+		
+	});
+	SMOD("Controller.Mapping",MAPPING);
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.util.function.bind.js
-(function(t,e){var n=t.util=t.util||{},o=n.function||{};o.bind=Function.bind.call.bind(Function.bind),e("bind",o.bind)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+	
+	var util=µ.util=µ.util||{};
+	var uFn=util.function||{};
+	
+	/** bind
+	 * For more compatibility redefine the module.
+	 * For more flexibility consider Callback
+	 */
+	uFn.bind=Function.bind.call.bind(Function.bind);
+	SMOD("bind",uFn.bind);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //TalePlay.Menu.js
-(function(t,e){var i=this.TalePlay=this.TalePlay||{},s=i.Menu=t.Class({init:function(t){if(t=t||{},this.items=t.items||[],this.selectionType=t.selectionType||s.SelectionTypes.MULTI,this.loop=t.loop!==!1,this.selectedIndexs=[],this.disabledIndexs=[],this.active=-1,void 0!==t.active&&t.active>-1&&this.items.length>t.active&&(this.active=t.active),void 0!==t.selected)for(var e=0;t.selected.length>e;e++)this.addSelect(t.selected[e]);if(void 0!==t.disabled)for(var e=0;t.disabled.length>e;e++)this.setDisabled(t.disabled[e],!0)},addItem:function(t){return this.items.push(t),this},addAll:function(t){for(var e=0;t.length>e;e++)this.addItem(t[e]);return this},removeItem:function(t){var e=this.items.indexOf(t);if(-1!==e){this.items.splice(e,1);var i=this.selectedIndexs.indexOf(e);-1!==i&&this.selectedIndexs.splice(i,1);var s=this.disabledIndexs.indexOf(e);-1!==s&&this.disabledIndexs.splice(i,1),this.active>e?this.active--:this.active===e&&this.setActive(-1)}return e},getItem:function(t){return{index:t,value:this.items[t],active:this.active===t,selected:-1!==this.selectedIndexs.indexOf(t),disabled:-1!==this.disabledIndexs.indexOf(t)}},clearSelect:function(){this.selectedIndexs.length=0},isSelected:function(t){var e=this.items.indexOf(t);return-1===e&&(e=t),-1!==this.selectedIndexs.indexOf(e)},addSelect:function(t){if(this.selectionType===s.SelectionTypes.NONE)return!1;var e=this.items.indexOf(t);return-1===e&&(e=t),this.items.hasOwnProperty(e)&&-1===this.selectedIndexs.indexOf(e)?(this.selectionType===s.SelectionTypes.SINGLE?this.selectedIndexs[0]=e:this.selectedIndexs.push(e),!0):!1},removeSelect:function(t){var e=this.items.indexOf(t);return-1===e&&(e=t),e=this.selectedIndexs.indexOf(e),-1!==e?(this.selectedIndexs.splice(e,1),!0):!1},toggleSelect:function(t,e){if(this.selectionType===s.SelectionTypes.NONE)return!1;var i=e?t:this.items.indexOf(t);if(-1===i&&(i=t),this.items.hasOwnProperty(i)){var n=this.selectedIndexs.indexOf(i);return-1===n?(this.selectionType===s.SelectionTypes.SINGLE?this.selectedIndexs[0]=i:this.selectedIndexs.push(i),!0):(this.selectedIndexs.splice(n,1),!1)}return null},getActive:function(){return this.getItem(this.active)},setActive:function(t){var e=-1,i=this.items.length-1;t=t>=e?t>i?i:t:e,this.active!==t&&(this.active=t)},moveActive:function(t){var e=this.active+t;this.loop?(-1===this.active&&0>t&&e++,e%=this.items.length,0>e&&(e=this.items.length+e)):e=0>e?0:e,this.setActive(e)},toggleActive:function(){return this.toggleSelect(this.active)},getSelectedItems:function(){for(var t=[],e=0;this.selectedIndexs.length>e;e++)t.push(this.getItem(this.selectedIndexs[e]));return t},setDisabled:function(t){var e=this.items.indexOf(t);return-1===e&&(e=t),this.items.hasOwnProperty(e)&&-1===this.disabledIndexs.indexOf(e)?(this.disabledIndexs.push(e),!0):!1},isDisabled:function(t){var e=this.items.indexOf(t);return-1===e&&(e=t),-1!==this.disabledIndexs.indexOf(e)},getType:function(){return this.selectionType},setType:function(t){switch(t){case s.SelectionTypes.NONE:this.selectedIndexs.length=0;break;case s.SelectionTypes.SINGLE:this.selectedIndexs.length=1}this.selectionType=t},clear:function(){return this.items.length=this.selectedIndexs.lengt=this.disabledIndexs.length=0,this.active=-1,this}});s.SelectionTypes={NONE:1,SINGLE:2,MULTI:3},e("Menu",s)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+    var TALE=this.TalePlay=this.TalePlay||{};
+	
+	var MENU=TALE.Menu=µ.Class({
+		init:function(param)
+		{	
+			param=param||{};
+			
+			this.items=param.items||[];
+			this.selectionType=param.selectionType||MENU.SelectionTypes.MULTI;
+			this.loop=param.loop!==false;
+			
+			this.selectedIndexs=[];
+			this.disabledIndexs=[];
+			this.active=-1;
+			
+			if (param.active!==undefined&&param.active>-1&&param.active<this.items.length)
+			{
+				this.active=param.active;
+			}
+			if(param.selected!==undefined)
+			{
+				for(var i=0;i<param.selected.length;i++)this.addSelect(param.selected[i]);
+			}
+			if(param.disabled!==undefined)
+			{
+				for(var i=0;i<param.disabled.length;i++)this.setDisabled(param.disabled[i],true);
+			}
+		},
+		addItem:function(item)
+		{
+			this.items.push(item);
+			return this;
+		},
+		addAll:function(items)
+		{
+			for(var i=0;i<items.length;i++)
+			{
+				this.addItem(items[i]);
+			}
+			return this;
+		},
+		removeItem:function(item)
+		{
+			var index=this.items.indexOf(item);
+			if(index!==-1)
+			{
+				this.items.splice(index, 1);
+				var sIndex=this.selectedIndexs.indexOf(index);
+				if(sIndex!==-1)
+				{
+					this.selectedIndexs.splice(sIndex, 1);
+				}
+				var dIndex=this.disabledIndexs.indexOf(index);
+				if(dIndex!==-1)
+				{
+					this.disabledIndexs.splice(sIndex, 1);
+				}
+				if(this.active>index)
+				{
+					this.active--;
+				}
+				else if (this.active===index)
+				{
+					this.setActive(-1);
+				}
+			}
+			return index;
+		},
+		getItem:function(index)
+		{
+			return {
+				index:index,
+				value:this.items[index],
+				active:this.active===index,
+				selected:this.selectedIndexs.indexOf(index)!==-1,
+				disabled:this.disabledIndexs.indexOf(index)!==-1
+			};
+		},
+		clearSelect:function()
+		{
+			this.selectedIndexs.length=0;
+		},
+		isSelected:function(item)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			return this.selectedIndexs.indexOf(index)!==-1;
+		},
+		addSelect:function(item)
+		{
+			if(this.selectionType===MENU.SelectionTypes.NONE)
+			{
+				return false;
+			}
+			
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			if(this.items.hasOwnProperty(index)&&this.selectedIndexs.indexOf(index)===-1)
+			{
+				if(this.selectionType===MENU.SelectionTypes.SINGLE)
+				{
+					this.selectedIndexs[0]=index;
+				}
+				else
+				{
+					this.selectedIndexs.push(index);
+				}
+				return true;
+			}
+			return false;
+		},
+		removeSelect:function(item)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			index=this.selectedIndexs.indexOf(index);
+			if(index!==-1)
+			{
+				this.selectedIndexs.splice(index,1);
+				return true;
+			}
+			return false;
+		},
+		toggleSelect:function(item,isIndex)
+		{
+			if(this.selectionType===MENU.SelectionTypes.NONE)
+			{
+				return false;
+			}
+			
+			var index=isIndex?item:this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			if(this.items.hasOwnProperty(index))
+			{
+				var sIndex=this.selectedIndexs.indexOf(index);
+				if(sIndex===-1)
+				{
+					if(this.selectionType===MENU.SelectionTypes.SINGLE)
+					{
+						this.selectedIndexs[0]=index;
+					}
+					else
+					{
+						this.selectedIndexs.push(index);
+					}
+					return true;
+				}
+				else
+				{
+					this.selectedIndexs.splice(sIndex,1);
+					return false;
+				}
+			}
+			return null;
+		},
+        getActive:function()
+        {
+            return this.getItem(this.active);
+        },
+		setActive:function(index)
+		{
+			var min=-1,max=this.items.length-1;
+			index=!(min<=index)?min:(max<index?max:index);
+			if(this.active!==index)
+			{
+				this.active=index;
+			}
+		},
+		moveActive:function(val)
+		{
+			var next=this.active+val;
+			if(!this.loop)
+			{
+				next=0>next?0:next;
+			}
+			else
+			{
+				if(this.active===-1&&val<0)
+				{
+					next++;
+				}
+				next=next%this.items.length;
+				if(next<0)
+				{
+					next=this.items.length+next;
+				}
+			}
+			this.setActive(next);
+		},
+		toggleActive:function()
+		{
+			return this.toggleSelect(this.active);
+		},
+		getSelectedItems:function()
+		{
+			var rtn=[];
+			for(var i=0;i<this.selectedIndexs.length;i++)
+			{
+				rtn.push(this.getItem(this.selectedIndexs[i]));
+			}
+			return rtn;
+		},
+		setDisabled:function(item,boolen)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			if(this.items.hasOwnProperty(index)&&this.disabledIndexs.indexOf(index)===-1)
+			{
+				this.disabledIndexs.push(index);
+				return true;
+			}
+			return false;
+		},
+		isDisabled:function(item)
+		{
+			var index=this.items.indexOf(item);
+			if(index===-1)
+			{
+				index=item;
+			}
+			return this.disabledIndexs.indexOf(index)!==-1;
+		},
+		getType:function()
+		{
+			return this.selectionType;
+		},
+		setType:function(selectionType)
+		{
+			switch(selectionType)
+			{
+				case MENU.SelectionTypes.NONE:
+					this.selectedIndexs.length=0;
+					break;
+				case MENU.SelectionTypes.SINGLE:
+					this.selectedIndexs.length=1;
+					break;
+			}
+			this.selectionType=selectionType;
+		},
+		clear:function()
+		{
+			this.items.length=this.selectedIndexs.lengt=this.disabledIndexs.length=0;
+			this.active=-1;
+			return this;
+		}
+	});
+	
+	MENU.SelectionTypes={
+		NONE:1,
+		SINGLE:2,
+		MULTI:3
+	};
+	
+	SMOD("Menu",MENU);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //GUI/TalePlay.GUIElement.ControllerConfig.js
-(function(t,e,i,s){var n=i("shortcut")({rs:"rescope",mapping:"Controller.Mapping"}),o={Keyboard:1,Gamepad:2},a=i("GUIElement"),r=function(t){var e="";switch(t){case 32:case" ":e="space";break;case 16:e="shift";break;case 19:e="pause";break;case 13:e="enter";break;case 37:e="left";break;case 38:e="up";break;case 39:e="right";break;case 40:e="down";break;case 96:e="num 0";break;case 97:e="num 1";break;case 98:e="num 2";break;case 99:e="num 3";break;case 100:e="num 4";break;case 101:e="num 5";break;case 102:e="num 6";break;case 103:e="num 7";break;case 104:e="num 8";break;case 105:e="num 9";break;default:e="string"==typeof t?t:String.fromCharCode(t)}return e},h=function(t,e,i){var s="";i&&(s+='<input type="text" data-field="name"',"string"==typeof i&&(s+=' value="'+i+'"'),s+=">"),s+='<div class="buttons">';for(var n=0;t>n;n++)s+='<span class="button"><span>'+n+"</span>"+'<input type="text" size="3" data-button="'+n+'">'+"</span>";s+='</div><div class="analogSticks">';for(var n=0;2*e>n;n+=2)s+='<span class="analogStick"><span>'+n/2+"</span>"+'<label class="axisButton" for="axisButton'+n/2+'"> buttons </label><input class="axisButton" type="checkbox" id="axisButton'+n/2+'">'+"<span>"+'<input type="text" size="3" class="axis-y pos" data-axis="'+(n+1)+'">'+'<input type="text" size="3" class="axis-x pos" data-axis="'+n+'">'+'<input type="text" size="3" class="axis-y neg" data-axis="-'+(n+1)+'">'+'<input type="text" size="3" class="axis-x neg" data-axis="-'+n+'">'+"</span>"+"</span>";return s+='</div><button data-value="ok">OK</button><button data-value="cancel">Cancel</button>'},l=a.ControllerConfig=t.Class(a,{init:function(t){t=t||{},this.superInit(a,t),n.rs.all(["onInputChange","onClick"],this),this.createListener("submit"),this.addStyleClass("ControllerConfig"),this.domElement.addEventListener("keydown",this.onInputChange,!0),this.domElement.addEventListener("click",this.onClick,!0),this.domElement.innerHTML=h(t.buttons,t.analogSticks,t.name),this.controllerType=0,this.controller=null,this.setController(t.controller)},setController:function(t){if(this.controller!==t&&(this.controller&&(this.controller.setMapping(this.oldMapping),this.controller.removeListener("analogStickChanged buttonChanged",this,this.controllerChanged),this.controllerType=0,this.domElement.classList.remove("Keyboard"),this.domElement.classList.remove("Gamepad"),this.controller=null),this.controller=t||null),this.controller&&(s("Controller.Keyboard")&&this.controller instanceof i("Controller.Keyboard")?(this.controllerType=o.Keyboard,this.domElement.classList.add("Keyboard")):(this.controllerType=o.Gamepad,this.domElement.classList.add("Gamepad"),this.controller.addListener("analogStickChanged buttonChanged",this,"controllerChanged")),this.oldMapping=this.controller.getMapping(),this.controller.setMapping(null),this.oldMapping)){for(var e=this.oldMapping.getReverseMapping(),n=this.getButtons(),a=0;n.length>a;a++){var h=n[a];h.value=e.buttons[h.dataset.button],t===o.Keyboard&&(h.title=r(e.buttons[h.dataset.button]))}for(var l=this.getAxes(),a=0;l.length>a;a++){var d=l[a];d.value=e.axes[d.dataset.axis],t===o.Keyboard&&(d.title=r(e.axes[d.dataset.axis]))}for(var c=this.getAxisButtons(),a=0;c.length>a;a++){var u=c[a];u.value=e.buttonAxis[u.dataset.axis],t===o.Keyboard&&(u.title=r(e.buttonAxis[u.dataset.axis]))}}},getButtons:function(){return this.domElement.querySelectorAll("input[data-button]")},getAxisButtons:function(){return this.controllerType===o.Keyboard?this.domElement.querySelectorAll(".analogStick [data-axis]"):this.domElement.querySelectorAll(".axisButton:checked+* > input")},getAxes:function(){return this.controllerType!==o.Keyboard?this.domElement.querySelectorAll(".axisButton:not(:checked)+* > .pos"):[]},onInputChange:function(t){if("INPUT"===t.target.tagName&&"name"!==t.target.dataset.field&&"Backspace"!==t.key&&this.controllerType===o.Keyboard){t.preventDefault(),t.stopPropagation();var e=t.target;e.value=t.code||t.key,e.title=r(t.code||t.key)}},onClick:function(t){"BUTTON"===t.target.tagName&&this.fire("submit",{value:t.target.dataset.value})},controllerChanged:function(t){if("buttonChanged"!==t.type||void 0===document.activeElement.dataset.button&&(void 0===document.activeElement.dataset.axis||document.activeElement.parentNode.previousSibling.checked!==!0&&this.controllerType!==o.Keyboard)){if("analogStickChanged"===t.type&&void 0!==document.activeElement.dataset.axis&&document.activeElement.parentNode.previousSibling.checked===!1){var e=Math.abs(t.analogStick.x),i=Math.abs(t.analogStick.y);if(e>.5||i>.5)if(e>i){var s="";0>t.analogStick.x&&(s="-"),document.activeElement.value=s+2*t.index}else{var s="";0>t.analogStick.y&&(s="-"),document.activeElement.value=s+(2*t.index+1)}}}else document.activeElement.value=t.index},getData:function(){for(var t={buttons:{},buttonAxis:{},axes:{}},e=this.getButtons(),i=0;e.length>i;i++){var s=e[i];t.buttons[s.value]=s.dataset.button}for(var n=this.getAxisButtons(),i=0;n.length>i;i++)t.buttonAxis[n[i].value]=n[i].dataset.axis;for(var o=this.getAxes(),i=0;o.length>i;i++){var a=o[i],r=a.value,h=a.dataset.axis;0>1/r&&(r=-r,h="-"+h),t.axes[r]=h}return t},getMapping:function(){var t="";switch(this.controllerType){case o.Keyboard:t="KEYBOARD";break;case o.Gamepad:t="GAMEPAD"}var e=this.domElement.querySelector('[data-field="name"]');return e&&(e=e.value),new n.mapping({data:this.getData(),type:t,name:e})},destroy:function(){this.setController(null),a.prototype.destroy.call(this)}});e("GUI.ControllerConfig",l)})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+(function(µ,SMOD,GMOD,HMOD){
+	
+	var SC=GMOD("shortcut")({
+		rs:"rescope",
+		mapping:"Controller.Mapping"
+	});
+	
+	var controllerTypes={
+		Keyboard:1,
+		Gamepad:2
+	};
+	
+	var GUI=GMOD("GUIElement");
+	
+	var getTitle=function(code)
+	{
+		var title="";
+		switch(code)
+		{
+			case 32:
+			case " ":
+				title="space";
+				break;
+			case 16:
+				title="shift";
+				break;
+			case 19:
+				title="pause";
+				break;
+			case 13:
+				title="enter";
+				break;
+			case 37:
+				title="left";
+				break;
+			case 38:
+				title="up";
+				break;
+			case 39:
+				title="right";
+				break;
+			case 40:
+				title="down";
+				break;
+			case 96:
+				title="num 0";
+				break;
+			case 97:
+				title="num 1";
+				break;
+			case 98:
+				title="num 2";
+				break;
+			case 99:
+				title="num 3";
+				break;
+			case 100:
+				title="num 4";
+				break;
+			case 101:
+				title="num 5";
+				break;
+			case 102:
+				title="num 6";
+				break;
+			case 103:
+				title="num 7";
+				break;
+			case 104:
+				title="num 8";
+				break;
+			case 105:
+				title="num 9";
+				break;
+			default:
+				if(typeof code==="string")
+				{
+					title=code;
+				}
+				else
+				{
+					title=String.fromCharCode(code);
+				}
+		}
+		
+		return title;
+	};
+	var getHTML=function(buttons,analogSticks,name)
+	{
+		var html='';
+		if(name)
+		{
+			html+='<input type="text" data-field="name"';
+			if(typeof name==="string")
+			{
+				html+=' value="'+name+'"';
+			}
+			html+='>';
+		}
+		html+='<div class="buttons">';
+		for(var i=0;i<buttons;i++)
+		{
+			html+=
+			'<span class="button">'+
+				'<span>'+i+'</span>'+
+				'<input type="text" size="3" data-button="'+i+'">'+
+			'</span>';
+		}
+		html+='</div><div class="analogSticks">';
+		for(var i=0;i<analogSticks*2;i+=2)
+		{
+			html+=
+			'<span class="analogStick">'+
+				'<span>'+(i/2)+'</span>'+
+				'<label class="axisButton" for="axisButton'+(i/2)+'"> buttons </label><input class="axisButton" type="checkbox" id="axisButton'+(i/2)+'">'+
+				'<span>'+
+					'<input type="text" size="3" class="axis-y pos" data-axis="'+(i+1)+'">'+
+					'<input type="text" size="3" class="axis-x pos" data-axis="'+i+'">'+
+					'<input type="text" size="3" class="axis-y neg" data-axis="-'+(i+1)+'">'+
+					'<input type="text" size="3" class="axis-x neg" data-axis="-'+i+'">'+
+				'</span>'+
+			'</span>';
+		}
+		html+='</div><button data-value="ok">OK</button><button data-value="cancel">Cancel</button>';
+		return html;
+	};
+	
+	
+	var CONF=GUI.ControllerConfig=µ.Class(GUI,
+	{
+		init:function(param)
+		{
+			param=param||{};
+			this.superInit(GUI,param);
+			SC.rs.all(["onInputChange","onClick"],this);
+			this.createListener("submit");
+			
+			this.addStyleClass("ControllerConfig");
+			this.domElement.addEventListener("keydown",this.onInputChange,true);
+			this.domElement.addEventListener("click",this.onClick,true);
+			
+			this.domElement.innerHTML=getHTML(param.buttons,param.analogSticks,param.name);
+			
+			this.controllerType=0;
+			this.controller=null;
+			this.setController(param.controller)
+		},
+		setController:function(controller)
+		{
+			if(this.controller!==controller)
+			{
+				if(this.controller)
+				{
+					this.controller.setMapping(this.oldMapping);
+					this.controller.removeListener("analogStickChanged buttonChanged",this,this.controllerChanged);
+					
+					this.controllerType=0;
+					this.domElement.classList.remove("Keyboard");
+					this.domElement.classList.remove("Gamepad");
+					
+					this.controller=null;
+				}
+				this.controller=controller||null;
+			}
+			if(this.controller)
+			{
+				if(HMOD("Controller.Keyboard")&&this.controller instanceof GMOD("Controller.Keyboard"))
+				{
+					this.controllerType=controllerTypes.Keyboard;
+					this.domElement.classList.add("Keyboard");
+				}
+				else
+				{
+					this.controllerType=controllerTypes.Gamepad;
+					this.domElement.classList.add("Gamepad");
+					this.controller.addListener("analogStickChanged buttonChanged",this,"controllerChanged");
+				}
+				this.oldMapping=this.controller.getMapping();
+				this.controller.setMapping(null);
+				
+				if(this.oldMapping)
+				{
+					var reverseMap=this.oldMapping.getReverseMapping();
+	
+					var buttons=this.getButtons();
+					for(var i=0;i<buttons.length;i++)
+					{
+						var btn=buttons[i];
+						btn.value=reverseMap.buttons[btn.dataset.button];
+						if(controller===controllerTypes.Keyboard)
+						{
+							btn.title=getTitle(reverseMap.buttons[btn.dataset.button]);
+						}
+					}
+	
+					var axes=this.getAxes();
+					for(var i=0;i<axes.length;i++)
+					{
+						var axis=axes[i];
+						axis.value=reverseMap.axes[axis.dataset.axis];
+						if(controller===controllerTypes.Keyboard)
+						{
+							axis.title=getTitle(reverseMap.axes[axis.dataset.axis]);
+						}
+					}
+	
+					var axisButtons=this.getAxisButtons();
+					for(var i=0;i<axisButtons.length;i++)
+					{
+						var btnAxis=axisButtons[i];
+						btnAxis.value=reverseMap.buttonAxis[btnAxis.dataset.axis];
+						if(controller===controllerTypes.Keyboard)
+						{
+							btnAxis.title=getTitle(reverseMap.buttonAxis[btnAxis.dataset.axis]);
+						}
+					}
+				}
+			}
+		},
+		getButtons:function()
+		{
+			return this.domElement.querySelectorAll("input[data-button]");
+		},
+		getAxisButtons:function()
+		{
+			if(this.controllerType===controllerTypes.Keyboard)
+			{
+				return this.domElement.querySelectorAll(".analogStick [data-axis]");
+			}
+			else
+			{
+				return this.domElement.querySelectorAll(".axisButton:checked+* > input");
+			}
+		},
+		getAxes:function()
+		{
+			if(this.controllerType!==controllerTypes.Keyboard)
+			{
+				return this.domElement.querySelectorAll(".axisButton:not(:checked)+* > .pos");
+			}
+			else
+			{
+				return [];
+			}
+		},
+		onInputChange:function(event)
+		{
+			if(event.target.tagName==="INPUT"&&event.target.dataset.field!=="name"&&event.key!=="Backspace"&&this.controllerType===controllerTypes.Keyboard)
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				
+				var input=event.target;
+				input.value=event.code||event.key;
+				input.title=getTitle(event.code||event.key);
+			}
+		},
+		onClick:function(event)
+		{
+			if(event.target.tagName==="BUTTON")
+			{
+				this.fire("submit",{value:event.target.dataset.value})
+			}
+		},
+		controllerChanged:function(event)
+		{
+			if(event.type==="buttonChanged"&&							//button changed
+			  (document.activeElement.dataset.button!==undefined||		//& button input
+			   document.activeElement.dataset.axis!==undefined&&		// || buttonAxis input
+			  (document.activeElement.parentNode.previousSibling.checked===true||this.controllerType===controllerTypes.Keyboard)))
+			{
+				document.activeElement.value=event.index;
+			}
+			else if(event.type==="analogStickChanged"&&						//axis changed
+					document.activeElement.dataset.axis!==undefined&&		//&& axis input
+					document.activeElement.parentNode.previousSibling.checked===false)
+			{
+				var x=Math.abs(event.analogStick.x),
+				y=Math.abs(event.analogStick.y);
+				if(x>0.5||y>0.5)
+				{
+					if(x>y)
+					{
+						var sign="";
+						if(event.analogStick.x<0)
+						{
+							sign="-";
+						}
+						document.activeElement.value=sign+(event.index*2);
+					}
+					else
+					{
+						var sign="";
+						if(event.analogStick.y<0)
+						{
+							sign="-";
+						}
+						document.activeElement.value=sign+(event.index*2+1);
+					}
+				}
+			}
+		},
+		getData:function()
+		{
+			var data={
+					buttons:{},
+					buttonAxis:{},
+					axes:{}
+			};
+			var btns=this.getButtons();
+			for(var i=0;i<btns.length;i++)
+			{
+				var btn=btns[i];
+				data.buttons[btn.value]=btn.dataset.button;
+			}
+			var buttonAxis=this.getAxisButtons();
+			for(var i=0;i<buttonAxis.length;i++)
+			{
+				data.buttonAxis[buttonAxis[i].value]=buttonAxis[i].dataset.axis;
+			}
+			var axes=this.getAxes();
+			for(var i=0;i<axes.length;i++)
+			{
+				var axis=axes[i];
+				var from=axis.value;
+				var to=axis.dataset.axis;
+				if(1/from<0)
+				{
+					from=-from;
+					to="-"+to;
+				}
+				data.axes[from]=to;
+			}
+			return data;
+		},
+		getMapping:function()
+		{
+			var type="";
+			switch (this.controllerType)
+			{
+				case controllerTypes.Keyboard:
+					type="KEYBOARD";
+					break;
+				case controllerTypes.Gamepad:
+					type="GAMEPAD";
+					break;
+			}
+			var name=this.domElement.querySelector('[data-field="name"]');
+			if(name)
+			{
+				name=name.value;
+			}
+			return new SC.mapping({data:this.getData(),type:type,name:name});
+		},
+		destroy:function()
+		{
+			this.setController(null);
+			GUI.prototype.destroy.call(this);
+		}
+	});
+	SMOD("GUI.ControllerConfig",CONF);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
 //Morgas/src/Morgas.util.object.inputValues.js
-(function(e,t,n){var i=e.util=e.util||{},s=i.object||{},r=n("shortcut")({goPath:"goPath"});s.setInputValues=function(e,t){for(var n=0;e.length>n;n++){var i=(e[n].dataset.path?e[n].dataset.path+".":"")+e[n].name,s=r.goPath(t,i);void 0!==s&&("checkbox"===e[n].type?e[n].checked=!!s:e[n].value=s)}},s.getInputValues=function(e,t,n){for(var i=t||{},s=0;e.length>s;s++){var a=i;e[s].dataset.path&&(a=r.goPath(a,e[s].dataset.path,!t||n)),void 0!==a&&(e[s].name in a||!t||n)&&(a[e[s].name]="checkbox"===e[s].type?e[s].checked:e[s].value)}return i},t("setInputValues",s.setInputValues),t("getInputValues",s.getInputValues)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+	var util=µ.util=µ.util||{};
+	var obj=util.object||{};
+	
+	var SC=GMOD("shortcut")({
+		goPath:"goPath"
+	});
+	
+	/**
+	 * set input values from object
+	 * path in object is defined by data-path attribute
+	 * key in object is defined by data-field attribute
+	 * @param inputs[] input Nodes
+	 * @param {object} source
+	 */
+	obj.setInputValues=function(inputs,source)
+	{
+		for(var i=0;i<inputs.length;i++)
+		{
+			var path=(inputs[i].dataset.path ? inputs[i].dataset.path+"." : "")+inputs[i].name;
+			var value=SC.goPath(source, path);
+			if(value!==undefined)
+			{
+				if(inputs[i].type==="checkbox")
+				{
+					inputs[i].checked=!!value;
+				}
+				else
+				{
+					inputs[i].value=value;
+				}
+			}
+		}
+	};
+
+	/**
+	 * collect input values into object
+	 * path in object is defined by data-path attribute
+	 * key in object is defined by data-field attribute
+	 * @param inputs[] input Nodes
+	 * @param {object} target
+	 */
+	obj.getInputValues=function(inputs,target,create)
+	{
+		var rtn=target||{};
+		for(var i=0;i<inputs.length;i++)
+		{
+			var t=rtn;
+			if(inputs[i].dataset.path)
+			{
+				t=SC.goPath(t, inputs[i].dataset.path,!target||create);
+			}
+			if(t!==undefined&&(inputs[i].name in t||!target||create))
+			{
+				if(inputs[i].type==="checkbox")
+				{
+					t[inputs[i].name]=inputs[i].checked;
+				}
+				else
+				{
+					t[inputs[i].name]=inputs[i].value;
+				}
+			}
+		}
+		return rtn;
+	};
+	
+	SMOD("setInputValues",obj.setInputValues);
+	SMOD("getInputValues",obj.getInputValues);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //TalePlay.Map.js
-(function(t,e,i){var n=this.TalePlay=this.TalePlay||{},s=i("shortcut")({find:"find",Node:"NodePatch",point:"Math.Point",RECT:"Math.Rect"}),o=n.Map=t.Class({init:function(t){this.nodePatch=new s.Node(this,{children:"images",addChild:"add",removeChild:"remove"}),t=t||{},this.position=new s.point,this.size=new s.point(t.size),this.domElement=t.domElement||document.createElement("div"),this.domElement.classList.add("Map"),this.stage=document.createElement("div"),this.stage.classList.add("stage"),this.domElement.appendChild(this.stage),t.images&&this.addAll(t.images),this.size.equals(0)&&this.calcSize(),this.setPosition(t.position)},addAll:function(t){t=[].concat(t);for(var e=0;t.length>e;e++)this.add(t[e])},add:function(t){return this.nodePatch.addChild(t)?(this.stage.appendChild(t.domElement),t.update(),!0):!1},remove:function(t){return this.nodePatch.removeChild(t)?(this.stage.removeChild(t.domElement),!0):!1},setPosition:function(t,e){this.position.set(t,e),this.position.doMath(Math.max,0).doMath(Math.min,this.getSize()),this.update(!0)},getPosition:function(){return this.position},move:function(t,e){this.position.add(t,e),this.position.doMath(Math.max,0).doMath(Math.min,this.getSize()),this.update(!0)},update:function(t){var e=this.position.clone(),i=this.domElement.getBoundingClientRect();e.sub(i.width/2,i.height/2),this.stage.style.top=-e.y+"px",this.stage.style.left=-e.x+"px";for(var n=0;!t&&this.images.length>n;n++)this.images[n].update()},getImages:function(t){return s.find(this.images,t,!0)},getSize:function(){return this.size},setSize:function(t,e){this.size.set(t,e)},calcSize:function(t){this.size.set(0);for(var e=0;this.images.length>e;e++)(!t||t(this.images[e]))&&this.size.doMath(Math.max,this.images[e].rect.position.clone().add(this.images[e].rect.size))},empty:function(){for(;this.images.length>0;)this.remove(this.images[0])},toJSON:function(){return{images:this.images.slice(),position:this.position.clone(),size:this.size.clone()}},fromJSON:function(t){this.empty();for(var e=0;t.images.length>e;e++){var i=t.images[e];i instanceof o.Image||(i=(new o.Image).fromJSON(i)),this.add(i)}return this.size.set(t.size),this.size.equals(0)&&this.calcSize(),this.setPosition(t.position),this}});o.Image=t.Class({init:function(t,e,i,n){new s.Node(this,{parent:"map",remove:"remove"}),this.rect=new s.RECT(e,i),this.domElement=document.createElement("img"),Object.defineProperty(this,"url",{enumerable:!0,get:function(){return this.domElement.src},set:function(t){this.domElement.src=t}}),this.url=t,Object.defineProperty(this,"name",{enumerable:!0,get:function(){return this.domElement.dataset.name},set:function(t){this.domElement.dataset.name=t}}),this.name=n||""},update:function(){this.domElement.style.top=this.rect.position.y+"px",this.domElement.style.left=this.rect.position.x+"px",this.domElement.style.height=this.rect.size.y+"px",this.domElement.style.width=this.rect.size.x+"px"},getPosition:function(){return this.rect.position.clone()},setPosition:function(t,e){this.move(this.getPosition().negate().add(t,e)),this.update()},move:function(t,e){this.rect.position.add(t,e),this.update()},toJSON:function(){return{url:this.url,position:this.rect.position,size:this.rect.size,name:this.name}},fromJSON:function(t){return this.url=t.url,this.rect.setPosition(t.position),this.rect.setSize(t.size),this.name=t.name,this.update(),this}}),e("Map",o)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+    var TALE=this.TalePlay=this.TalePlay||{};
+
+    var SC=GMOD("shortcut")({
+        find:"find",
+        Node:"NodePatch",
+        point:"Math.Point",
+        RECT:"Math.Rect"
+    });
+    var MAP=TALE.Map=µ.Class(
+    {
+        init:function(param)
+        {
+        	this.nodePatch=new SC.Node(this,{
+        		children:"images",
+        		addChild:"add",
+        		removeChild:"remove"
+        	});
+        	
+        	param=param||{};
+        	
+            this.position=new SC.point();
+            this.size=new SC.point(param.size);
+            
+            this.domElement=param.domElement||document.createElement("div");
+            this.domElement.classList.add("Map");
+            this.stage=document.createElement("div");
+            this.stage.classList.add("stage");
+            this.domElement.appendChild(this.stage);
+            
+            param.images&&this.addAll(param.images);
+            
+            if(this.size.equals(0))
+            {
+            	this.calcSize();
+            }
+            
+            this.setPosition(param.position);
+        },
+        addAll:function(images)
+        {
+        	images=[].concat(images);
+            for(var i=0;i<images.length;i++)
+            {
+                this.add(images[i]);
+            }
+        },
+        add:function(image)
+        {
+            if(this.nodePatch.addChild(image))
+            {
+                this.stage.appendChild(image.domElement);
+                image.update();
+                return true;
+            }
+            return false;
+        },
+        remove:function(image)
+        {
+        	if(this.nodePatch.removeChild(image))
+        	{
+        		this.stage.removeChild(image.domElement);
+        		return true;
+        	}
+        	return false;
+        },
+        setPosition:function(position,y)
+        {
+            this.position.set(position,y);
+            this.position.doMath(Math.max,0).doMath(Math.min,this.getSize());
+            this.update(true);
+        },
+        getPosition:function()
+        {
+            return this.position;
+        },
+        move:function(numberOrPoint,y)
+        {
+            this.position.add(numberOrPoint,y);
+            this.position.doMath(Math.max,0).doMath(Math.min,this.getSize());
+            this.update(true);
+        },
+        update:function(noimages)
+        {
+        	var pos=this.position.clone();
+            var b=this.domElement.getBoundingClientRect();
+            
+            pos.sub(b.width/2,b.height/2);
+            
+            this.stage.style.top=-pos.y+"px";
+            this.stage.style.left=-pos.x+"px";
+            for(var i=0;!noimages&&i<this.images.length;i++)
+            {
+                this.images[i].update();
+            }
+        },
+        getImages:function(pattern)
+        {
+            return SC.find(this.images,pattern,true);
+        },
+        getSize:function()
+        {
+        	return this.size;
+        },
+        setSize:function(numberOrPoint,y)
+        {
+        	this.size.set(numberOrPoint,y);
+        },
+        calcSize:function(filter)
+        {
+        	this.size.set(0);
+        	for(var i=0;i<this.images.length;i++)
+        	{
+        		if(!filter||filter(this.images[i]))
+        		{
+        			this.size.doMath(Math.max,this.images[i].rect.position.clone().add(this.images[i].rect.size));
+        		}
+        	}
+        },
+        empty:function()
+        {
+        	while(this.images.length>0)
+			{
+				this.remove(this.images[0]);
+			}
+        },
+		toJSON:function()
+		{
+			return {
+				images:this.images.slice(),
+				position:this.position.clone(),
+				size:this.size.clone()
+			};
+		},
+		fromJSON:function(json)
+		{
+			this.empty();
+			for(var i=0;i<json.images.length;i++)
+			{
+				var image=json.images[i];
+				if(!(image instanceof MAP.Image))
+				{
+					image=new MAP.Image().fromJSON(image);
+				}
+				this.add(image);
+			}
+			this.size.set(json.size);
+			if(this.size.equals(0))
+            {
+            	this.calcSize();
+            }
+			this.setPosition(json.position);
+			return this;
+		}
+    });
+    MAP.Image= µ.Class(
+    {
+        init:function(url,position,size,name)
+        {
+        	new SC.Node(this,{
+        		parent:"map",
+        		remove:"remove"
+        	});
+        	
+        	this.rect=new SC.RECT(position,size);
+            this.domElement=document.createElement("img");
+            Object.defineProperty(this,"url",{
+            	enumerable:true,
+            	get:function(){return this.domElement.src;},
+            	set:function(url){this.domElement.src=url;}
+            });
+            this.url=url;
+            Object.defineProperty(this,"name",{
+            	enumerable:true,
+            	get:function(){return this.domElement.dataset.name;},
+            	set:function(name){this.domElement.dataset.name=name;}
+            });
+            this.name=name||"";
+        },
+        update:function()
+        {
+            this.domElement.style.top=this.rect.position.y+"px";
+            this.domElement.style.left=this.rect.position.x+"px";
+            this.domElement.style.height=this.rect.size.y+"px";
+            this.domElement.style.width=this.rect.size.x+"px";
+        },
+    	getPosition:function()
+    	{
+    		return this.rect.position.clone();
+    	},
+        setPosition:function(numberOrPoint,y)
+        {
+        	this.move(this.getPosition().negate().add(numberOrPoint,y));
+            this.update();
+        },
+        move:function(numberOrPoint,y)
+        {
+            this.rect.position.add(numberOrPoint,y);
+            this.update();
+        },
+		toJSON:function()
+		{
+			return {
+				url:this.url,
+				position:this.rect.position,
+				size:this.rect.size,
+				name:this.name
+			};
+		},
+		fromJSON:function(json)
+		{
+			this.url=json.url;
+			this.rect.setPosition(json.position);
+			this.rect.setSize(json.size);
+			this.name=json.name;
+			
+			this.update();
+			
+			return this;
+		}
+    });
+    SMOD("Map",MAP);
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //GUI/TalePlay.GUIElement.Map.js
 (function(µ,SMOD,GMOD){
 
@@ -1693,15 +5249,753 @@
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.util.function.proxy.js
-(function(t,e,n){var o=t.util=t.util||{},i=o["function"]||{},r=n("shortcut")({it:"iterate"});i.proxy=function(t,e,n){var o=!1,i=!1;switch(typeof t){case"string":o=!0;break;case"function":i=!0}r.it(e,function(e,r,u,c){var s=c?r:e,a=e,h=null;h=o?function(){return this[t][s].apply(this[t],arguments)}:i?function(){var e=t.call(this,s);return e[s].apply(e,arguments)}:function(){return t[s].apply(t,arguments)},n[a]=h})},e("proxy",i.proxy)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+	
+	var util=µ.util=µ.util||{};
+	var uFn=util["function"]||{};
+	
+	var SC=GMOD("shortcut")({
+		it:"iterate"
+	});
+	
+	/** proxy
+	 * proxy methods from source to target.
+	 */
+	uFn.proxy=function(source,listOrMapping,target)
+	{
+		var isKey=false,
+		isGetter=false;
+		switch(typeof source)
+		{
+			case "string":
+				isKey=true;
+				break;
+			case "function":
+				isGetter=true;
+				break;
+		}
+		SC.it(listOrMapping,function(value,key,index,isObject)
+		{
+			var sKey=(isObject?key:value),
+			tKey=value,
+			fn=null;
+			if(isKey)
+			{
+				fn=function(){return this[source][sKey].apply(this[source],arguments)};
+			}
+			else if (isGetter)
+			{
+				fn=function(){var scope=source.call(this,sKey);return scope[sKey].apply(scope,arguments);};
+			}
+			else
+			{
+				fn=function(){return source[sKey].apply(source,arguments)};
+			}
+			target[tKey]=fn;
+		});
+	};
+	SMOD("proxy",uFn.proxy);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.Detached.js
-(function(t,e,n){var s=n("shortcut")({debug:"debug"}),r=function(t,e){return function(n,r){try{var i=t.apply({complete:n,error:r},e);i&&"function"==typeof i.then?i.then(n,r):void 0!==i&&n(i)}catch(a){s.debug(a,1),r(a)}}},i=t.Detached=t.Class({init:function(t,e){var n=t===i.WAIT;n&&(t=arguments[1]),this.fn=[].concat(t||[]),this.onError=[],this.onComplete=[],this.onAlways=[],this.onPropagate=[],this.status=0,this.args=void 0,n||(0===this.fn.length?this.status=1:this._start(e))},_start:function(t){for(var e=0;this.fn.length>e;e++)"function"==typeof this.fn[e]&&(this.fn[e]=new Promise(r(this.fn[e],t)));var n=this;Promise.all(this.fn).then(function(t){n._setStatus(1,t)},function(){n._setStatus(-1,Array.slice(arguments,0))})},_setStatus:function(t,e){if(this.status=t,this.args=e,1===t)for(;this.onComplete.length>0;)this.onComplete.shift()._start(this.args);else if(-1===t){for(;this.onError.length>0;)this.onError.shift()._start(this.args);for(;this.onPropagate.length>0;)this.onPropagate.shift()._setStatus(t,this.args)}for(var n=[1===this.status].concat(this.args);this.onAlways.length>0;)this.onAlways.shift()._start(n);this.onComplete.length=this.onError.length=this.onPropagate.length=this.onAlways.length=this.fn.length=0},error:function(t){t=[].concat(t);for(var e=0;t.length>e;e++)t[e]=new i(i.WAIT,t[e]),-1==this.status&&this.finished>=this.fn.length?t[e]._start(this.args):0===this.status&&this.onError.push(t[e]);return t[t.length-1]},complete:function(t){t=[].concat(t);for(var e=0;t.length>e;e++)t[e]=new i(i.WAIT,t[e]),1==this.status?t[e]._start(this.args):0==this.status&&this.onComplete.push(t[e]);return t[t.length-1]},then:function(t,e){var n=this.complete(t);return e===!0?this.propagateError(n):this.error(e),n},always:function(t){t=[].concat(t);for(var e=0;t.length>e;e++)if(t[e]=new i(i.WAIT,t[e]),0!==this.status){var n=[1===this.status].concat(this.args);t[e]._start(n)}else 0===this.status&&this.onAlways.push(t[e]);return t[t.length-1]},propagateError:function(t){0===this.status?this.onPropagate.push(t):-1===this.status&&0===t.status&&t._setStatus(-1,this.args)}});i.WAIT={},e("Detached",i),i.complete=function(){var t=new i;return t.args=arguments,t},i.error=function(){var t=new i;return t.status=-1,t.args=arguments,t},i.detache=function(t,e){return e=e||window,function(){var n=Array.slice(arguments,0);return new i(function(){n.unshift(this);try{return t.apply(e,n)}catch(r){s.debug(r,1),this.error(r)}})}},i.detacheAll=function(t,e){e=[].concat(e);for(var n=0;e.length>n;n++){var s=t[e[n]];t[e[n]]=i.detache(s,t)}}})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+	 /**
+	 * Depends on	: Morgas
+	 * Uses			: 
+	 *
+	 * Detached class for asynchronous notification
+	 *
+	 */
+	
+	var SC=GMOD("shortcut")({
+		debug:"debug"
+	});
+	
+	var wrapFunction=function(fn,args)
+	{
+		return function(resolve,reject)
+		{
+			try {
+				var p=fn.apply({complete:resolve,error:reject},args);
+				if(p&&typeof p.then==="function")
+				{
+					p.then(resolve,reject);
+				}
+				else if (p!==undefined)
+				{
+					resolve(p);
+				}
+			} catch (e) {
+				SC.debug(e,1);
+				reject(e);
+			}
+		}
+	};
+	
+	var DET=µ.Detached=µ.Class(
+	{
+		/**
+		*	fn		function or [function]
+		*/
+		init:function(fn,args)
+		{
+			var wait=fn===DET.WAIT;
+			if(wait)
+				fn=arguments[1];
+
+			this.fn=[].concat(fn||[]);
+			this.onError=[];
+			this.onComplete=[];
+			this.onAlways=[];
+			this.onPropagate=[];
+			this.status=0;
+			this.args=undefined;
+
+			if(!wait)
+			{
+				if(this.fn.length===0)
+				{
+					this.status=1;
+				}
+				else
+				{
+					this._start(args);
+				}
+			}
+		},
+		_start:function(args)
+		{
+			for(var i=0;i<this.fn.length;i++)
+			{
+				if(typeof this.fn[i]==="function")
+				{
+					this.fn[i]=new Promise(wrapFunction(this.fn[i],args));
+				}
+			}
+			var _self=this;
+			Promise.all(this.fn).then(function(args)
+			{
+				_self._setStatus(1,args);
+			},
+			function()
+			{
+				_self._setStatus(-1,Array.prototype.slice.call(arguments,0));
+			});
+		},
+		_setStatus:function(status,args)
+		{
+			this.status=status;
+			this.args=args;
+			if(status===1)
+			{
+				while(this.onComplete.length>0)
+				{
+					this.onComplete.shift()._start(this.args);
+				}
+			}
+			else if (status===-1)
+			{
+				while(this.onError.length>0)
+				{
+					this.onError.shift()._start(this.args);
+				}
+				while(this.onPropagate.length>0)
+				{
+					this.onPropagate.shift()._setStatus(status,this.args);
+				}
+
+			}
+			var alwaysArgs=[(this.status===1)].concat(this.args);
+			while(this.onAlways.length>0)
+			{
+				this.onAlways.shift()._start(alwaysArgs);
+			}
+			this.onComplete.length=this.onError.length=this.onPropagate.length=this.onAlways.length=this.fn.length=0;
+		},
+		error:function(fn)
+		{
+			fn=[].concat(fn);
+			for(var i=0;i<fn.length;i++)
+			{
+				fn[i]=new DET(DET.WAIT,fn[i]);
+				if(this.status==-1&&this.finished>=this.fn.length)
+				{
+					fn[i]._start(this.args);
+				}
+				else if (this.status===0)
+				{
+					this.onError.push(fn[i]);
+				}
+			}
+			return fn[fn.length-1];
+		},
+		complete:function(fn)
+		{
+			fn=[].concat(fn);
+			for(var i=0;i<fn.length;i++)
+			{
+				fn[i]=new DET(DET.WAIT,fn[i]);
+				if(this.status==1)
+				{
+					fn[i]._start(this.args);
+				}
+				else if (this.status==0)
+				{
+					this.onComplete.push(fn[i]);
+				}
+			}
+			return fn[fn.length-1];
+		},
+		then:function(complete,error)
+		{
+			var next=this.complete(complete);
+			if(error===true)
+			{
+				this.propagateError(next);
+			}
+			else
+			{
+				this.error(error);
+			}
+			return next;
+		},
+		always:function(fn)
+		{
+			fn=[].concat(fn);
+			for(var i=0;i<fn.length;i++)
+			{
+				fn[i]=new DET(DET.WAIT,fn[i]);
+				if(this.status!==0)
+				{
+					var args=[(this.status===1)].concat(this.args);
+					fn[i]._start(args);
+				}
+				else if (this.status===0)
+				{
+					this.onAlways.push(fn[i]);
+				}
+			}
+			return fn[fn.length-1];
+		},
+		propagateError:function(detached)
+		{
+			if(this.status===0)
+			{
+				this.onPropagate.push(detached);
+			}
+			else if (this.status===-1&&detached.status===0)
+			{
+				detached._setStatus(-1,this.args);
+			}
+		}
+	});
+	DET.WAIT={};
+	SMOD("Detached",DET);
+	DET.complete=function()
+	{
+		var d=new DET();
+		d.args=arguments;
+		return d;
+	};
+	DET.error=function()
+	{
+		var d=new DET();
+		d.status=-1;
+		d.args=arguments;
+		return d;
+	};
+	DET.detache=function(fn,scope)
+	{
+		scope=scope||window;
+		return function()
+		{
+			var args=Array.prototype.slice.call(arguments,0);
+			return new DET(function()
+			{
+				args.unshift(this);
+				try
+				{
+					return fn.apply(scope,args);
+				}
+				catch(e)
+				{
+					SC.debug(e,1);
+					this.error(e);
+				}
+			})
+		}
+	};
+	DET.detacheAll=function(scope,keys)
+	{
+		keys=[].concat(keys);
+		for(var i=0;i<keys.length;i++)
+		{
+			var fn=scope[keys[i]];
+			scope[keys[i]]=DET.detache(fn,scope);
+		}
+	};
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.util.object.goPath.js
-(function(e,t){var n=e.util=e.util||{},i=n.object||{};i.goPath=function(e,t,n){var i=t;for("string"==typeof i&&(i=i.split("."));i.length>0&&e;)!n||i[0]in e||(e[i[0]]={}),e=e[i.shift()];return i.length>0?void 0:e},t("goPath",i.goPath)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+	var util=µ.util=µ.util||{};
+	var uObj=util.object||{};
+
+	/** goPath
+	 * Goes the {path} from {obj} checking all but last step for existance.
+	 * 
+	 * goPath(obj,"path.to.target") === goPath(obj,["path","to","target"]) === obj.path.to.target
+	 */
+	uObj.goPath=function(obj,path,create)
+	{
+		var todo=path;
+		if(typeof todo=="string")
+			todo=todo.split(".");
+		
+		while(todo.length>0&&obj)
+		{
+			if(create&&!(todo[0] in obj)) obj[todo[0]]={};
+			obj=obj[todo.shift()];
+		}
+		if(todo.length>0)
+		{
+			return undefined
+		}
+		return obj;
+	};
+	SMOD("goPath",uObj.goPath);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.util.object.find.js
-(function(e,t,n){var i=e.util=e.util||{},r=i.object||{},s=n("shortcut")({eq:"equals",it:"iterate"});r.find=function(e,t,n){var i=[];return s.it(e,function(e,r){s.eq(e,t)&&i.push(n?e:{value:e,index:r})}),i},t("find",r.find)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+	var util=µ.util=µ.util||{};
+	var obj=util.object||{};
+	
+	var SC=GMOD("shortcut")({
+		eq:"equals",
+		it:"iterate"
+	});
+	
+	/** find
+	 * Iterates over {source}.
+	 * Returns an Array of {pattern} matching values 
+	 */
+	obj.find=function(source,pattern,onlyValues)
+	{
+		var rtn=[];
+		SC.it(source,function(value,index)
+		{
+			if(SC.eq(value,pattern))
+			rtn.push(onlyValues?value:{value:value,index:index});
+		});
+		return rtn;
+	};
+	SMOD("find",obj.find);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.Organizer.js
-(function(t,e,n){var r=n("shortcut")({it:"iterate",eq:"equals",path:"goPath"}),s=t.Organizer=t.Class({init:function(t){this.values=[],this.filters={},this.maps={},this.groups={},t&&this.add(t)},add:function(t,e,n){return e&&n&&(this.group(e),this.groups[e].values[n]=[]),r.it(t,function(t){var r=this.values.length;this.values.push(t);for(var s in this.maps)this._map(this.maps[s],r);for(var i in this.filters)this._filter(this.filters[i],r);for(var a in this.groups)this._group(this.groups[a],r);e&&n&&this.groups[e].values[n].push(r)},!1,!1,this),this},remove:function(t){var e=this.values.indexOf(t);if(-1!==e){for(var n in this.filters){var r=this.filters[n].values.indexOf(e);-1!==r&&this.filters[n].values.splice(r,1)}for(var n in this.maps)for(var s=this.maps[n].values,i=Object.keys(s),n=0;i.length>n;n++)if(s[i[n]]===t){delete s[i[n]];break}for(var n in this.groups)for(var a=this.groups[n].values,i=Object.keys(a),n=0;i.length>n;n++){var r=a[i[n]].indexOf(e);if(-1!==r){a[i[n]].splice(r,1);break}}delete this.values[e]}return this},_removeType:function(t,e){delete this[t][e]},clear:function(){for(var t in this.filters)this.filters[t].values.length=0;for(var t in this.maps)this.maps[t].values={};for(var t in this.groups)this.groups[t].values={};return this.values.length=0,this},map:function(t,e){"string"==typeof e&&(e=s._pathWrapper(e)),this.maps[t]={fn:e,values:{}};for(var n=0;this.values.length>n;n++)this._map(this.maps[t],n);return this},_map:function(t,e){var n=""+t.fn(this.values[e]);t.values[n]=e},getMap:function(t){var e={};return null!=this.maps[t]&&r.it(this.maps[t].values,function(t,n){e[n]=this.values[t]},!1,!0,this),e},hasMap:function(t){return!!this.maps[t]},hasMapKey:function(t,e){return this.maps[t]&&e in this.maps[t].values},getMapValue:function(t,e){return this.hasMapKey(t,e)?this.values[this.maps[t].values[e]]:void 0},getMapKeys:function(t){return this.hasMap(t)?Object.keys(this.maps[t].values):[]},removeMap:function(t){return this._removeType("maps",t),this},filter:function(t,e,n){switch(typeof e){case"string":e=s._pathWrapper(e);break;case"object":e=s.filterPattern(e)}"string"==typeof n&&(n=s.pathSort(n)),this.filters[t]={filterFn:e,sortFn:n,values:[]};for(var r=0;this.values.length>r;r++)this._filter(this.filters[t],r);return this},_filter:function(t,e){if(!t.filterFn||t.filterFn(this.values[e]))if(t.sortFn){var n=s.getOrderIndex(this.values[e],this.values,t.sortFn,t.values);t.values.splice(n,0,e)}else t.values.push(e)},hasFilter:function(t){return!!this.filters[t]},getFilter:function(t){var e=[];return null!=this.filters[t]&&r.it(this.filters[t].values,function(t,n){e[n]=this.values[t]},!1,!1,this),e},getFilterValue:function(t,e){return this.filters[t]&&this.filters[t].values[e]?this.values[this.filters[t].values[e]]:void 0},getFilterLength:function(t){return this.filters[t]?this.filters[t].values.length:0},removeFilter:function(t){return this._removeType("filters",t),this},group:function(t,e){if("string"==typeof e&&(e=s._pathWrapper(e)),this.groups[t]={values:{},fn:e},e)for(var n=0;this.values.length>n;n++)this._group(this.groups[t],n);return this},_group:function(t,e){if(t.fn){var n=t.fn(this.values[e]);t.values[n]=t.values[n]||[],t.values[n].push(e)}},hasGroup:function(t){return!!this.groups[t]},getGroup:function(t){var e={};if(this.hasGroup(t))for(var n in this.groups[t].values)e[n]=this.getGroupValue(t,n);return e},getGroupValue:function(t,e){var n=[];if(this.hasGroup(t)&&this.groups[t].values[e])for(var r=this.groups[t].values[e],s=0;r.length>s;s++)n.push(this.values[r[s]]);return n},hasGroupKey:function(t,e){return this.hasGroup(t)&&e in this.groups[t].values},getGroupKeys:function(t){return this.hasGroup(t)?Object.keys(this.groups[t].values):[]},removeGroup:function(t){return this._removeType("groups",t),this},destroy:function(){this.values=this.filters=this.maps=this.groups=null,this.add=this.filter=this.map=this.group=t.constantFunctions.ndef}});s._pathWrapper=function(t){return function(e){return r.path(e,t)}},s.sort=function(t,e,n){return(n?-1:1)*(t>e)?1:e>t?-1:0},s.pathSort=function(t,e){return t=t.split(","),function(n,i){for(var a=0,o=0;t.length>o&&0===a;o++)a=s.sort(r.path(n,t[o]),r.path(i,t[o]),e);return a}},s.filterPattern=function(t){return function(e){return r.eq(e,t)}},s.getOrderIndex=function(t,e,n,r){for(var s=(r?r:e).length,i=Math.ceil(s/2),a=i,o=null;i&&a>0&&s>=a&&(1!==i||-1!==o);){o=i;var u=r?e[r[a-1]]:e[a-1];i=Math.ceil(Math.abs(i)/2)*Math.sign(n(t,u))||1,a+=i}return a=Math.min(Math.max(a-1,0),s)},s.getSortedOrder=function(t,e){var n=[];return r.it(t,function(r,i){var a=s.getOrderIndex(r,t,e,n);n.splice(a,0,i)}),n},e("Organizer",s)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+	 /**
+	 * Depends on	: Morgas
+	 * Uses			: util.object
+	 *
+	 * Organizer to reindex and group arrays
+	 *
+	 */
+	var SC=GMOD("shortcut")({
+		it:"iterate",
+		eq:"equals",
+		path:"goPath"
+	});
+	 
+	var ORG=µ.Organizer=µ.Class({
+		init:function(values)
+		{
+			this.values=[];
+			this.filters={};
+			this.maps={};
+			this.groups={};
+			
+			if(values)
+				this.add(values);
+		},
+		add:function(values,groupName,groupKey)
+		{
+			if(groupName&&groupKey)
+			{
+				this.group(groupName);
+				this.groups[groupName].values[groupKey]=[]
+			}
+			SC.it(values,function(value)
+			{
+				var index=this.values.length;
+				this.values.push(value);
+				for(var m in this.maps)
+				{
+					this._map(this.maps[m],index);
+				}
+				for(var f in this.filters)
+				{
+					this._filter(this.filters[f],index);
+				}
+				for(var g in this.groups)
+				{
+					this._group(this.groups[g],index);
+				}
+				
+				if(groupName&&groupKey)
+				{
+					this.groups[groupName].values[groupKey].push(index);
+				}
+			},false,false,this);
+			return this;
+		},
+		remove:function(value)
+		{
+			var valuesIndex=this.values.indexOf(value);
+			if(valuesIndex!==-1)
+			{
+				for(var i in this.filters)
+				{
+					var index=this.filters[i].values.indexOf(valuesIndex);
+					if(index!==-1)
+					{
+						this.filters[i].values.splice(index,1);
+					}
+				}
+				for(var i in this.maps)
+				{
+					var map=this.maps[i].values;
+					var keys=Object.keys(map);
+					for(var i=0;i<keys.length;i++)
+					{
+						if(map[keys[i]]===value)
+						{
+							delete map[keys[i]];
+							break;
+						}
+					}
+				}
+				for(var i in this.groups)
+				{
+					var group=this.groups[i].values;
+					var keys=Object.keys(group);
+					for(var i=0;i<keys.length;i++)
+					{
+						var index=group[keys[i]].indexOf(valuesIndex);
+						if(index!==-1)
+						{
+							group[keys[i]].splice(index,1);
+							break;
+						}
+					}
+				}
+				delete this.values[valuesIndex];
+			}
+			return this;
+		},
+		_removeType:function(type,name)
+		{
+			delete this[type][name];
+		},
+		clear:function()
+		{
+			for(var i in this.filters)
+			{
+				this.filters[i].values.length=0;
+			}
+			for(var i in this.maps)
+			{
+				this.maps[i].values={};
+			}
+			for(var i in this.groups)
+			{
+				this.groups[i].values={};
+			}
+			this.values.length=0;
+			return this;
+		},
+		
+		map:function(mapName,fn)
+		{
+			if(typeof fn==="string")
+				fn=ORG._pathWrapper(fn);
+			this.maps[mapName]={fn:fn,values:{}};
+			for(var i=0;i<this.values.length;i++)
+			{
+				this._map(this.maps[mapName],i);
+			}
+			return this;
+		},
+		_map:function(map,index)
+		{
+			var key=""+map.fn(this.values[index]);
+			map.values[key]=index;
+		},
+		getMap:function(mapName)
+		{
+			var rtn={};
+			if(this.maps[mapName]!=null)
+			{
+				SC.it(this.maps[mapName].values,function(index,gIndex)
+				{
+					rtn[gIndex]=this.values[index];
+				},false,true,this);
+			}
+			return rtn;
+		},
+		hasMap:function(mapName)
+		{
+			return !!this.maps[mapName];
+		},
+		hasMapKey:function(mapName,key)
+		{
+			return this.maps[mapName]&&key in this.maps[mapName].values;
+		},
+		getMapValue:function(mapName,key)
+		{
+			if(this.hasMapKey(mapName,key))
+				return this.values[this.maps[mapName].values[key]];
+			return undefined;
+		},
+		getMapKeys:function(mapName)
+		{
+			if(this.hasMap(mapName))
+				return Object.keys(this.maps[mapName].values);
+			return [];
+		},
+		removeMap:function(mapName)
+		{
+			this._removeType("maps",mapName);
+			return this;
+		},
+		
+		filter:function(filterName,filterFn,sortFn)
+		{
+			switch(typeof filterFn)
+			{
+				case "string":
+					filterFn=ORG._pathWrapper(filterFn);
+					break;
+				case "object":
+					filterFn=ORG.filterPattern(filterFn);
+					break;
+			}
+			if(typeof sortFn==="string")
+				sortFn=ORG.pathSort(sortFn);
+			this.filters[filterName]={filterFn:filterFn,sortFn:sortFn,values:[]};
+			for(var i=0;i<this.values.length;i++)
+			{
+				this._filter(this.filters[filterName],i);
+			}
+			return this;
+		},
+		_filter:function(filter,index)
+		{
+			if(!filter.filterFn||filter.filterFn(this.values[index]))
+			{
+				if(!filter.sortFn)
+				{
+					filter.values.push(index);
+				}
+				else
+				{
+					var i=ORG.getOrderIndex(this.values[index],this.values,filter.sortFn,filter.values);
+					filter.values.splice(i,0,index);
+				}
+			}
+		},
+		hasFilter:function(filterName)
+		{
+			return !!this.filters[filterName];
+		},
+		getFilter:function(filterName)
+		{
+			var rtn=[];
+			if(this.filters[filterName]!=null)
+			{
+				SC.it(this.filters[filterName].values,function(index,gIndex)
+				{
+					rtn[gIndex]=this.values[index];
+				},false,false,this);
+			}
+			return rtn;
+		},
+		getFilterValue:function(filterName,index)
+		{
+			if(this.filters[filterName]&&this.filters[filterName].values[index])
+				return this.values[this.filters[filterName].values[index]];
+			return undefined;
+		},
+		getFilterLength:function(filterName)
+		{
+			if(this.filters[filterName])
+				return this.filters[filterName].values.length;
+			return 0;
+		},
+		removeFilter:function(filterName)
+		{
+			this._removeType("filters",filterName);
+			return this;
+		},
+		
+		group:function(groupName,groupFn)
+		{
+			if(typeof groupFn==="string")
+				groupFn=ORG._pathWrapper(groupFn);
+			this.groups[groupName]={values:{},fn:groupFn};
+			if(groupFn)
+			{
+				for(var i=0;i<this.values.length;i++)
+				{
+					this._group(this.groups[groupName],i);
+				}
+			}
+			return this;
+		},
+		_group:function(group,index)
+		{
+			if(group.fn)
+			{
+				var gKey=group.fn(this.values[index]);
+				group.values[gKey]=group.values[gKey]||[];
+				group.values[gKey].push(index);
+			}
+		},
+		hasGroup:function(groupName)
+		{
+			return !!this.groups[groupName];
+		},
+		getGroup:function(groupName)
+		{
+			var rtn={};
+			if(this.hasGroup(groupName))
+			{
+				for(var gKey in this.groups[groupName].values)
+				{
+					rtn[gKey]=this.getGroupValue(groupName,gKey);
+				}
+			}
+			return rtn;
+		},
+		getGroupValue:function(groupName,key)
+		{
+			var rtn=[];
+			if(this.hasGroup(groupName)&&this.groups[groupName].values[key])
+			{
+				var groupValues=this.groups[groupName].values[key];
+				for(var i=0;i<groupValues.length;i++)
+				{
+					rtn.push(this.values[groupValues[i]]);
+				}
+			}
+			return rtn;
+		},
+		hasGroupKey:function(groupName,key)
+		{
+			return this.hasGroup(groupName)&&key in this.groups[groupName].values;
+		},
+		getGroupKeys:function(groupName)
+		{
+			if(this.hasGroup(groupName))
+				return Object.keys(this.groups[groupName].values);
+			return [];
+		},
+		removeGroup:function(groupName)
+		{
+			this._removeType("groups",groupName);
+			return this;
+		},
+		
+		destroy:function()
+		{
+			this.values=this.filters=this.maps=this.groups=null;
+			this.add=this.filter=this.map=this.group=µ.constantFunctions.ndef
+		}
+	});
+	ORG._pathWrapper=function(path)
+	{
+		return function(obj)
+		{
+			return SC.path(obj,path);
+		}
+	};
+	ORG.sort=function(obj,obj2,DESC)
+	{
+		return (DESC?-1:1)*(obj>obj2)?1:(obj<obj2)?-1:0;
+	};
+	ORG.pathSort=function(path,DESC)
+	{
+		path=path.split(",");
+		return function(obj,obj2)
+		{
+			var rtn=0;
+			for(var i=0;i<path.length&&rtn===0;i++)
+			{
+				rtn=ORG.sort(SC.path(obj,path[i]),SC.path(obj2,path[i]),DESC)
+			}
+			return rtn;
+		}
+	};
+	ORG.filterPattern=function(pattern)
+	{
+		return function(obj)
+		{
+			return SC.eq(obj,pattern);
+		}
+	};
+	
+	/**
+	 * get index of the {item} in the {source} or {order} defined by {sort}
+	 * 
+	 * item		any
+	 * source	[any]
+	 * sort		function		// param: item, source[?]  returns 1,0,-1 whether item is higher,equal,lower than source[?]
+	 * order	[source index]	// optional
+	 *
+	 * returns	number
+	 */
+	ORG.getOrderIndex=function(item,source,sort,order)
+	{
+		//start in the middle
+		var length=(order?order:source).length;
+		var jump=Math.ceil(length/2);
+		var i=jump;
+		var lastJump=null;
+		while(jump/*!=0||NaN||null*/&&i>0&&i<=length&&!(jump===1&&lastJump===-1))
+		{
+			lastJump=jump;
+			var compare=order?source[order[i-1]] : source[i-1];
+			//jump half the size in direction of this sort			(if equals jump 1 to conserv the order)
+			jump=Math.ceil(Math.abs(jump)/2)*Math.sign(sort(item,compare)) ||1;
+			i+=jump;
+		}
+		i=Math.min(Math.max(i-1,0),length);
+		return i
+	};
+	/**
+	 * create an Array of ordered indexes of {source} using {sort}
+	 *
+	 * source	[any]
+	 * sort		function		// param: item, source[?]  returns 1,0,-1 whether item is higher,equal,lower than source[?]
+	 *
+	 * return [number]
+	 */
+	ORG.getSortedOrder=function(source,sort)
+	{
+		var order=[];
+		SC.it(source,function(item,index)
+		{
+			var orderIndex=ORG.getOrderIndex(item,source,sort,order);
+			order.splice(orderIndex,0,index);
+		});
+		return order;
+	};
+	
+	SMOD("Organizer",ORG);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.util.object.iterate.js
 (function(µ,SMOD,GMOD){
 
@@ -1802,4 +6096,64 @@
 	
 })(Morgas,Morgas.setModule,Morgas.getModule);
 //Morgas/src/Morgas.util.object.equals.js
-(function(e,t){var n=e.util=e.util||{},i=n.object||{};i.equals=function(e,t){if(e===t)return!0;if(void 0===e||null===e)return!1;if(t instanceof RegExp)return t.test(e);if("function"==typeof t)return"function"==typeof e?!1:t(e);if("function"==typeof e.equals)return e.equals(t);if("object"==typeof t){if("object"!=typeof e&&Array.isArray(t))return-1!==t.indexOf(e);for(var n in t)if(!i.equals(e[n],t[n]))return!1;return!0}return!1},t("equals",i.equals)})(Morgas,Morgas.setModule,Morgas.getModule);
+(function(µ,SMOD,GMOD){
+
+	var util=µ.util=µ.util||{};
+	var uObj=util.object||{};
+
+	/** equals
+	 * Matches {obj} against {pattern}.
+	 * Returns: Boolean
+	 *
+	 * Matches strictly (===) and RegExp, function, Array, and Object.
+	 * 
+	 * RegExp: try to match strictly match and
+	 * then return pattern.test(obj)
+	 * 
+	 * function: try to match strictly match and
+	 * then if obj is not a function test it with
+	 * the pattern function and return its result
+	 *
+	 * Array: try to match strictly match and
+	 * then return pattern.indexOf(obj)!==-1
+	 *
+	 * Object: recurse.
+	 *
+	 */
+	uObj.equals=function(obj,pattern)
+	{
+		if(obj===pattern)
+			return true;
+		if(obj===undefined||obj===null)
+			return false;
+		if(pattern instanceof RegExp)
+			return pattern.test(obj);
+		if(typeof pattern==="function")
+		{
+			if(typeof obj==="function")
+				return false;
+			else
+				return pattern(obj);
+		}
+		if(typeof obj.equals==="function")
+        {
+            return obj.equals(pattern);
+        }
+		if(typeof pattern==="object")
+		{
+            if(typeof obj!=="object"&&Array.isArray(pattern))
+            {
+				return pattern.indexOf(obj)!==-1;
+            }
+			for(var i in pattern)
+			{
+				if(!uObj.equals(obj[i],pattern[i]))
+					return false;
+			}
+			return true;
+		}
+		return false;
+	};
+	SMOD("equals",uObj.equals);
+	
+})(Morgas,Morgas.setModule,Morgas.getModule);
