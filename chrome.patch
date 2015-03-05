@@ -1,5 +1,5 @@
 diff --git a/src/GUI/TalePlay.GUIElement.ControllerConfig.js b/src/GUI/TalePlay.GUIElement.ControllerConfig.js
-index d4272db..8cc0127 100644
+index d4272db..9d6cb3d 100644
 --- a/src/GUI/TalePlay.GUIElement.ControllerConfig.js
 +++ b/src/GUI/TalePlay.GUIElement.ControllerConfig.js
 @@ -251,8 +251,8 @@
@@ -14,7 +14,7 @@ index d4272db..8cc0127 100644
  		},
  		onClick:function(event)
 diff --git a/src/GUI/TalePlay.GUIElement.Map.js b/src/GUI/TalePlay.GUIElement.Map.js
-index 4ee2a38..63fb05e 100644
+index 4ee2a38..c89ead3 100644
 --- a/src/GUI/TalePlay.GUIElement.Map.js
 +++ b/src/GUI/TalePlay.GUIElement.Map.js
 @@ -10,8 +10,8 @@
@@ -60,7 +60,7 @@ index 4ee2a38..63fb05e 100644
  	            if(data.animation)
  	            {
 diff --git a/src/GUI/TalePlay.GUIElement.Menu.js b/src/GUI/TalePlay.GUIElement.Menu.js
-index 82719df..5ddf2d4 100644
+index 82719df..17f96ec 100644
 --- a/src/GUI/TalePlay.GUIElement.Menu.js
 +++ b/src/GUI/TalePlay.GUIElement.Menu.js
 @@ -135,18 +135,18 @@
@@ -96,7 +96,7 @@ index 82719df..5ddf2d4 100644
  		VERTICAL:1,
  		HORIZONTAL:2,
 diff --git a/src/RPGPlayer/TalePlay.RPGPlayer.js b/src/RPGPlayer/TalePlay.RPGPlayer.js
-index b5c4c35..e700abb 100644
+index b5c4c35..4ba788c 100644
 --- a/src/RPGPlayer/TalePlay.RPGPlayer.js
 +++ b/src/RPGPlayer/TalePlay.RPGPlayer.js
 @@ -191,7 +191,8 @@
@@ -120,7 +120,7 @@ index b5c4c35..e700abb 100644
  			return clone;
  		},
 diff --git a/src/TalePlay.Controller.Gamepad.js b/src/TalePlay.Controller.Gamepad.js
-index 842b5e1..40a5324 100644
+index 842b5e1..5ee29db 100644
 --- a/src/TalePlay.Controller.Gamepad.js
 +++ b/src/TalePlay.Controller.Gamepad.js
 @@ -13,6 +13,7 @@
@@ -152,7 +152,7 @@ index 842b5e1..40a5324 100644
  			this.pollKey=requestAnimationFrame(this.update);
  		},
 diff --git a/src/TalePlay.Controller.Keyboard.js b/src/TalePlay.Controller.Keyboard.js
-index ffa43e5..fb114e3 100644
+index ffa43e5..7641266 100644
 --- a/src/TalePlay.Controller.Keyboard.js
 +++ b/src/TalePlay.Controller.Keyboard.js
 @@ -51,13 +51,13 @@
@@ -212,7 +212,7 @@ index ffa43e5..fb114e3 100644
  		"axes": {}
  	};
 diff --git a/src/TalePlay.Layer.MapMaker.js b/src/TalePlay.Layer.MapMaker.js
-index 7d3eec8..69c0a31 100644
+index 7d3eec8..b0eeeb1 100644
 --- a/src/TalePlay.Layer.MapMaker.js
 +++ b/src/TalePlay.Layer.MapMaker.js
 @@ -154,7 +154,7 @@
@@ -230,12 +230,12 @@ index 7d3eec8..69c0a31 100644
              var pos=this.map.cursors[0].getPosition();
 -            var image=this.map.getImages(val => val!==this.map.cursors[0]&&val.rect.contains(pos))[0];
 +            var _self=this;
-+            var image=this.map.getImages(function(val){return val!==this.map.cursors[0]&&val.rect.contains(pos)})[0];
++            var image=this.map.getImages(function(val){return val!==_self.map.cursors[0]&&val.rect.contains(pos)})[0];
              if(image)
              {
                  new imageLayer({
 diff --git a/src/minigames/TimeStroke.js b/src/minigames/TimeStroke.js
-index 6e4c293..dfc3392 100644
+index 6e4c293..2b2ab81 100644
 --- a/src/minigames/TimeStroke.js
 +++ b/src/minigames/TimeStroke.js
 @@ -86,7 +86,7 @@
