@@ -494,7 +494,7 @@
 				var run=true;
                 for(var entries=this.listeners.entries(),entryStep=entries.next();!entryStep.done;entryStep=entries.next())
                 {
-                	var scope=entryStep.value[0],entry=entryStep.value[1];
+					var scope=entryStep.value[0],entry=entryStep.value[1];
                     var it=entry.first.values();
                     var step=undefined;
                     var value=undefined;
@@ -4591,13 +4591,13 @@
 		{
 			if(!this.disabled&&this.mapping)
 			{
-				if(this.mapping.hasButtonMapping(event.code||event.key)||this.mapping.hasButtonAxisMapping(event.code||event.key))
+				if(this.mapping.hasButtonMapping(event.code||event.key||event.keyCode)||this.mapping.hasButtonAxisMapping(event.code||event.key||event.keyCode))
 				{
 					event.preventDefault();
 					event.stopPropagation();
 					
 					var map={};
-					map[event.code||event.key]=value;
+					map[event.code||event.key||event.keyCode]=value;
 					this.setButton(map);
 				}
 			}
@@ -4619,7 +4619,19 @@
 			" ": "0",
 			"Shift": "1",
 			"Pause": "8",
-			"Enter": "9"
+			"Enter": "9",
+			
+			//chrome keyCode
+			"13": "9",
+			"16": "1",
+			"19": "8",
+			"32": "0",
+			"97": "2",
+			"98": "3",
+			"99": "4",
+			"100": "5",
+			"101": "6",
+			"102": "7",
 		},
 		"buttonAxis": {
 			"w": "1",
@@ -4629,7 +4641,17 @@
 			"Up": "3",
 			"Right": "2",
 			"Down": "-3",
-			"Left": "-2"
+			"Left": "-2",
+			
+			//chrome keyCode
+			"37": "-2",
+			"38": "3",
+			"39": "2",
+			"40": "-3",
+			"65": "-0",
+			"68": "0",
+			"83": "-1",
+			"87": "1"
 		},
 		"axes": {}
 	};
@@ -4652,6 +4674,7 @@
 			SC.rs.all(["update"],this);
 			
 			this.gamepad=gamepad;
+			this.gamepadIndex=gamepad.index;
 			this.precision=precision||1;
 			this.pollKey=null;
 			
@@ -4659,17 +4682,10 @@
 		},
 		update:function()
 		{
-			if(!this.gamepad.connected)
-			{
-				var gamepads=navigator.getGamepads();
-				if(gamepads[this.gamepad.index])
-				{
-					this.gamepad=gamepads[this.gamepad.index];
-				}
-			}
+			this.gamepad=navigator.getGamepads()[this.gamepadIndex];
 			if(this.gamepad.connected)
 			{
-				this.set(this.gamepad.buttons.map(b => b.value),this.gamepad.axes.map(a => a.toFixed(this.precision)*1));
+				this.set(this.gamepad.buttons.map(function(b){return b.value}),this.gamepad.axes.map(function(a){return a.toFixed(this.precision)*1}));
 			}
 			this.pollKey=requestAnimationFrame(this.update);
 		},
@@ -5350,7 +5366,7 @@
 						var reader=new FileReader();
 						reader.onload=function(e)
 						{
-							rtn.file=Array.slice(new Uint8Array(e.target.result,0,e.target.result.byteLength));
+							rtn.file=Array.prototype.slice.call(new Uint8Array(e.target.result,0,e.target.result.byteLength));
 						};
 						reader.readAsArrayBuffer(val);
 					}
@@ -5392,7 +5408,8 @@
         selectImage:function()
         {
             var pos=this.map.cursors[0].getPosition();
-            var image=this.map.getImages(val => val!==this.map.cursors[0]&&val.rect.contains(pos))[0];
+            var _self=this;
+            var image=this.map.getImages(function(val){return val!==_self.map.cursors[0]&&val.rect.contains(pos)})[0];
             if(image)
             {
                 new imageLayer({
@@ -5902,8 +5919,8 @@
 				event.stopPropagation();
 				
 				var input=event.target;
-				input.value=event.code||event.key;
-				input.title=getTitle(event.code||event.key);
+				input.value=event.code||event.key||event.keyCode;
+				input.title=getTitle(event.code||event.key||event.keyCode);
 			}
 		},
 		onClick:function(event)
@@ -6315,8 +6332,8 @@
 		point:"Math.Point"
 	});
 	
-	var cursorFilter= image => image instanceof GUI.Map.Cursor;
-	var cursorGetter= GuiMap => GuiMap.organizer.getFilter("cursors");
+	var cursorFilter= function(image){return image instanceof GUI.Map.Cursor};
+	var cursorGetter= function(GuiMap){return GuiMap.organizer.getFilter("cursors")};
 	
 	GUI.Map=µ.Class(GUI,{
 		init:function(param)
@@ -6384,7 +6401,7 @@
 		},
 		updateSize:function()
 		{
-			this.map.calcSize(img => !(img instanceof GUI.Map.Cursor));
+			this.map.calcSize(function(img){return !(img instanceof GUI.Map.Cursor)});
 		},
 		setThreshold:function(numberOrPoint,y)
 		{
@@ -6401,8 +6418,9 @@
 			else if(!this.paused)
 			{
 				var now=Date.now();
-				for(var [cursor, data] of this.movingCursors)
+				for(var entries=this.movingCursors.entries(),entryStep=entries.next();!entryStep.done;entryStep=entries.next())
 				{
+					var data=entryStep.value[1];
 					data.lastTime=now-performance.timing.navigationStart;
 				}
 				this.animationRquest=requestAnimationFrame(this._animateCursor);
@@ -6464,8 +6482,9 @@
 		},
 		_animateCursor:function(time)
 		{
-			for(var [cursor, data] of this.movingCursors)
+			for(var entries=this.movingCursors.entries(),entryStep=entries.next();!entryStep.done;entryStep=entries.next())
 			{
+				var cursor=entryStep.value[0],data=entryStep.value[1];
 				var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
 	            if(data.animation)
 	            {
@@ -7008,18 +7027,18 @@
 			}
 			if(this.type===MENU.Types.GRID)
 			{
-				var column=Array.indexOf(target.parentNode.children,target),
-				row=Array.indexOf(this.domElement.children,target.parentNode),
+				var column=Array.prototype.indexOf.call(target.parentNode.children,target),
+				row=Array.prototype.indexOf.call(this.domElement.children,target.parentNode),
 				gridLayout=this.getGridLayout();
 				index=row*gridLayout.columns+column;
 			}
 			else if (this.type===MENU.Types.TABLE&&this.header)
 			{
-				index=Array.indexOf(this.domElement.children,target)-1;
+				index=Array.prototype.indexOf.call(this.domElement.children,target)-1;
 			}
 			else
 			{
-				index=Array.indexOf(this.domElement.children,target);
+				index=Array.prototype.indexOf.call(this.domElement.children,target);
 			}
 			if(index>-1)
 			{
@@ -7214,7 +7233,7 @@
 			this._updateActive();
 		}
 	});
-	GMOD("shortcut")({SelectionTypes:()=>GMOD("Menu").SelectionTypes},MENU);
+	GMOD("shortcut")({SelectionTypes:function(){return GMOD("Menu").SelectionTypes}},MENU);
 	MENU.Types={
 		VERTICAL:1,
 		HORIZONTAL:2,
@@ -7612,7 +7631,7 @@
 				{
 					item.domElement.style.left=distance+"%";
 					item.domElement.dataset.active=item.active=(distance<=this.zoneWidth);
-					if(Array.indexOf(this.domElement.children,item.domElement)===-1)
+					if(Array.prototype.indexOf.call(this.domElement.children,item.domElement)===-1)
 					{
 						this.domElement.appendChild(item.domElement);
 					}
@@ -7839,7 +7858,8 @@
 		},
 		setCursor:function(cursor)
 		{
-			cursor.urls=cursor.urls.map(u => u ? this.imageBaseUrl+u : u);
+			var _self=this;
+			cursor.urls=cursor.urls.map(function(u){return u ? _self.imageBaseUrl+u : u});
 			cursor.name=cursor.name||"";
 			cursor.collision=cursor.collision!==false;
 			this.gameSave.getCursor().fromJSON(cursor);
@@ -7852,7 +7872,8 @@
 			var clone=new SC.GameSave();
 			clone.fromJSON(JSON.parse(JSON.stringify(this.gameSave)));
 			var cursor=clone.getCursor();
-			cursor.urls=cursor.urls.map(u => u ? u.slice(u.lastIndexOf("/")+1) : u);
+			var _self=this;
+			cursor.urls=cursor.urls.map(function(u){return u ? u.slice(u.lastIndexOf("/")+1) : u});
 			
 			return clone;
 		},

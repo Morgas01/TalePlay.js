@@ -154,7 +154,7 @@
 						var reader=new FileReader();
 						reader.onload=function(e)
 						{
-							rtn.file=Array.slice(new Uint8Array(e.target.result,0,e.target.result.byteLength));
+							rtn.file=Array.prototype.slice.call(new Uint8Array(e.target.result,0,e.target.result.byteLength));
 						};
 						reader.readAsArrayBuffer(val);
 					}
@@ -196,7 +196,8 @@
         selectImage:function()
         {
             var pos=this.map.cursors[0].getPosition();
-            var image=this.map.getImages(val => val!==this.map.cursors[0]&&val.rect.contains(pos))[0];
+            var _self=this;
+            var image=this.map.getImages(function(val){return val!==_self.map.cursors[0]&&val.rect.contains(pos)})[0];
             if(image)
             {
                 new imageLayer({

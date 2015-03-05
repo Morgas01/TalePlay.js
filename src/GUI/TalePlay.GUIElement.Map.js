@@ -10,8 +10,8 @@
 		point:"Math.Point"
 	});
 	
-	var cursorFilter= image => image instanceof GUI.Map.Cursor;
-	var cursorGetter= GuiMap => GuiMap.organizer.getFilter("cursors");
+	var cursorFilter= function(image){return image instanceof GUI.Map.Cursor};
+	var cursorGetter= function(GuiMap){return GuiMap.organizer.getFilter("cursors")};
 	
 	GUI.Map=µ.Class(GUI,{
 		init:function(param)
@@ -79,7 +79,7 @@
 		},
 		updateSize:function()
 		{
-			this.map.calcSize(img => !(img instanceof GUI.Map.Cursor));
+			this.map.calcSize(function(img){return !(img instanceof GUI.Map.Cursor)});
 		},
 		setThreshold:function(numberOrPoint,y)
 		{
@@ -96,8 +96,9 @@
 			else if(!this.paused)
 			{
 				var now=Date.now();
-				for(var [cursor, data] of this.movingCursors)
+				for(var entries=this.movingCursors.entries(),entryStep=entries.next();!entryStep.done;entryStep=entries.next())
 				{
+					var data=entryStep.value[1];
 					data.lastTime=now-performance.timing.navigationStart;
 				}
 				this.animationRquest=requestAnimationFrame(this._animateCursor);
@@ -159,8 +160,9 @@
 		},
 		_animateCursor:function(time)
 		{
-			for(var [cursor, data] of this.movingCursors)
+			for(var entries=this.movingCursors.entries(),entryStep=entries.next();!entryStep.done;entryStep=entries.next())
 			{
+				var cursor=entryStep.value[0],data=entryStep.value[1];
 				var timeDiff=Math.min(time-data.lastTime,GUI.Map.MAX_TIME_DELAY);
 	            if(data.animation)
 	            {

@@ -51,13 +51,13 @@
 		{
 			if(!this.disabled&&this.mapping)
 			{
-				if(this.mapping.hasButtonMapping(event.code||event.key)||this.mapping.hasButtonAxisMapping(event.code||event.key))
+				if(this.mapping.hasButtonMapping(event.code||event.key||event.keyCode)||this.mapping.hasButtonAxisMapping(event.code||event.key||event.keyCode))
 				{
 					event.preventDefault();
 					event.stopPropagation();
 					
 					var map={};
-					map[event.code||event.key]=value;
+					map[event.code||event.key||event.keyCode]=value;
 					this.setButton(map);
 				}
 			}
@@ -79,7 +79,19 @@
 			" ": "0",
 			"Shift": "1",
 			"Pause": "8",
-			"Enter": "9"
+			"Enter": "9",
+			
+			//chrome keyCode
+			"13": "9",
+			"16": "1",
+			"19": "8",
+			"32": "0",
+			"97": "2",
+			"98": "3",
+			"99": "4",
+			"100": "5",
+			"101": "6",
+			"102": "7",
 		},
 		"buttonAxis": {
 			"w": "1",
@@ -89,7 +101,17 @@
 			"Up": "3",
 			"Right": "2",
 			"Down": "-3",
-			"Left": "-2"
+			"Left": "-2",
+			
+			//chrome keyCode
+			"37": "-2",
+			"38": "3",
+			"39": "2",
+			"40": "-3",
+			"65": "-0",
+			"68": "0",
+			"83": "-1",
+			"87": "1"
 		},
 		"axes": {}
 	};
