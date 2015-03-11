@@ -23,7 +23,7 @@
 			this.getTriggerValue=param.getTriggerValue||this.getTriggerValue;
 			this.onAction=param.onAction||this.onAction;
 			
-			this.superInit(Layer);
+			this.mega();
 			SC.rs.all(["onClick"],this);
 			this.domElement.classList.add("overlay","imageLayer");
 			this.domElement.innerHTML='<div class="panel">'+
@@ -76,7 +76,7 @@
 		destroy:function()
 		{
 			this.image=this.callback=this.scope=undefined;
-			Layer.prototype.destroy.call(this);
+			this.mega();
 		},
 		
 		getTriggerValueHTML:function(image)
@@ -94,7 +94,7 @@
 		init:function(param)
 		{
 			param=param||{};
-			this.superInit(Layer);
+			this.mega();
 			this.domElement.classList.add("MapMaker");
 			if(param.board)
 			{

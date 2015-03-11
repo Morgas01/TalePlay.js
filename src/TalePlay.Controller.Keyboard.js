@@ -9,7 +9,7 @@
 	CTRL.Keyboard=µ.Class(CTRL,{
 		init:function(mapping,mappingName,domElement)
 		{
-			this.superInit(CTRL,mapping!==undefined ? mapping : CTRL.Keyboard.stdMapping,mappingName);
+			this.mega(mapping!==undefined ? mapping : CTRL.Keyboard.stdMapping,mappingName);
 			
 			SC.rescope.all(["onKeyDown","onKeyUp"],this);
 			
@@ -18,7 +18,7 @@
 		},
 		setMapping:function(mapping)
 		{
-			CTRL.prototype.setMapping.call(this, mapping);
+			this.mega(mapping);
 			if(this.mapping)
 			{
 				this.mapping.setValueOf("type","Keyboard");
@@ -65,7 +65,7 @@
 		destroy:function()
 		{
 			this.setDomElement();
-			CTRL.prototype.destroy.call(this);
+			this.mega();
 		}
 	});
 	CTRL.Keyboard.stdMapping={

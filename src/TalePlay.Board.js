@@ -82,15 +82,11 @@
 			}
 			return false;
 		},
-		setControllerDisabled:function()
-		{
-			//TODO
-		},
 		_ctrlCallback:function(event)
 		{
 			if(!this.disabled&&this.layers.length>0)
 			{
-				var args=Array.prototype.slice.call(arguments,0);
+				var args=Array.slice(arguments);
 				event.player=null;
 				for(var i=this.controllers.length-1;i>=0;i--)
 				{

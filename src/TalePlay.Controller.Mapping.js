@@ -12,7 +12,7 @@
 		init:function(param)
 		{
 			param=param||{};
-			this.superInit(DBObj,param);
+			this.mega(param);
 			
 			this.addField("name",SC.DBField.TYPES.STRING,param.name||"");
 			this.addField("type",SC.DBField.TYPES.STRING,param.type||"");

@@ -14,7 +14,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(LAYER,{mode:LAYER.Modes.LAST});
+			this.mega({mode:LAYER.Modes.LAST});
 
 			this.domElement.classList.add("ActionMenu");
 			

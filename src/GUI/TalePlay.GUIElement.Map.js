@@ -18,7 +18,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(GUI,param);
+			this.mega(param);
 			this.createListener("trigger");
 			SC.rescope.all(["_animateCursor"],this);
 			
@@ -307,7 +307,7 @@
 	GUI.Map.MAX_TIME_DELAY=250;
     GUI.Map.Image=µ.Class(MAP.Image,{
     	init:function(url,position,size,name,collision,trigger){
-    		this.superInit(MAP.Image,url,position,size,name);
+    		this.mega(url,position,size,name);
 
             this.collision=!!collision;
             this.trigger={
@@ -329,7 +329,7 @@
 		},
 		fromJSON:function(json)
 		{
-			MAP.Image.prototype.fromJSON.call(this,json);
+			this.mega(json);
 			this.collision=json.collision;
 			this.trigger=json.trigger;
 			
@@ -339,7 +339,7 @@
 	GUI.Map.Cursor=µ.Class(GUI.Map.Image,{
     	init:function(urls,position,size,offset,name,colision,trigger,speed)
     	{
-    		this.superInit(GUI.Map.Image,GUI.Map.Cursor.emptyImage,position,size,name,colision,trigger);
+    		this.mega(GUI.Map.Cursor.emptyImage,position,size,name,colision,trigger);
     		this.domElement.classList.add("cursor");
             this.domElement.style.zIndex=GUI.Map.Cursor.zIndexOffset;
             
@@ -360,10 +360,6 @@
     		this.direction=null;
     		this.updateDirection();
     	},
-        update:function()
-        {
-        	GUI.Map.Image.prototype.update.call(this);
-        },
         updateDirection:function()
         {
         	this.domElement.classList.remove("up","right","down","left");
@@ -487,7 +483,7 @@
 					}
 					distance.mul(progress);
 				}
-				GUI.Map.Image.prototype.move.call(this,distance);
+				this.mega(distance);
 			}
 			this.updateDirection();
 			return distance;
@@ -504,7 +500,7 @@
 		fromJSON:function(json)
 		{
 			json.url=GUI.Map.Cursor.emptyImage;
-			GUI.Map.Image.prototype.fromJSON.call(this,json);
+			this.mega(json);
 			this.offset.set(json.offset);
 			this.speed.set(json.speed);
 			this.setUrls(json.urls);
@@ -528,7 +524,7 @@
     GUI.Map.Cursor.Animation.Key=µ.Class(GUI.Map.Cursor.Animation,{ //key animation
     	init:function(cursor,keys)
     	{
-    		this.superInit(GUI.Map.Cursor.Animation,cursor);
+    		this.mega(cursor);
     		this.keys=keys;
     		
     		this.cursor.setPosition(this.keys[0]);

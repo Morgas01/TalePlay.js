@@ -40,7 +40,7 @@
 			{
 				menuParam.disabled=[1];
 			}
-			this.superInit(AMENU,menuParam);
+			this.mega(menuParam);
 
 			this.domElement.classList.add("GameMenu");
 			this.createListener("start close");
@@ -61,13 +61,13 @@
 						this.menu.setActive(2);
 						break;
 					case 2:
-						AMENU.prototype.onController.call(this,event);
+						this.mega(event);
 						break;
 				}
 			}
 			else
 			{
-				AMENU.prototype.onController.call(this,event);
+				this.mega(event);
 			}
 		},
 		openControllerManager:function(item)

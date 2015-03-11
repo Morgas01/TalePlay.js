@@ -10,7 +10,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(GUI,param.styleClass);
+			this.mega(param.styleClass);
 			this.addStyleClass("TimeStroke");
 			SC.rescope.all(["_step"],this);
 			this.createListener("hit miss finish");

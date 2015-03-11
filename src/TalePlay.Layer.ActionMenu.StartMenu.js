@@ -18,7 +18,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(AMENU,{
+			this.mega({
 				styleClass:["panel","center"],
 				actions:[
 					{
@@ -61,13 +61,13 @@
 						this.menu.setActive(0);
 						break;
 					case 2:
-						AMENU.prototype.onController.call(this,event);
+						this.mega(event);
 						break;
 				}
 			}
 			else
 			{
-				AMENU.prototype.onController.call(this,event);
+				this.mega(event);
 			}
 		},
 		newGame:function(item)

@@ -13,7 +13,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(DBOBJ,param);
+			this.mega(param);
 			
 			this.addField("map",		SC.field.TYPES.String,param.map);
 			this.addField("position",	SC.field.TYPES.JSON,param.position);

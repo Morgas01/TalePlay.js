@@ -13,7 +13,7 @@
 			
 			param=param||{};
 			
-			this.superInit(GUI,param);
+			this.mega(param);
 			this.addStyleClass("TextBox");
 			this.createListener("complete");
 			

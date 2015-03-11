@@ -131,7 +131,7 @@
 		init:function(param)
 		{
 			param=param||{};
-			this.superInit(GUI,param);
+			this.mega(param);
 			SC.rs.all(["onInputChange","onClick"],this);
 			this.createListener("submit");
 			
@@ -355,7 +355,7 @@
 		destroy:function()
 		{
 			this.setController(null);
-			GUI.prototype.destroy.call(this);
+			this.mega();
 		}
 	});
 	SMOD("GUI.ControllerConfig",CONF);

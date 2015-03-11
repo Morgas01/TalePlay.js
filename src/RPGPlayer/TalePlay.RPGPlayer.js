@@ -55,7 +55,7 @@
         init:function(param)
         {
             param=param||{};
-            this.superInit(Layer,param);
+            this.mega(param);
 			this.domElement.classList.add("RPGPlayer");
 			
 			if(!param.board)

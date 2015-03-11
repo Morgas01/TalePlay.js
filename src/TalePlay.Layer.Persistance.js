@@ -14,7 +14,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(LAYER,{mode:LAYER.Modes.LAST});
+			this.mega({mode:LAYER.Modes.LAST});
 			SC.rs.all(["_update","_fillMenu"],this);
 			
 			this.createListener("load");
@@ -50,13 +50,13 @@
 						else this.destroy();
 						break;
 					case 2:
-						LAYER.prototype.onController.call(this,event);
+						this.mega(event);
 						break;
 				}
 			}
 			else
 			{
-				LAYER.prototype.onController.call(this,event);
+				this.mega(event);
 			}
 		},
 		_update:function()

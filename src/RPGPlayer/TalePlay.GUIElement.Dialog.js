@@ -14,7 +14,7 @@
 			param=param||{};
 			param.element="fieldset";
 			
-			this.superInit(GUI,param);
+			this.mega(param);
 			this.createListener("dialogEnd");
 			
 			this.legend=document.createElement("legend");
