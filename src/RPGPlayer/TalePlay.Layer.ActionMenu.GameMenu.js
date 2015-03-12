@@ -40,6 +40,7 @@
 			{
 				menuParam.disabled=[1];
 			}
+			else menuParam.active=1;
 			this.mega(menuParam);
 
 			this.domElement.classList.add("GameMenu");

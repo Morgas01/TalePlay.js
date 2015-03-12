@@ -21,10 +21,10 @@
 		quests:{
 			loaded:function quests_loaded(quests,self)
             {
-            	for(var i=0;i<quests.length;i++)
+            	for(var i in quests)
             	{
             		var quest=new RPGPlayer.Quest(quests[i]);
-            		self.quests.set(quest.name,quest);
+            		self.quests.set(i,quest);
             	}
             	return self;
             },
@@ -37,9 +37,9 @@
 		dialogs:{
 			loaded:function dialogs_loaded(dialogs,self)
             {
-            	for(var i=0;i<dialogs.length;i++)
+            	for(var i in dialogs)
             	{
-            		self.dialogs.set(dialogs[i].name,dialogs[i]);
+            		self.dialogs.set(i,dialogs[i]);
             	}
             	return self;
             },
@@ -165,24 +165,22 @@
 		loadSave:function(save)
 		{
 			this.setCursor(save.getCursor());
+			
 			var activeQuests=this.gameSave.getQuests();
 			activeQuests.length=0;
-			this.questsReady.complete(function (self)
-            {
-				var saveQuests=save.getQuests();
-            	for(var i=0;i<saveQuests.length;i++)
-            	{
-            		if(self.quests.has(saveQuests[i]))
-            		{
-            			if(activeQuests.indexOf(saveQuests[i])===-1)activeQuests.push(saveQuests[i]);
-            		}
-            		else
-            		{
-            			SC.debug("quest "+saveQuests[i]+" not found",SC.debug.LEVE.ERROR);
-            		}
-            	}
-            	return null;
-            });
+			
+			var saveQuests=save.getQuests();
+        	for(var i=0;i<saveQuests.length;i++)
+        	{
+        		if(this.quests.has(saveQuests[i]))
+        		{
+        			if(activeQuests.indexOf(saveQuests[i])===-1)activeQuests.push(saveQuests[i]);
+        		}
+        		else
+        		{
+        			SC.debug("quest "+saveQuests[i]+" not found",SC.debug.LEVE.ERROR);
+        		}
+        	}
             this._changeMap(save.getMap(), save.getPosition());
             if(save.getActions())
             {
@@ -318,6 +316,7 @@
 						break;
 				}
 			}
+			return null;
 		}
     });
 	RPGPlayer.saveConverter=function(save,index)
@@ -341,9 +340,13 @@
 		{
 			param=param||{};
 			
-			this.name=param.name||"NO NAME!";
 			this.description=param.description||"NO DESCRIPTION!";
+			this.tasks=param.tasks||null;
 			this.resolve=param.resolve||[];
+		},
+		tasksCompleted:function(tasks)
+		{//TODO
+			return true;
 		},
 		clone:function(cloning)
 		{
