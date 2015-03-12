@@ -33,7 +33,6 @@
 			if(this.active)
 			{
 				this.active.destroy();
-				this.active.domElement.remove();
 			}
 			
 			if(this.dialogParts.length>0)
@@ -65,7 +64,7 @@
 					});
 					this.active.addListener("select:once",this,"next");
 				}
-				this.domElement.appendChild(this.active.domElement);
+				this.addChild(this.active);
 			}
 			else
 			{
