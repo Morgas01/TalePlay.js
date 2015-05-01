@@ -10,7 +10,7 @@
 	var MENU=GUI.Menu=µ.Class(GUI,{
 		init:function(param)
 		{
-			SC.rescope.all(["_stepActive","onClick"],this);
+			SC.rescope.all(this,["_stepActive","onClick"]);
 			
 			param=param||{};
 			

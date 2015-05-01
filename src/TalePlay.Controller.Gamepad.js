@@ -10,7 +10,7 @@
 		init:function(gamepad,map,precision)
 		{
 			this.mega(map);
-			SC.rs.all(["update"],this);
+			SC.rs.all(this,["update"]);
 			
 			this.gamepad=gamepad;
 			this.precision=precision||1;

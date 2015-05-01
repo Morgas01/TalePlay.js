@@ -6,7 +6,7 @@
 	
 	var SC=GMOD("shortcut")({
 		manager:"GUI.ControllerManager",
-		rj:"Request.json",
+		rj:"request.json",
 		debug:"debug"
 		/* default module
 		 * Layer.Persistance
@@ -72,11 +72,11 @@
 		},
 		newGame:function(item)
 		{
-			SC.rj(item.url,this).then(function(newGameJson,scope)
+			SC.rj(item.url,this).then(function(newGameJson)
 			{
-				var save=new scope.saveClass();
+				var save=new this.saveClass();
 				save.fromJSON(newGameJson);
-				scope.fire("start",{save:save});
+				this.fire("start",{save:save});
 			},
 			function(error)
 			{

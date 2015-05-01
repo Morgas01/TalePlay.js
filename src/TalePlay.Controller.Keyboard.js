@@ -11,7 +11,7 @@
 		{
 			this.mega(mapping!==undefined ? mapping : CTRL.Keyboard.stdMapping,mappingName);
 			
-			SC.rescope.all(["onKeyDown","onKeyUp"],this);
+			SC.rescope.all(this,["onKeyDown","onKeyUp"]);
 			
 			this.domElement=null;
 			this.setDomElement(domElement||window)

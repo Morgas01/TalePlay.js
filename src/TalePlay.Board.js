@@ -24,7 +24,7 @@
 			this.playerDisabled={};
 			
 
-			SC.rs.all(["focus"],this);
+			SC.rs.all(this,["focus"]);
 			
 			this.domElement=document.createElement("div");
 			this.domElement.classList.add("Board");

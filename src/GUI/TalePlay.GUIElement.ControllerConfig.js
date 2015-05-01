@@ -132,7 +132,7 @@
 		{
 			param=param||{};
 			this.mega(param);
-			SC.rs.all(["onInputChange","onClick"],this);
+			SC.rs.all(this,["onInputChange","onClick"]);
 			this.createListener("submit");
 			
 			this.addStyleClass("ControllerConfig");

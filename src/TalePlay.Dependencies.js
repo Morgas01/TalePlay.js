@@ -107,7 +107,7 @@
         
         "RPGPlayer/TalePlay.RPGPlayer.js":{
         	deps:[MORGAS_PATH+"Morgas.js","TalePlay.Layer.js"],
-        	uses:[MORGAS_PATH+"Morgas.Detached.js",MORGAS_PATH+"Morgas.util.Request.js",MORGAS_PATH+"DB/Morgas.DB.IndexedDBConnector.js",
+        	uses:[MORGAS_PATH+"Morgas.Detached.js",MORGAS_PATH+"Morgas.util.request.js",MORGAS_PATH+"DB/Morgas.DB.IndexedDBConnector.js",
         	      "GUI/TalePlay.GUIElement.Map.js","RPGPlayer/TalePlay.GUIElement.Dialog.js","RPGPlayer/TalePlay.RPGPlayer.GameSave.js",
         	      //defaults
         	      "TalePlay.Layer.ActionMenu.StartMenu.js","RPGPlayer/TalePlay.Layer.ActionMenu.GameMenu.js"]
@@ -126,11 +126,11 @@
         },
         "TalePlay.Layer.ActionMenu.StartMenu.js":{
         	deps:[MORGAS_PATH+"Morgas.js","TalePlay.Layer.ActionMenu.js"],
-        	uses:[MORGAS_PATH+"Morgas.util.Request.js","TalePlay.Layer.Persistance.js"]
+        	uses:[MORGAS_PATH+"Morgas.util.request.js","TalePlay.Layer.Persistance.js"]
         },
         "RPGPlayer/TalePlay.Layer.ActionMenu.GameMenu.js":{
         	deps:[MORGAS_PATH+"Morgas.js","TalePlay.Layer.ActionMenu.js"],
-        	uses:[MORGAS_PATH+"Morgas.util.Request.js","TalePlay.Layer.Persistance.js","GUI/TalePlay.GUIElement.ControllerManager.js"]
+        	uses:[MORGAS_PATH+"Morgas.util.request.js","TalePlay.Layer.Persistance.js","GUI/TalePlay.GUIElement.ControllerManager.js"]
         },
 		"TalePlay.Layer.Persistance.js":{
 			deps:[MORGAS_PATH+"Morgas.js","TalePlay.Layer.js"],

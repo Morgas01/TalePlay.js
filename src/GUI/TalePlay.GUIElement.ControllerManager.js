@@ -43,7 +43,7 @@
 			
 			this.mega(param);
 			this.addStyleClass("ControllerManager");
-			SC.rs.all(["_Click","_playerChanged","_mappingsLoaded"],this);
+			SC.rs.all(this,["_Click","_playerChanged","_mappingsLoaded"]);
 			this.domElement.addEventListener("click",this._Click);
 
 			this.buttons=param.buttons!==undefined ? param.buttons : 10;

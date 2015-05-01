@@ -9,7 +9,7 @@
 	var BOX=GUI.TextBox=µ.Class(GUI,{
 		init:function(param)
 		{
-			SC.rs.all(["_run"],this);
+			SC.rs.all(this,["_run"]);
 			
 			param=param||{};
 			

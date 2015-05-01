@@ -4,7 +4,7 @@
 
 	var SC=µ.getModule("shortcut")({
 		det:"Detached",
-		rj:"Request.json",
+		rj:"request.json",
 		debug:"debug",
 		idb:"IDBConn",
 		
@@ -19,14 +19,14 @@
 	
 	var requestCallbacks={
 		quests:{
-			loaded:function quests_loaded(quests,self)
+			loaded:function quests_loaded(quests)
             {
             	for(var i in quests)
             	{
             		var quest=new RPGPlayer.Quest(quests[i]);
-            		self.quests.set(i,quest);
+            		this.quests.set(i,quest);
             	}
-            	return self;
+            	return this;
             },
 			error:function quest_load_error(error)
             {
@@ -35,13 +35,13 @@
             }
 		},
 		dialogs:{
-			loaded:function dialogs_loaded(dialogs,self)
+			loaded:function dialogs_loaded(dialogs)
             {
             	for(var i in dialogs)
             	{
-            		self.dialogs.set(i,dialogs[i]);
+            		this.dialogs.set(i,dialogs[i]);
             	}
-            	return self;
+            	return this;
             },
 			error:function dialogs_load_error(error)
             {
@@ -209,25 +209,25 @@
 		_changeMap:function(name,position)
 		{
 			this.map.setPaused(true);
-			return SC.rj(this.mapBaseUrl+name+".json",this).then(function changeMap_loaded(json,_self)
+			return SC.rj(this.mapBaseUrl+name+".json",this).then(function changeMap_loaded(json)
 			{
 				var todo=json.cursors.concat(json.images);
 				while(todo.length>0)
 				{
 					var image=todo.shift();
-					image.url=_self.imageBaseUrl+image.url;
+					image.url=this.imageBaseUrl+image.url;
 				}
 				json.position=position;
-				var animation=_self.map.movingCursors.get(_self.gameSave.getCursor());
-				_self.map.fromJSON(json);
-				_self.gameSave.getCursor().setPosition(position);
-				_self.map.add(_self.gameSave.getCursor());
+				var animation=this.map.movingCursors.get(this.gameSave.getCursor());
+				this.map.fromJSON(json);
+				this.gameSave.getCursor().setPosition(position);
+				this.map.add(this.gameSave.getCursor());
 				if(animation)
 				{
-					_self.map.movingCursors.set(_self.gameSave.getCursor(),animation);
+					this.map.movingCursors.set(this.gameSave.getCursor(),animation);
 				}
-				_self.map.setPaused(false);
-				_self.gameSave.setMap(name);
+				this.map.setPaused(false);
+				this.gameSave.setMap(name);
             	return name;
 			},
 			function changeMap_Error(error)

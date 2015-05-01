@@ -7,7 +7,8 @@
 		rescope:"rescope",
 		proxy:"proxy",
         Org:"Organizer",
-		point:"Math.Point"
+		point:"Math.Point",
+		debug:"debug"
 	});
 	
 	var cursorFilter= image => image instanceof GUI.Map.Cursor;
@@ -20,7 +21,7 @@
 			
 			this.mega(param);
 			this.createListener("trigger");
-			SC.rescope.all(["_animateCursor"],this);
+			SC.rescope.all(this,["_animateCursor"]);
 			
 			this.map=new MAP({
 				domElement:this.domElement,
@@ -169,7 +170,7 @@
 				if(!data.direction.equals(0)&&cursor)
 				{
 		            cursor.domElement.classList.add("moving");
-		            var distance=cursor.move(data.direction,timeDiff);
+		            var info=cursor.move(data.direction,timeDiff);
 
 					//step trigger
 		            //TODO step in/over/out
@@ -181,7 +182,7 @@
 							image:stepTrigger[i],
 							cursor:cursor,
 							value:stepTrigger[i].trigger.value,
-							distance:distance
+							distance:info.distance
 						});
 					}
 					
@@ -308,6 +309,8 @@
     GUI.Map.Image=µ.Class(MAP.Image,{
     	init:function(url,position,size,name,collision,trigger){
     		this.mega(url,position,size,name);
+			
+			GMOD("shortcut")({"guiMap":["map","gui"]},this,this,true);
 
             this.collision=!!collision;
             this.trigger={
@@ -418,37 +421,39 @@
     	move:function(direction,timediff)
     	{
     		this.direction=direction;
-    		var distance=new SC.point();
-			if(this.map)
+    		var rtn={
+				distance:new SC.point(this.direction).mul(this.speed).mul(timediff/1000),
+				collided:false
+			};
+			if(this.guiMap)
 			{
 				var size=this.map.getSize();
-				distance.set(this.direction).mul(this.speed).mul(timediff/1000);
 				
 				//map boundary
 				var pos=this.rect.position.clone().add(this.offset);
-				if(pos.x+distance.x<0)
+				if(pos.x+rtn.distance.x<0)
 				{
-					distance.x=-pos.x;
+					rtn.distance.x=-pos.x;
 				}
-				else if (pos.x+distance.x>size.x)
+				else if (pos.x+rtn.distance.x>size.x)
 				{
-					distance.x=size.x-pos.x;
+					rtn.distance.x=size.x-pos.x;
 				}
-				if(pos.y+distance.y<0)
+				if(pos.y+rtn.distance.y<0)
 				{
-					distance.y=-pos.y;
+					rtn.distance.y=-pos.y;
 				}
-				else if (pos.y+distance.y>size.y)
+				else if (pos.y+rtn.distance.y>size.y)
 				{
-					distance.y=size.y-pos.y;
+					rtn.distance.y=size.y-pos.y;
 				}
 				//collision
 				if(this.collision)
 				{
 					var progress=1;
 					var rect=this.rect.clone();
-					rect.position.add(distance);
-					var collisions=this.map.gui.collide(rect);
+					rect.position.add(rtn.distance);
+					var collisions=this.guiMap.collide(rect);
 					for(var i=0;i<collisions.length;i++)
 					{
 						var cImage=collisions[i];
@@ -457,23 +462,23 @@
 						{//is self or inside
 							continue;
 						}
+						rtn.collided=true;
+						if(rtn.distance.x>0&&this.rect.position.x+this.rect.size.x<=cImage.rect.position.x)
+						{
+							p=Math.max(p,(cImage.rect.position.x-this.rect.position.x-this.rect.size.x)/rtn.distance.x);
+						}
+						else if (rtn.distance.x<0&&this.rect.position.x>=cImage.rect.position.x+cImage.rect.size.x)
+						{
+							p=Math.max(p,(cImage.rect.position.x+cImage.rect.size.x-this.rect.position.x)/rtn.distance.x);
+						}
 						
-						if(distance.x>0&&this.rect.position.x+this.rect.size.x<=cImage.rect.position.x)
+						if(rtn.distance.y>0&&this.rect.position.y+this.rect.size.y<=cImage.rect.position.y)
 						{
-							p=Math.max(p,(cImage.rect.position.x-this.rect.position.x-this.rect.size.x)/distance.x);
+							p=Math.max(p,(cImage.rect.position.y-this.rect.position.y-this.rect.size.y)/rtn.distance.y);
 						}
-						else if (distance.x<0&&this.rect.position.x>=cImage.rect.position.x+cImage.rect.size.x)
+						else if (rtn.distance.y<0&&this.rect.position.y>=cImage.rect.position.y+cImage.rect.size.y)
 						{
-							p=Math.max(p,(cImage.rect.position.x+cImage.rect.size.x-this.rect.position.x)/distance.x);
-						}
-						
-						if(distance.y>0&&this.rect.position.y+this.rect.size.y<=cImage.rect.position.y)
-						{
-							p=Math.max(p,(cImage.rect.position.y-this.rect.position.y-this.rect.size.y)/distance.y);
-						}
-						else if (distance.y<0&&this.rect.position.y>=cImage.rect.position.y+cImage.rect.size.y)
-						{
-							p=Math.max(p,(cImage.rect.position.y+cImage.rect.size.y-this.rect.position.y)/distance.y);
+							p=Math.max(p,(cImage.rect.position.y+cImage.rect.size.y-this.rect.position.y)/rtn.distance.y);
 						}
 						
 						if(p!==null)
@@ -481,12 +486,12 @@
 							progress=Math.min(progress,p);
 						}
 					}
-					distance.mul(progress);
+					rtn.distance.mul(progress);
 				}
-				this.mega(distance);
 			}
+			this.mega(rtn.distance);
 			this.updateDirection();
-			return distance;
+			return rtn;
     	},
 		toJSON:function()
 		{
@@ -514,11 +519,52 @@
     	init:function(cursor)
     	{
     		this.cursor=cursor;
-    		this.progress=0;
+    		this.done=true;
+			this.activeAction=null;
     	},
+		doAction:function(action)
+		{
+			this.activeAction=action;
+			this.done=false;
+		},
     	step:function(timeDiff)
     	{
-    		SC.debug("Abstract GUI.Map.Cursor.Animation used",SC.debug.LEVEL.WARNING);
+    		if(this.activeAction)
+			{
+				switch (this.activeAction.type.toUpperCase)
+				{
+					case "SET":
+						this.cursor.setPosition(this.activeAction.position);
+						this.activeAction=null
+						break;
+					case "FACE":
+						this.cursor.direction.set(this.activeAction.direction);
+						this.cursor.updateDirection();
+						this.activeAction=null
+						break;
+					case "WAIT":
+						if(this.activeAction.time-=timeDiff<0) this.activeAction=null;
+						break;
+					case "TURN":
+						break;
+					case "MOVE":
+						var dist=this.cursor.getPosition().negate().add(this.activeAction.position);
+						var dir=dist.clone().div(Math.max(Math.abs(dist.x),Math.abs(dist.y)));
+						var info=this.cursor.move(dir,timeDiff);
+						if(info.distance.length()>=dist.length())
+						{
+							this.cursor.setPosition(this.activeAction.position);
+							this.activeAction=null;
+						}
+						else if (info.collided)this.activeAction=null;
+						break;
+					default:
+						SC.debug("unknown action type: "+this.activeAction.type,SC.debug.LEVEL.ERROR);
+						this.activeAction=null
+				}
+			}
+			if(!this.activeAction) this.done=true;
+			return this.done;
     	}
     });
     GUI.Map.Cursor.Animation.Key=µ.Class(GUI.Map.Cursor.Animation,{ //key animation

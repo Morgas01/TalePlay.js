@@ -15,7 +15,7 @@
 			param=param||{};
 			
 			this.mega({mode:LAYER.Modes.LAST});
-			SC.rs.all(["_update","_fillMenu"],this);
+			SC.rs.all(this,["_update","_fillMenu"]);
 			
 			this.createListener("load");
 
