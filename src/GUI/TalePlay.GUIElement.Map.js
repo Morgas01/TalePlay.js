@@ -340,9 +340,13 @@
 		}
     });
 	GUI.Map.Cursor=µ.Class(GUI.Map.Image,{
-    	init:function(urls,position,size,offset,name,colision,trigger,speed)
+    	init:function(urls,position,size,offset,name,colision,viewOffset,viewSize,trigger,speed)
     	{
     		this.mega(GUI.Map.Cursor.emptyImage,position,size,name,colision,trigger);
+    		
+    		this.viewRect=this.rect.clone();
+    		this.viewRect.set(viewOffset,viewSize);
+    		
     		this.domElement.classList.add("cursor");
             this.domElement.style.zIndex=GUI.Map.Cursor.zIndexOffset;
             
@@ -458,7 +462,7 @@
 					{
 						var cImage=collisions[i];
 						var p=null;
-						if(cImage===this||this.rect.contains(cImage.rect)||cImage.rect.contains(this.rect))
+						if(cImage===this||this.rect.collide(cImage.rect)||cImage.rect.collide(this.rect))
 						{//is self or inside
 							continue;
 						}
@@ -493,6 +497,14 @@
 			this.updateDirection();
 			return rtn;
     	},
+        update:function()
+        {
+        	var pos=this.rect.position,vPos=this.viewRect.position,vSize=this.viewRect.size;
+            this.domElement.style.top=pos.y+vPos.y+"px";
+            this.domElement.style.left=pos.x+vPos.x+"px";
+            this.domElement.style.height=vSize.y+"px";
+            this.domElement.style.width=vSize.x+"px";
+        },
 		toJSON:function()
 		{
 			var json=GUI.Map.Image.prototype.toJSON.call(this);
@@ -500,6 +512,8 @@
 			json.speed=this.speed;
 			delete json.url;
 			json.urls=this.urls.slice();
+			json.viewOffset=this.viewRect.position;
+			json.viewSize=this.viewRect.size;
 			return json;
 		},
 		fromJSON:function(json)
@@ -509,7 +523,9 @@
 			this.offset.set(json.offset);
 			this.speed.set(json.speed);
 			this.setUrls(json.urls);
-			
+			this.viewRect.copy(this.rect)
+			.setPosition(json.viewOffset)
+			.setSize(json.viewSize);
 			return this;
 		}
     });
