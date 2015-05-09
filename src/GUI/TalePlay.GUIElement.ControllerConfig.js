@@ -1,3 +1,4 @@
+
 (function(µ,SMOD,GMOD,HMOD){
 	
 	var SC=GMOD("shortcut")({
@@ -131,8 +132,8 @@
 		init:function(param)
 		{
 			param=param||{};
-			this.superInit(GUI,param);
-			SC.rs.all(["onInputChange","onClick"],this);
+			this.mega(param);
+			SC.rs.all(this,["onInputChange","onClick"]);
 			this.createListener("submit");
 			
 			this.addStyleClass("ControllerConfig");
@@ -355,7 +356,7 @@
 		destroy:function()
 		{
 			this.setController(null);
-			GUI.prototype.destroy.call(this);
+			this.mega();
 		}
 	});
 	SMOD("GUI.ControllerConfig",CONF);

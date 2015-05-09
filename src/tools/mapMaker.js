@@ -13,28 +13,13 @@
 	});
 	
 	var board=new SC.Board(document.querySelector("#bordContainer"));
-	var kCon=new SC.kCon({
-		"buttons": {
-			" ": "0",
-			"Enter": "1"
-		},
-		"buttonAxis": {
-			"w": "1",
-			"d": "0",
-			"s": "-1",
-			"a": "-0",
-			"Up": "3",
-			"Right": "2",
-			"Down": "-3",
-			"Left": "-2"
-		}
-	});
+	var kCon=new SC.kCon();
 	board.addController(kCon);
 	var controllerLayer=new SC.Layer();
 	controllerLayer.domElement.classList.add("overlay");
 	var manager=new SC.ControllerManager({
 		styleClass:["panel","center"],
-		buttons:2,
+		buttons:3,
 		analogSticks:2,
 		mappings:[kCon.getMapping()],
 		dbConn:new SC.Idb("mapMaker")

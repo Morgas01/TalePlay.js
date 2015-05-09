@@ -1,0 +1,18 @@
+GUI.Map.Cursor.Animation:
+	-	wait function
+
+GUI.Map:
+	-	viewport follow or manual
+	-	push objects
+	-	colision improvement
+
+RPGPlayer:
+	-	run
+	-	slip (ice)
+
+
+NEW:
+	 cutscenes
+	 dialog maker
+	 battle
+	 threefold save 

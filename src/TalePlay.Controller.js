@@ -12,15 +12,16 @@
 	var CTRL=TALE.Controller=µ.Class(LST,{
 		init:function(mapping,mappingName)
 		{
-			this.superInit(LST);
+			this.mega();
 			
-			this.disabled=false;
 			this.analogSticks={};
 			this.buttons={};
 			this.mapping=null;
 			
 			this.setMapping(mapping,mappingName);
-			this.createListener("changed analogStickChanged buttonChanged");
+			this.createListener("changed analogStickChanged buttonChanged .disabled .connected");
+			this.addListener(".disabled",this,"reset");
+			//TODO this.addListener(".connected",this,"reset");
 		},
 		getMapping:function()
 		{
@@ -145,17 +146,39 @@
 			this.setButton(buttons);
 			this.setAxis(axes);
 		},
+		reset:function()
+		{
+			var changed=false;
+			for(var b in this.buttons)
+			{
+				var oldValue=this.buttons[b];
+				if(oldValue!==0)
+				{
+					this.buttons[b]=0;
+					this.fire("buttonChanged",{index:1*b,value:0,oldValue:old});
+					changed=true;
+				}
+			}
+			for(var a in this.analogSticks)
+			{
+				var aStick=this.analogSticks[a];
+				aStick.set(0,0);
+				if(aStick.hasChanged())
+				{
+					this.fire("analogStickChanged",{index:1*a,analogStick:aStick});
+					changed=true;
+				}
+			}
+		},
 		setDisabled:function(disabled)
 		{
-			this.disabled=disabled===true;
-			for(var i in this.listeners)
-			{
-				this.listeners[i].setDisabled(this.disabled);
-			}
+			if(disabled) this.setState(".disabled");
+			else this.resetState(".disabled");
 		},
 		destroy:function()
 		{
 			//TODO;
+			this.mega();
 		},
 		toString:function()
 		{
@@ -171,7 +194,7 @@
 		init:function(x,y)
 		{
 			this.old={x:0,y:0};
-			this.superInit(POINT,x,y);
+			this.mega(x,y);
 		},
 		clone:function(cloning)
 		{
@@ -179,7 +202,7 @@
 			{
 				cloning=new CTRL.AnalogStick();
 			}
-			POINT.prototype.clone.call(this,cloning);
+			this.mega(cloning);
 			cloning.old.x=this.old.x;
 			cloning.old.y=this.old.y;
 			return cloning;
@@ -219,7 +242,7 @@
 		set:function(numberOrPoint,y)
 		{
 			this.pushOld();
-			POINT.prototype.set.call(this,numberOrPoint,y);
+			this.mega(numberOrPoint,y);
 		}
 	});
 	

@@ -10,11 +10,11 @@
 	var MENU=GUI.Menu=µ.Class(GUI,{
 		init:function(param)
 		{
-			SC.rescope.all(["_stepActive","onClick"],this);
+			SC.rescope.all(this,["_stepActive","onClick"]);
 			
 			param=param||{};
 			
-			this.superInit(GUI,param);
+			this.mega(param);
 			this.menu=new SC.MENU(param);
 			this.addStyleClass("Menu");
 			
@@ -68,10 +68,10 @@
 					if(this.stepDirection.y===1)
 					{
 						step=-gridLayout.columns;
-						if(this.menu.active+step<0)
+						var lastRowItems=this.menu.items.length%gridLayout.columns;
+						if(this.menu.active<=gridLayout.columns&&lastRowItems!==0)
 						{
-							var r=this.menu.items.length%gridLayout.columns;
-							step=(r===0||r>this.menu.active) ? -r : step-r;
+							step=(lastRowItems>this.menu.active ? -lastRowItems : step-lastRowItems);
 						}
 					}
 					else if (this.stepDirection.y===-1)

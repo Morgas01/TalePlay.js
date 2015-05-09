@@ -69,6 +69,12 @@
             var p=new SC.POINT(numberOrPoint,y);
             return (this.position.x <= p.x && this.position.x+this.size.x > p.x &&
                     this.position.y <= p.y && this.position.y+this.size.y > p.y);
+        },
+        copy:function(rect)
+        {
+        	this.position.set(rect.position);
+        	this.size.set(rect.size);
+        	return this;
         }
 	});
 	SMOD("Math.Rect",RECT);

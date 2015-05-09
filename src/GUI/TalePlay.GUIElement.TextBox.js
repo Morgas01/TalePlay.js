@@ -9,11 +9,11 @@
 	var BOX=GUI.TextBox=µ.Class(GUI,{
 		init:function(param)
 		{
-			SC.rs.all(["_run"],this);
+			SC.rs.all(this,["_run"]);
 			
 			param=param||{};
 			
-			this.superInit(GUI,param);
+			this.mega(param);
 			this.addStyleClass("TextBox");
 			this.createListener("complete");
 			

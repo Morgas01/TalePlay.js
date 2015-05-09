@@ -1,6 +1,5 @@
-[
-	{
-		"name":"d0",
+{
+	"d0":{
 		"dialogParts":[
 			{
 				"title":"GOD",
@@ -21,8 +20,7 @@
 			}
 		]
 	},
-	{
-		"name":"d1",
+	"d1":{
 		"dialogParts":[
 			{
 				"title":"blue square",
@@ -55,8 +53,7 @@
 			}
 		]
 	},
-	{
-		"name":"d2",
+	"d2":{
 		"dialogParts":[
 			{
 				"title":"orange square",
@@ -89,4 +86,4 @@
 			}
 		]
 	}
-]
+}

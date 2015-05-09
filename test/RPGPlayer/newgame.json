@@ -3,7 +3,10 @@
 		"urls":["arrow_down.svg","arrow_up.svg",null,"arrow_right.svg",null,"arrow_down.svg",null,"arrow_left.svg",null],
 		"name":"arrow 4-steps",
 		"size":50,
-		"offset":25
+		"offset":25,
+		"viewOffset":-10,
+		"viewSize":70
+			
 	},
 	"map":"testMap",
 	"position":{"x":200,"y":350},

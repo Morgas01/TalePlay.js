@@ -13,7 +13,7 @@
 		init:function(param)
 		{
 			param=param||{};
-			this.superInit(LST);
+			this.mega();
 			this.nodePatch=new SC.node(this,{
 		        parent:"parent",
 		        children:"children",
@@ -107,7 +107,7 @@
 			{
 				c[i].destroy();
 			}
-			LST.prototype.destroy.call(this);
+			this.mega();
 		}
 	});
 	

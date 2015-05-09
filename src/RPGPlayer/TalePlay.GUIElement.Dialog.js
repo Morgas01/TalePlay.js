@@ -14,7 +14,7 @@
 			param=param||{};
 			param.element="fieldset";
 			
-			this.superInit(GUI,param);
+			this.mega(param);
 			this.createListener("dialogEnd");
 			
 			this.legend=document.createElement("legend");
@@ -33,7 +33,6 @@
 			if(this.active)
 			{
 				this.active.destroy();
-				this.active.domElement.remove();
 			}
 			
 			if(this.dialogParts.length>0)
@@ -65,7 +64,7 @@
 					});
 					this.active.addListener("select:once",this,"next");
 				}
-				this.domElement.appendChild(this.active.domElement);
+				this.addChild(this.active);
 			}
 			else
 			{

@@ -41,9 +41,9 @@
 			param=param||{};
 			param.styleClass=param.styleClass||"overlay";
 			
-			this.superInit(GUI,param);
+			this.mega(param);
 			this.addStyleClass("ControllerManager");
-			SC.rs.all(["_Click","_playerChanged","_mappingsLoaded"],this);
+			SC.rs.all(this,["_Click","_playerChanged","_mappingsLoaded"]);
 			this.domElement.addEventListener("click",this._Click);
 
 			this.buttons=param.buttons!==undefined ? param.buttons : 10;
@@ -260,7 +260,7 @@
 		},
 		destroy:function()
 		{
-			GUI.prototype.destroy.call(this);
+			this.mega();
 			window.removeEventListener("gamepadconnected",this._gamepadListener);
 		}
 	});

@@ -10,9 +10,9 @@
 		{
 			param=param||{};
 			
-			this.superInit(GUI,param.styleClass);
+			this.mega(param.styleClass);
 			this.addStyleClass("TimeStroke");
-			SC.rescope.all(["_step"],this);
+			SC.rescope.all(this,["_step"]);
 			this.createListener("hit miss finish");
 
 			this.buttonItems=param.buttonItems||[];

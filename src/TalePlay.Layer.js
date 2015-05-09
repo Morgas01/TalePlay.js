@@ -11,7 +11,7 @@
 	var LAYER=TALE.Layer=µ.Class(LST,{
 		init:function(param)
 		{
-			this.superInit(LST);
+			this.mega();
 			param=param||{};
 			this.nodePatch=new SC.node(this,{
 				parent:"board",
@@ -86,7 +86,7 @@
 			{
 				c[i].destroy();
 			}
-			LST.prototype.destroy.call(this);
+			this.mega();
 		}
 	});
 	LAYER.Modes={

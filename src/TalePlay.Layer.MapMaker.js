@@ -7,7 +7,8 @@
 		setIn:"setInputValues",
 		getIn:"getInputValues",
 		Map:"GUI.Map",
-		Menu:"GUI.Menu"
+		Menu:"GUI.Menu",
+		Point:"Math.Point"
 	});
 	
 	//inner class
@@ -23,10 +24,10 @@
 			this.getTriggerValue=param.getTriggerValue||this.getTriggerValue;
 			this.onAction=param.onAction||this.onAction;
 			
-			this.superInit(Layer);
-			SC.rs.all(["onClick"],this);
+			this.mega();
+			SC.rs.all(this,["onClick"]);
 			this.domElement.classList.add("overlay","imageLayer");
-			this.domElement.innerHTML='<div class="panel">'+
+			this.domElement.innerHTML='<div class="panel center">'+
 				'<table>'+
 					'<tr><td>Name</td><td colspan="100%"><input type="text" name="name"></td></tr>'+
 					'<tr><td>Position</td><td>X</td><td><input type="number" min="0" data-path="rect.position" name="x"></td>'+
@@ -76,7 +77,7 @@
 		destroy:function()
 		{
 			this.image=this.callback=this.scope=undefined;
-			Layer.prototype.destroy.call(this);
+			this.mega();
 		},
 		
 		getTriggerValueHTML:function(image)
@@ -89,12 +90,80 @@
 		},
 		onAction:function(image,action,event){}//dummy
 	});
+	//inner class
+	var cloneLayer=µ.Class(Layer,{
+		init:function(param)
+		{
+			this.mega();
+			this.image=param.image;
+			this.map=param.map;
+			SC.rs.all(this,["onClick"]);
+			this.domElement.classList.add("overlay","cloneLayer");
+			this.domElement.innerHTML='<form class="panel center" onsubmit="return false">'+
+				'<table>'+
+					'<tr>'+
+						'<td>Position</td><td>X</td><td><input type="number" min="0" name="x" value="'+(this.image.rect.position.x+this.image.rect.size.x)+'" required="required"></td>'+
+						'<td>Y</td><td><input type="number" min="0" name="y" value="'+(this.image.rect.position.y)+'" required="required"></td>'+
+					'</tr>'+
+					'<tr>'+
+						'<td></td>'+
+						'<td>Rows</td><td><input type="number" min="1" name="rows" value="1" required="required"></td>'+
+						'<td>Cols</td><td><input type="number" min="1" name="cols" value="1" required="required"></td>'+
+					'</tr>'+
+				'</table>'+
+				'<button data-action="ok">OK</button><button data-action="cancel">cancel</button>'+
+			'</form>';
+			SC.setIn(this.domElement.querySelectorAll("[name]"),this.image);
+			
+			this.domElement.addEventListener("click",this.onClick,false);
+			this.domElement.addEventListener("change",this.onClick,false);
+			param.board.addLayer(this);
+			this.domElement.querySelector('[name="rows"]').focus();
+		},
+		onClick:function(e)
+		{
+			var action=e.target.dataset.action;
+			if(action)
+			{
+				e.stopPropagation();
+				switch(e.target.dataset.action)
+				{
+					case "ok":
+						var form=this.domElement.children[0];
+						if(form.checkValidity())
+						{
+							var data=SC.getIn(this.domElement.querySelectorAll("[name]"));
+							var imageJSON=this.image.toJSON();
+							var pos=new SC.Point(data.x,data.y);
+							for(var r=0;r<data.rows;r++)
+							{
+								for(var c=0;c<data.cols;c++)
+								{
+									var img=new SC.Map.Image();
+									img.fromJSON(imageJSON);
+									img.rect.position.set(pos).add(img.rect.size.x*c,img.rect.size.y*r);
+									this.map.add(img);
+								}
+							}
+							this.map.updateSize();
+						}
+						else return;
+						break;
+					case "cancel":
+						//does nothing
+						break;
+				}
+				this.board.focus();
+				this.destroy();
+			}
+		}
+	});
 	
 	var MapMaker=Layer.MapMaker=µ.Class(Layer,{
 		init:function(param)
 		{
 			param=param||{};
-			this.superInit(Layer);
+			this.mega();
 			this.domElement.classList.add("MapMaker");
 			if(param.board)
 			{
@@ -126,18 +195,20 @@
 			switch(event.type)
 			{
 				case "analogStickChanged":
-					this.GUIElements[i].onAnalogStick(event);
+					if(this.GUIElements[event.index]) this.GUIElements[event.index].onAnalogStick(event);
 					break;
 				case "buttonChanged":
-                    if(i===0)
+                    switch(event.index)
                     {
-                        this.selectImage(event);
+                    	case 0:
+                    		this.selectImage(event);
+                    		break;
+                    	case 1:
+                    		this.GUIElements[1].onButton(event);
+                    		break;
+                    	case 2:
+                    		this.cloneImage(event);
                     }
-                    else
-                    {
-                        this.GUIElements[1].onButton(event);
-                    }
-					break;
 			}
 		},
 		addImages:function(imageSrc)
@@ -225,6 +296,20 @@
 	                getTriggerValue:this.imageLayerParam.getTriggerValue,
 	                onAction:this.imageLayerParam.onAction,
 	           });
+            }
+        },
+        cloneImage:function()
+        {
+        	var cursor=this.map.cursors[0];
+            var pos=cursor.getPosition();
+            var image=this.map.getImages(val => val!==cursor&&val.rect.contains(pos))[0];
+            if(image)
+            {
+            	new cloneLayer({
+            		board:this.board,
+            		map:this.map,
+            		image:image
+            	});
             }
         },
 		toJSON:function()

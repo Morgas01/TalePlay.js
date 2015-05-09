@@ -9,8 +9,8 @@
 	var GP=CTRL.Gamepad=µ.Class(CTRL,{
 		init:function(gamepad,map,precision)
 		{
-			this.superInit(CTRL,map);
-			SC.rs.all(["update"],this);
+			this.mega(map);
+			SC.rs.all(this,["update"]);
 			
 			this.gamepad=gamepad;
 			this.gamepadIndex=gamepad.index;
@@ -36,7 +36,7 @@
 		},
 		setDisabled:function(disabled)
 		{
-			CTRL.prototype.setDisabled.call(this,disabled);
+			this.mega(disabled);
 			if(this.disabled)
 			{
 				cancelAnimationFrame(this.pollKey);

@@ -15,7 +15,7 @@
 			param.converter=param.converter||TicTacToe.defaultConverter;
 			param.active=param.active||4;
 			
-			this.superInit(MENU,param);
+			this.mega(param);
 			this.addStyleClass("TicTacToe");
 			this.createListener("finish");
 

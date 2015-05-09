@@ -6,7 +6,7 @@
 	
 	var SC=GMOD("shortcut")({
 		manager:"GUI.ControllerManager",
-		rj:"Request.json",
+		rj:"request.json",
 		debug:"debug"
 		/* default module
 		 * Layer.Persistance
@@ -18,7 +18,7 @@
 		{
 			param=param||{};
 			
-			this.superInit(AMENU,{
+			this.mega({
 				styleClass:["panel","center"],
 				actions:[
 					{
@@ -61,22 +61,22 @@
 						this.menu.setActive(0);
 						break;
 					case 2:
-						AMENU.prototype.onController.call(this,event);
+						this.mega(event);
 						break;
 				}
 			}
 			else
 			{
-				AMENU.prototype.onController.call(this,event);
+				this.mega(event);
 			}
 		},
 		newGame:function(item)
 		{
-			SC.rj(item.url,this).then(function(newGameJson,scope)
+			SC.rj(item.url,this).then(function(newGameJson)
 			{
-				var save=new scope.saveClass();
+				var save=new this.saveClass();
 				save.fromJSON(newGameJson);
-				scope.fire("start",{save:save});
+				this.fire("start",{save:save});
 			},
 			function(error)
 			{
