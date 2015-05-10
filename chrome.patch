@@ -95,6 +95,13 @@ index 63f935a..67e27bb 100644
  	MENU.Types={
  		VERTICAL:1,
  		HORIZONTAL:2,
+diff --git a/src/Morgas b/src/Morgas
+index cef8a8e..8d19604 160000
+--- a/src/Morgas
++++ b/src/Morgas
+@@ -1 +1 @@
+-Subproject commit cef8a8e7c1195c2ffb04a9efae13e21499f2bf13
++Subproject commit 8d196046a4606ce4cec1dcc4b7f1eb7611f35d34
 diff --git a/src/RPGPlayer/TalePlay.RPGPlayer.js b/src/RPGPlayer/TalePlay.RPGPlayer.js
 index 967cda1..44c9bd6 100644
 --- a/src/RPGPlayer/TalePlay.RPGPlayer.js
@@ -119,8 +126,21 @@ index 967cda1..44c9bd6 100644
  			
  			return clone;
  		},
+diff --git a/src/TalePlay.Board.js b/src/TalePlay.Board.js
+index f52a691..9213163 100644
+--- a/src/TalePlay.Board.js
++++ b/src/TalePlay.Board.js
+@@ -86,7 +86,7 @@
+ 		{
+ 			if(!this.disabled&&this.layers.length>0)
+ 			{
+-				var args=Array.slice(arguments);
++				var args=Array.prototype.slice.call(arguments);
+ 				event.player=null;
+ 				for(var i=this.controllers.length-1;i>=0;i--)
+ 				{
 diff --git a/src/TalePlay.Controller.Gamepad.js b/src/TalePlay.Controller.Gamepad.js
-index 5499ed4..35985af 100644
+index 5499ed4..032cb40 100644
 --- a/src/TalePlay.Controller.Gamepad.js
 +++ b/src/TalePlay.Controller.Gamepad.js
 @@ -13,6 +13,7 @@
