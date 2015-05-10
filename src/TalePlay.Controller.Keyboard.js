@@ -51,7 +51,7 @@
 		{
 			if(!this.disabled&&this.mapping)
 			{
-				if(this.mapping.hasButtonMapping(event.code||event.key)||this.mapping.hasButtonAxisMapping(event.code||event.key))
+				if(this.mapping.hasButtonMapping(event.code||event.key||event.keyCode)||this.mapping.hasButtonAxisMapping(event.code||event.key||event.keyCode))
 				{
 					event.preventDefault();
 					event.stopPropagation();

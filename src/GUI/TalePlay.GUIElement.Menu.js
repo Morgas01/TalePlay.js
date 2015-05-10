@@ -71,6 +71,7 @@
 						var lastRowItems=this.menu.items.length%gridLayout.columns;
 						if(this.menu.active<=gridLayout.columns&&lastRowItems!==0)
 						{
+						
 							step=(lastRowItems>this.menu.active ? -lastRowItems : step-lastRowItems);
 						}
 					}

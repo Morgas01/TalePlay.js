@@ -168,6 +168,7 @@
 			
 			var activeQuests=this.gameSave.getQuests();
 			activeQuests.length=0;
+			
 			var saveQuests=save.getQuests();
         	for(var i=0;i<saveQuests.length;i++)
         	{

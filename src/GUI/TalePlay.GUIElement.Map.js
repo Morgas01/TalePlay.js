@@ -434,7 +434,6 @@
 			if(this.guiMap)
 			{
 				var size=this.map.getSize();
-
 				
 				//map boundary
 				var pos=this.rect.position.clone().add(this.offset);
@@ -469,7 +468,6 @@
 						{//is self or inside
 							continue;
 						}
-
 						rtn.collided=true;
 						if(rtn.distance.x>0&&this.rect.position.x+this.rect.size.x<=cImage.rect.position.x)
 						{
@@ -527,7 +525,6 @@
 			this.offset.set(json.offset);
 			this.speed.set(json.speed);
 			this.setUrls(json.urls);
-
 			this.viewRect.copy(this.rect)
 			.setPosition(json.viewOffset)
 			.setSize(json.viewSize);

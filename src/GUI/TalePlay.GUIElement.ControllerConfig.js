@@ -1,4 +1,3 @@
-
 (function(µ,SMOD,GMOD,HMOD){
 	
 	var SC=GMOD("shortcut")({
