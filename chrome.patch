@@ -1,5 +1,5 @@
 diff --git a/src/GUI/TalePlay.GUIElement.ControllerConfig.js b/src/GUI/TalePlay.GUIElement.ControllerConfig.js
-index d4272db..9d6cb3d 100644
+index 7e3cf87..7294b9e 100644
 --- a/src/GUI/TalePlay.GUIElement.ControllerConfig.js
 +++ b/src/GUI/TalePlay.GUIElement.ControllerConfig.js
 @@ -251,8 +251,8 @@
@@ -14,11 +14,11 @@ index d4272db..9d6cb3d 100644
  		},
  		onClick:function(event)
 diff --git a/src/GUI/TalePlay.GUIElement.Map.js b/src/GUI/TalePlay.GUIElement.Map.js
-index 4ee2a38..c89ead3 100644
+index eb96659..dca5919 100644
 --- a/src/GUI/TalePlay.GUIElement.Map.js
 +++ b/src/GUI/TalePlay.GUIElement.Map.js
-@@ -10,8 +10,8 @@
- 		point:"Math.Point"
+@@ -11,8 +11,8 @@
+ 		debug:"debug"
  	});
  	
 -	var cursorFilter= image => image instanceof GUI.Map.Cursor;
@@ -28,7 +28,7 @@ index 4ee2a38..c89ead3 100644
  	
  	GUI.Map=µ.Class(GUI,{
  		init:function(param)
-@@ -79,7 +79,7 @@
+@@ -80,7 +80,7 @@
  		},
  		updateSize:function()
  		{
@@ -37,7 +37,7 @@ index 4ee2a38..c89ead3 100644
  		},
  		setThreshold:function(numberOrPoint,y)
  		{
-@@ -96,8 +96,9 @@
+@@ -97,8 +97,9 @@
  			else if(!this.paused)
  			{
  				var now=Date.now();
@@ -48,7 +48,7 @@ index 4ee2a38..c89ead3 100644
  					data.lastTime=now-performance.timing.navigationStart;
  				}
  				this.animationRquest=requestAnimationFrame(this._animateCursor);
-@@ -159,8 +160,9 @@
+@@ -160,8 +161,9 @@
  		},
  		_animateCursor:function(time)
  		{
@@ -60,10 +60,10 @@ index 4ee2a38..c89ead3 100644
  	            if(data.animation)
  	            {
 diff --git a/src/GUI/TalePlay.GUIElement.Menu.js b/src/GUI/TalePlay.GUIElement.Menu.js
-index 82719df..17f96ec 100644
+index 63f935a..67e27bb 100644
 --- a/src/GUI/TalePlay.GUIElement.Menu.js
 +++ b/src/GUI/TalePlay.GUIElement.Menu.js
-@@ -135,18 +135,18 @@
+@@ -136,18 +136,18 @@
  			}
  			if(this.type===MENU.Types.GRID)
  			{
@@ -86,7 +86,7 @@ index 82719df..17f96ec 100644
  			}
  			if(index>-1)
  			{
-@@ -341,7 +341,7 @@
+@@ -342,7 +342,7 @@
  			this._updateActive();
  		}
  	});
@@ -96,10 +96,10 @@ index 82719df..17f96ec 100644
  		VERTICAL:1,
  		HORIZONTAL:2,
 diff --git a/src/RPGPlayer/TalePlay.RPGPlayer.js b/src/RPGPlayer/TalePlay.RPGPlayer.js
-index b5c4c35..4ba788c 100644
+index 967cda1..44c9bd6 100644
 --- a/src/RPGPlayer/TalePlay.RPGPlayer.js
 +++ b/src/RPGPlayer/TalePlay.RPGPlayer.js
-@@ -191,7 +191,8 @@
+@@ -189,7 +189,8 @@
  		},
  		setCursor:function(cursor)
  		{
@@ -109,7 +109,7 @@ index b5c4c35..4ba788c 100644
  			cursor.name=cursor.name||"";
  			cursor.collision=cursor.collision!==false;
  			this.gameSave.getCursor().fromJSON(cursor);
-@@ -204,7 +205,8 @@
+@@ -202,7 +203,8 @@
  			var clone=new SC.GameSave();
  			clone.fromJSON(JSON.parse(JSON.stringify(this.gameSave)));
  			var cursor=clone.getCursor();
@@ -120,11 +120,11 @@ index b5c4c35..4ba788c 100644
  			return clone;
  		},
 diff --git a/src/TalePlay.Controller.Gamepad.js b/src/TalePlay.Controller.Gamepad.js
-index 842b5e1..5ee29db 100644
+index 5499ed4..35985af 100644
 --- a/src/TalePlay.Controller.Gamepad.js
 +++ b/src/TalePlay.Controller.Gamepad.js
 @@ -13,6 +13,7 @@
- 			SC.rs.all(["update"],this);
+ 			SC.rs.all(this,["update"]);
  			
  			this.gamepad=gamepad;
 +			this.gamepadIndex=gamepad.index;
@@ -152,7 +152,7 @@ index 842b5e1..5ee29db 100644
  			this.pollKey=requestAnimationFrame(this.update);
  		},
 diff --git a/src/TalePlay.Controller.Keyboard.js b/src/TalePlay.Controller.Keyboard.js
-index ffa43e5..7641266 100644
+index a7d58cc..c234fd0 100644
 --- a/src/TalePlay.Controller.Keyboard.js
 +++ b/src/TalePlay.Controller.Keyboard.js
 @@ -51,13 +51,13 @@
@@ -212,10 +212,10 @@ index ffa43e5..7641266 100644
  		"axes": {}
  	};
 diff --git a/src/TalePlay.Layer.MapMaker.js b/src/TalePlay.Layer.MapMaker.js
-index 7d3eec8..b0eeeb1 100644
+index c761409..bc2d5bf 100644
 --- a/src/TalePlay.Layer.MapMaker.js
 +++ b/src/TalePlay.Layer.MapMaker.js
-@@ -154,7 +154,7 @@
+@@ -225,7 +225,7 @@
  						var reader=new FileReader();
  						reader.onload=function(e)
  						{
@@ -224,7 +224,7 @@ index 7d3eec8..b0eeeb1 100644
  						};
  						reader.readAsArrayBuffer(val);
  					}
-@@ -196,7 +196,8 @@
+@@ -267,7 +267,8 @@
          selectImage:function()
          {
              var pos=this.map.cursors[0].getPosition();
@@ -235,7 +235,7 @@ index 7d3eec8..b0eeeb1 100644
              {
                  new imageLayer({
 diff --git a/src/minigames/TimeStroke.js b/src/minigames/TimeStroke.js
-index 6e4c293..2b2ab81 100644
+index 370206a..202354e 100644
 --- a/src/minigames/TimeStroke.js
 +++ b/src/minigames/TimeStroke.js
 @@ -86,7 +86,7 @@
