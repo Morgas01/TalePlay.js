@@ -272,6 +272,10 @@
 			for(var i=0;i<actions.length;i++)
 			{
 				var a=actions[i];
+				if(a.condition&&!this.resolveContidion(a.condition))
+				{
+					continue;
+				}
 				var activeQuests=this.gameSave.getQuests();
 				var questIndex=null;
 				var quest=null;
@@ -317,6 +321,51 @@
 				}
 			}
 			return null;
+		},
+		resolveContidion:function(conditionString)
+		{
+			var rtn=false;
+			var conditions=conditionString.split("||");
+			for(var c=0;c<conditions.length&&!rtn;c++)
+			{
+				var aspectResult=true;
+				var aspects=conditions[c].split("&");
+				for(var a=0;a<aspects.length&&aspectResult;a++)
+				{
+					var terms=aspects[a].match(/(!?\w+)\s*:\s*([\w\s]*\w)/);
+					if(terms)
+					{
+						var negative=false;
+						if(terms[1][0]==="!")
+						{
+							negative=true;
+							terms[1]=terms[1].slice(1);
+						}
+						switch(terms[1])
+						{
+							case "quest":
+								var hasQuest=this.gameSave.getQuests().indexOf(terms[2])!==-1;
+								aspectResult=hasQuest&&!negative||!hasQuest&&negative;
+								break;
+							case "item":
+								break;
+							case "quest_item":
+								break;
+							default:
+								SC.debug.error("unknown term: "+aspects[a]);
+								aspectResult=false;
+								break;
+						}
+					}
+					else
+					{
+						SC.debug.error("invalid term: "+aspects[a]);
+						return false;
+					}
+				}
+				rtn=aspectResult;
+			}
+			return rtn;
 		}
     });
 	RPGPlayer.saveConverter=function(save,index)
