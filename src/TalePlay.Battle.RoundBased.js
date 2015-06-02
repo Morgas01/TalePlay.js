@@ -5,6 +5,11 @@
 	var LOGGER=GMOD("debug");
     var LISTENERS=GMOD("Listeners");
     
+    var SC=GMOD("shortcut")({
+    	PLAYER:"Character.Player",
+    	MONSTER:"Character.Monster"
+    });
+    
     TALE.Battle=µ.Class(LISTENERS,{
 
 		/**
@@ -23,6 +28,7 @@
     	init:function(allies,enemies,skills,areDefeated)
     	{
     		this.mega.apply(arguments);
+    		this.createListener(".playerTurn");
 
     		this.actions=[];
     		this.turnPromise=null;
@@ -39,28 +45,6 @@
     			timeMap.set(this.enemies[i],0);
     			this.maxSpeed=Math.max(this.maxSpeed,this.enemies[i].attributes.SPD);
     		}
-    	},
-    	
-    	/**
-    	 * @param {String} name
-    	 * @param {Character} user
-    	 * @param {(Character|Character[])} target
-    	 */
-    	executeSkill:function(name,user,target)
-    	{
-    		var skill=this.skills[name];
-    		var actions=skill(this,user,target);
-    		for(var i=0;i<actions.length;i++)
-    		{
-    			var a=actions[i];
-    			a=this.executeAction(a);
-    			if(a)
-    			{
-	    			a.doer=user;
-	    			this.fire(a.type,a);
-    			}
-    		}
-    		this.check();
     	},
     	
     	/**
@@ -123,7 +107,28 @@
     	},
     	doTurn:function(character)
     	{
-    		//TODO
+    		if(character instanceof SC.MONSTER)
+    		{
+    			character.ki(this); // execute skill
+    			this.next();
+    		}
+    		else
+    		{
+    			//TODO
+    			this.turnPromise=new SC.Promise(function(signal){
+	    			this.setState(".playerTurn",{
+	    				player:character,
+	    				signal:signal,
+	    				battle:this
+	    			});
+    			},[],this);
+    			this.turnPromise.complete(function(skillAndTarget){
+    				this.executeSkill(character,...skillAndTarget);
+    			}).always(function(){
+    				this.turnPromise=null;
+    				this.next();
+    			})
+    		}
     	}
     });
 	

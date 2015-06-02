@@ -103,4 +103,12 @@
 
 	// Theme
 	CSS(cssDir+"themes/TalePlay-classic.css");
+	
+	//Battle
+	WR(srcDir+"TalePlay.Battle.js");
+	WR(srcDir+"TalePlay.Attributes.js");
+	WR(srcDir+"TalePlay.Character.js");
+	WR(srcDir+"TalePlay.Skill.js");
+	
+	WR(testDir+"test.TalePlay.Battle.js");
 })();

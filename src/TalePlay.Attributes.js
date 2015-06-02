@@ -2,7 +2,7 @@
 
     var TALE=this.TalePlay=this.TalePlay||{};
 	
-	TALE.Attribues=µ.Class({
+	TALE.Attributes=µ.Class({
 		init:function(param)
 		{
 			this.mega();
@@ -15,7 +15,7 @@
 		},
 		add:function(param)
 		{
-			if(param instanceof TALE.Attribues)
+			if(param instanceof TALE.Attributes)
 			{
 				param=param.attr;
 			}
@@ -35,7 +35,7 @@
 		},
 		clone:function()
 		{
-			return new TALE.Attribues(this);
+			return new TALE.Attributes(this);
 		},
 		get:function(key)
 		{
@@ -47,6 +47,6 @@
 			return this.attr;
 		}
 	});
-	SMOD("Attribues",TALE.Attribues);
+	SMOD("Attributes",TALE.Attributes);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);

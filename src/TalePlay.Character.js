@@ -18,7 +18,7 @@
 		{
 			this.name=json.name||"";
 			this.life=new TALE.Energy(json.life);
-			this.attribues=new SC.ATTR(json.attribues);
+			this.attributes=new SC.ATTR(json.attributes);
 			this.skills=json.skills||[];
 		}
 	});
@@ -61,6 +61,6 @@
 			this.value-=value;
 			return this.clamp(true);
 		},
-	})
+	});
 	
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);

@@ -17,29 +17,31 @@
     	/**
     	 * @param {Character[]} allies
     	 * @param {Character[]} enemies
-    	 * @param {Object} skills - Object map of skill functions
     	 * @param {areDefeated} [areDefeated]
     	 */
-    	init:function(allies,enemies,skills,areDefeated)
+    	init:function(allies,enemies,areDefeated)
     	{
     		this.mega();
-    		this.createListener(".finish");
+    		this.createListener("skill action .finish");
     		
     		this.allies=allies;
     		this.enemies=enemies;
-    		this.skills=skills;
     		this.areDefeated=areDefeated||TALE.Battle.ALL_DEAD;
     	},
     	
     	/**
-    	 * @param {String} name
+    	 * @param {Skill} skill
     	 * @param {Character} user
     	 * @param {(Character|Character[])} target
     	 */
-    	executeSkill:function(name,user,target)
+    	executeSkill:function(skill,user,target)
     	{
-    		var skill=this.skills[name];
-    		var actions=skill(this,user,target);
+    		var actions=[].concat(skill.calcFn(this,user,target));
+    		this.fire("skill",{
+    			skill:skill,
+    			user:user,
+    			target:target
+    		});
     		for(var i=0;i<actions.length;i++)
     		{
     			var a=actions[i];
@@ -64,15 +66,16 @@
     		switch (action.type)
     		{
     			case "damage":
-    				target.life.sub(amount);
+    				action.target.life.sub(action.amount);
     				break;
     			case "heal":
-    				target.life.add(amount);
+    				action.target.life.add(action.amount);
     				break;
     			default:
     				LOGGER.warn(["unknown action type ",action.type]);
     				return null;
     		}
+    		this.fire("action",action);
     		return action;
     	},
     	check:function()
@@ -94,5 +97,6 @@
     	}
     	return true;
     };
+    SMOD("Battle",TALE.Battle);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
