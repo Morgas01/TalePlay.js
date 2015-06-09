@@ -1,16 +1,13 @@
 (function(µ,SMOD,GMOD,HMOD){
-	
-    var TALE=this.TalePlay=this.TalePlay||{};
 
 	var LOGGER=GMOD("debug");
-    var LISTENERS=GMOD("Listeners");
+    var BATTLE=GMOD("Battle");
     
     var SC=GMOD("shortcut")({
-    	PLAYER:"Character.Player",
     	MONSTER:"Character.Monster"
     });
     
-    TALE.Battle=µ.Class(LISTENERS,{
+    BATTLE.RoundBased=µ.Class(BATTLE,{
 
 		/**
 		 * @callback areDefeated
@@ -22,16 +19,14 @@
     	/**
     	 * @param {Character[]} allies
     	 * @param {Character[]} enemies
-    	 * @param {Object} skills - Object map of skill functions
     	 * @param {areDefeated} [areDefeated]
     	 */
-    	init:function(allies,enemies,skills,areDefeated)
+    	init:function(allies,enemies,areDefeated)
     	{
     		this.mega.apply(arguments);
     		this.createListener(".playerTurn");
 
     		this.actions=[];
-    		this.turnPromise=null;
     		
     		this.timeMap=new Map();
     		this.maxSpeed=0;
@@ -107,29 +102,30 @@
     	},
     	doTurn:function(character)
     	{
+			this.timeMap.set(character,0);
     		if(character instanceof SC.MONSTER)
     		{
     			character.ki(this); // execute skill
     			this.next();
     		}
     		else
-    		{
-    			//TODO
-    			this.turnPromise=new SC.Promise(function(signal){
+    		{//Player
+    			new SC.Promise(function(signal){
 	    			this.setState(".playerTurn",{
 	    				player:character,
 	    				signal:signal,
 	    				battle:this
 	    			});
-    			},[],this);
-    			this.turnPromise.complete(function(skillAndTarget){
+    			},[],this).complete(function(skillAndTarget){
     				this.executeSkill(character,...skillAndTarget);
     			}).always(function(){
     				this.turnPromise=null;
+    				this.resetState(".playerTurn");
     				this.next();
     			})
     		}
     	}
     });
+    SMOD("Battle.RoundBased",)
 	
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);

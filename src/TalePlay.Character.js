@@ -17,14 +17,13 @@
 		fromJSON:function(json)
 		{
 			this.name=json.name||"";
-			this.life=new TALE.Energy(json.life);
+			this.life=new TALE.Character.Energy(json.life);
 			this.attributes=new SC.ATTR(json.attributes);
-			this.skills=json.skills||[];
 		}
 	});
 	SMOD("Character",TALE.Character);
 	
-	TALE.Energy=µ.Class({
+	TALE.Character.Energy=µ.Class({
 		init:function(param)
 		{
 			this.fromJSON(param);
