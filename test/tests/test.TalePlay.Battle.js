@@ -6,7 +6,7 @@
 	var CHAR=GMOD("Character");
 	var SKILL=GMOD("Skill");
 	
-	var attack=new SKILL(function(battle,user,target)
+	var attack=new SKILL("attack",function(battle,user,target)
 	{
 		return {
 			type:"damage",

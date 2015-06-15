@@ -3,10 +3,23 @@
     var TALE=this.TalePlay=this.TalePlay||{};
 	
     TALE.Skill=µ.Class({
-    	init:function(calcFn,target)
+    	/**
+    	 * @callback Skill~calcFn
+    	 * @param {Battle} battle
+    	 * @param {Character} user
+    	 * @param {Character[]} target
+    	 */
+    	/**
+    	 * @param {Skill~calcFn} calcFn
+    	 * @param {Number} (target=Skill.Targets.SINGLE) - @see Skill.Targets
+    	 * @param {Object} (costs=null) - map of energy costs 
+    	 */
+    	init:function(name,calcFn,target,costs)
     	{
+    		this.name=name;
     		this.calcFn=calcFn;
-    		this.target=target;
+    		this.target=target||TALE.Skill.Targets.SINGLE;
+    		this.costs={};
     	}
     });
     TALE.Skill.Targets={

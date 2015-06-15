@@ -6,29 +6,31 @@
 		rs:"rescope",
 		RBB:"Battle.RoundBased",
 		CP:"GUI.CharacterPanel",
-		PBM:"GUI.PlayerBattleMenu",
+		PBM:"Menu.PlayerBattleMenu",
 	});
 	
 	Layer.RoundBasedBattle=µ.Class(Layer,{
     	/**
     	 * @param {Character[]} allies
     	 * @param {Character[]} enemies
-    	 * @param {areDefeated} [areDefeated]
+    	 * @param {areDefeated} (areDefeated)
     	 */
     	init:function(allies,enemies,areDefeated)
     	{
     		this.mega({mode:Layer.Modes.FOCUSED});
-			this.addStyleClass("RoundBasedBattle");
-			this.battle=new RBB(allies,enemies,areDefeated);
+			this.domElement.classList.add("RoundBasedBattle");
+			this.battle=new SC.RBB(allies,enemies,areDefeated);
 			this.battle.addListener(".playerTurn",this,this._playerTurn);
 			this.battle.addListener("action",this,this._action);
 			
 			this.domElement.innerHTML='<div class="visual"></div><div class="control"></div>';
 			this.controlDiv=this.domElement.childNodes[1];
 			
+			this.panelMap=new WeakMap();
 			for(var i=0;i<allies.length;i++)
 			{
-				this.add(new SC.CP(allies[i]),this.controlDiv);
+				this.panelMap.set(allies[i],new SC.CP(allies[i]));
+				this.add(this.panelMap.get(allies[i]),this.controlDiv);
 			}
 			
 			//start
@@ -36,12 +38,19 @@
 		},
 		_playerTurn:function(event)
 		{
-			this.focused=new SC.PBM(event)
+			var cp=this.panelMap.get(event.value.player);
+			cp.addStyleClass("active");
+			this.focused=new SC.PBM(event.value)
 			this.add(this.focused,this.controlDiv);
+			this.focused.addListener("destroy",this,function()
+			{
+				cp.removeStyleClass("active");
+				this.focused=null;
+			});
 		},
 		_action:function(event)
 		{
-			//TODO update gui
+			this.panelMap.get(event.target).update();
 			this.battle.next();
 		}
 	});

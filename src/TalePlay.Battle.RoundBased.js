@@ -4,7 +4,8 @@
     var BATTLE=GMOD("Battle");
     
     var SC=GMOD("shortcut")({
-    	MONSTER:"Character.Monster"
+    	MONSTER:"Character.Monster",
+    	Promise:"Promise"
     });
     
     BATTLE.RoundBased=µ.Class(BATTLE,{
@@ -23,22 +24,25 @@
     	 */
     	init:function(allies,enemies,areDefeated)
     	{
-    		this.mega.apply(arguments);
+    		this.mega.apply(this,arguments);
     		this.createListener(".playerTurn");
 
     		this.actions=[];
     		
     		this.timeMap=new Map();
     		this.maxSpeed=0;
+    		var speed=0;
     		for(var i=0;i<this.allies.length;i++)
     		{
-    			timeMap.set(this.allies[i],0);
-    			this.maxSpeed=Math.max(this.maxSpeed,this.allies[i].attributes.SPD);
+    			speed=this.allies[i].attributes.get("SPD")||0;
+    			this.timeMap.set(this.allies[i],speed);
+    			this.maxSpeed=Math.max(this.maxSpeed,speed);
     		}
     		for(var i=0;i<this.enemies.length;i++)
     		{
-    			timeMap.set(this.enemies[i],0);
-    			this.maxSpeed=Math.max(this.maxSpeed,this.enemies[i].attributes.SPD);
+    			speed=this.enemies[i].attributes.get("SPD")||0;
+    			this.timeMap.set(this.enemies[i],speed);
+    			this.maxSpeed=Math.max(this.maxSpeed,speed);
     		}
     	},
     	
@@ -70,12 +74,12 @@
     		{
     			this.executeAction(this.actions.shift());
     		}
-    		else if (this.turnPromise===null)
+    		else if (!this.getState(".playerTurn"))
     		{
     			var activeCharacter=this.getActiveCharacter();
     			if(activeCharacter==null)
     			{
-    				this.addTime;
+    				this.addTime();
     				activeCharacter=this.getActiveCharacter();
     			}
     			if(activeCharacter!==null) this.turnPromise=this.doTurn(activeCharacter);
@@ -126,6 +130,6 @@
     		}
     	}
     });
-    SMOD("Battle.RoundBased",)
+    SMOD("Battle.RoundBased",BATTLE.RoundBased);
 	
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);

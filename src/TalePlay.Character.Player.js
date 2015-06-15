@@ -14,6 +14,7 @@
 			
 			this.level=json.level;
 			this.exp=json.exp;
+			this.abilities=json.abilities
 		}
 	});
 	SMOD("Character.Player",CHAR.Player);

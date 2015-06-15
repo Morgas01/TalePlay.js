@@ -28,10 +28,13 @@
 	CHAR.Monster.KI={
 		random:function(battle)
 		{
+			/*
 			var index=Math.floor(Math.random()*this.skills.length);
 			var skill=this.skills[index];
-			var target=null;//TODO
+			var target=null;
 			battle.executeSkill(skill,this,target);
+			*/
+			//TODO
 		}
 	}
 	

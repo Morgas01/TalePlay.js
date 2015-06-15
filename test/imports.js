@@ -108,7 +108,18 @@
 	WR(srcDir+"TalePlay.Battle.js");
 	WR(srcDir+"TalePlay.Attributes.js");
 	WR(srcDir+"TalePlay.Character.js");
+	WR(srcDir+"TalePlay.Character.Energy.js");
 	WR(srcDir+"TalePlay.Skill.js");
 	
 	WR(testDir+"test.TalePlay.Battle.js");
+	
+	//RoundBasedBattle
+	WR(srcDir+"TalePlay.Character.Player.js");
+	WR(srcDir+"TalePlay.Character.Monster.js");
+	WR(srcDir+"TalePlay.Battle.RoundBased.js");
+	WR(guiDir+"TalePlay.GUIElement.CharacterPanel.js");
+	WR(guiDir+"TalePlay.GUIElement.Menu.PlayerBattleMenu.js");
+	WR(srcDir+"TalePlay.Layer.RoundBasedBattle.js");
+	
+	WR(testDir+"test.TalePlay.Layer.RoundBasedBattle.js");
 })();
