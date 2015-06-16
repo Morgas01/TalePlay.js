@@ -45,29 +45,6 @@
     			this.maxSpeed=Math.max(this.maxSpeed,speed);
     		}
     	},
-    	
-    	/**
-    	 * @param {Object} action
-    	 * @param {String} action.type
-    	 * @param {Number} action.amount
-    	 * @param {Character} action.target
-    	 */
-    	executeAction:function(action)
-    	{
-    		switch (action.type)
-    		{
-    			case "damage":
-    				target.life.sub(amount);
-    				break;
-    			case "heal":
-    				target.life.add(amount);
-    				break;
-    			default:
-    				LOGGER.warn(["unknown action type ",action.type]);
-    				return null;
-    		}
-    		return action;
-    	},
     	next:function()
     	{
     		if(this.actions.length>0)
@@ -101,7 +78,7 @@
     		for(var step=it.next();!step.done;step=it.next())
     		{
     			var [character,time]=step.value;
-    			this.timeMap.set(character,time+character.attributes.SPD);
+    			this.timeMap.set(character,time+character.attributes.get("SPD")||0);
     		}
     	},
     	doTurn:function(character)
@@ -121,7 +98,7 @@
 	    				battle:this
 	    			});
     			},[],this).complete(function(skillAndTarget){
-    				this.executeSkill(character,...skillAndTarget);
+    				this.executeSkill(skillAndTarget[0],character,skillAndTarget[1]);
     			}).always(function(){
     				this.turnPromise=null;
     				this.resetState(".playerTurn");

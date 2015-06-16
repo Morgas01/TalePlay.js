@@ -50,7 +50,8 @@
 		},
 		_action:function(event)
 		{
-			this.panelMap.get(event.target).update();
+			var cp=this.panelMap.get(event.target)
+			if(cp)cp.update();
 			this.battle.next();
 		}
 	});

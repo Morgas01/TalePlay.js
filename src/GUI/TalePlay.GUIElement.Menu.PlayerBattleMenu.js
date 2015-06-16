@@ -3,7 +3,8 @@
 	var MENU=GMOD("GUI.Menu");
 	
 	var SC=GMOD("shortcut")({
-		Skill:"Skill"
+		Skill:"Skill",
+		Character:"Character"
 	});
 	
 	var PBM=MENU.PlayerBattleMenu=µ.Class(MENU,{
@@ -20,6 +21,7 @@
 			this.actionSignal=param.signal;
 			this.battle=param.battle;
 			this.previous=[];
+			this.selectedSkill=null;
 			this._show(this.player.abilities);
 		},
 		_show:function(abilityGroup)
@@ -41,7 +43,20 @@
 		{
 			if(event.value instanceof SC.Skill)
 			{
-				this.actionSignal.resolve(event.value);
+				if(event.value.target===SC.Skill.Targets.SELF)
+				{
+					this.actionSignal.resolve([this.selectedSkill,this.player]);
+				}
+				else
+				{
+					this.selectedSkill=event.value;
+					this.previous.push(this.menu.items);
+					this._show({items:this.battle.enemies});
+				}
+			}
+			else if (this.selectedSkill&&event.value instanceof SC.Character)
+			{
+				this.actionSignal.resolve([this.selectedSkill,event.value]);
 				this.destroy();
 			}
 			else
@@ -55,7 +70,11 @@
 			if(event.value===1)
 			{
 				if(event.index===2) this.mega(event);
-				else if (event.index===1) this._show(this.previous.shift());
+				else if (event.index===1&&this.previous.length>0)
+				{
+					if(this.selectedSkill)this.selectedSkill=null;
+					this._show(this.previous.shift());
+				}
 			}
 		}
 	});
