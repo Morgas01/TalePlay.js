@@ -1,6 +1,6 @@
 (function(µ,SMOD,GMOD,HMOD){
 	
-	module("TalePlay.Battle");
+	module("Battle");
 	
 	var BATTLE=GMOD("Battle");
 	var CHAR=GMOD("Character");

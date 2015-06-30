@@ -15,6 +15,9 @@
 				converter:PBM.converter
 			});
 			
+			this.addStyleClass("PlayerBattleMenu");
+			this.addStyleClass("panel");
+			
 			this.addListener("select",this,"_onSelect");
 			
 			this.player=param.player;
@@ -51,6 +54,7 @@
 				{
 					this.selectedSkill=event.value;
 					this.previous.push(this.menu.items);
+					//TODO filter dead
 					this._show({items:this.battle.enemies});
 				}
 			}

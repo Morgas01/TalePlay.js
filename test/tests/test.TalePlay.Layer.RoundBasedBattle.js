@@ -52,7 +52,7 @@
 		
 		layer = new SC.RBB(allies,enemies);
 		board.addLayer(layer);
-		layer.battle.addListener(".finish:once",null,function(event){
+		layer.addListener(".finish:once",null,function(event){
 			console.log(event);
 			alert("win: "+event.value.win);
 		});

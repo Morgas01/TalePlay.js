@@ -120,6 +120,7 @@
 	WR(guiDir+"TalePlay.GUIElement.CharacterPanel.js");
 	WR(guiDir+"TalePlay.GUIElement.Menu.PlayerBattleMenu.js");
 	WR(srcDir+"TalePlay.Layer.RoundBasedBattle.js");
+	CSS(cssDir+"structure/Layer.RoundBasedBattle.css");
 	
 	WR(testDir+"test.TalePlay.Layer.RoundBasedBattle.js");
 })();

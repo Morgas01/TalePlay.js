@@ -20,9 +20,8 @@
     	/**
     	 * @param {Character[]} allies
     	 * @param {Character[]} enemies
-    	 * @param {areDefeated} [areDefeated]
     	 */
-    	init:function(allies,enemies,areDefeated)
+    	init:function(allies,enemies)
     	{
     		this.mega.apply(this,arguments);
     		this.createListener(".playerTurn");
@@ -78,7 +77,9 @@
     		for(var step=it.next();!step.done;step=it.next())
     		{
     			var [character,time]=step.value;
-    			this.timeMap.set(character,time+character.attributes.get("SPD")||0);
+    			if (BATTLE.isDead(character)) time=0;
+    			else time+=character.attributes.get("SPD")||0;
+    			this.timeMap.set(character,time);
     		}
     	},
     	doTurn:function(character)

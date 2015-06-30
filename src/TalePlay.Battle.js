@@ -19,14 +19,13 @@
     	 * @param {Character[]} enemies
     	 * @param {areDefeated} [areDefeated]
     	 */
-    	init:function(allies,enemies,areDefeated)
+    	init:function(allies,enemies)
     	{
     		this.mega();
     		this.createListener("skill action .finish");
     		
     		this.allies=allies;
     		this.enemies=enemies;
-    		this.areDefeated=areDefeated||TALE.Battle.ALL_DEAD;
     	},
     	
     	/**
@@ -80,22 +79,22 @@
     	},
     	check:function()
     	{
-    		var win=this.areDefeated(this.allies) ? false : (this.areDefeated(this.enemies) ? true : null);
-    		if(win!==null)
+    		var win=TALE.Battle.areDead(this.allies)*2-TALE.Battle.areDead(this.enemies);
+    		if(win!==0)
     		{
     			this.setState(".finish",{
-	    			win:win
+	    			win:win==-1
 	    		});
     		}
     	}
     });
-    TALE.Battle.ALL_DEAD=function(group)
+    TALE.Battle.isDead=function(character)
     {
-    	for(var i=0;i<group.length;i++)
-    	{
-    		if(group[i].life.value>0)return false;
-    	}
-    	return true;
+    	return character.life.value<=0;
+    };
+    TALE.Battle.areDead=function(group)
+    {
+    	return group.reduce((a,b)=>a&&TALE.Battle.isDead(b),true);
     };
     SMOD("Battle",TALE.Battle);
 	

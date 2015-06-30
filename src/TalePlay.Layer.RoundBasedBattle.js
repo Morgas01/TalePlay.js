@@ -22,15 +22,23 @@
 			this.battle=new SC.RBB(allies,enemies,areDefeated);
 			this.battle.addListener(".playerTurn",this,this._playerTurn);
 			this.battle.addListener("action",this,this._action);
+			this.listeners[".finish"]=this.battle.listeners[".finish"];
 			
-			this.domElement.innerHTML='<div class="visual"></div><div class="control"></div>';
-			this.controlDiv=this.domElement.childNodes[1];
+			this.domElement.innerHTML='</div><div class="enemies"></div><div class="visual"></div><div class="allies"></div>';
+			this.enemiesDiv=this.domElement.childNodes[0];
+			this.visualDiv=this.domElement.childNodes[1];
+			this.alliesDiv=this.domElement.childNodes[2];
 			
 			this.panelMap=new WeakMap();
+			for(var i=0;i<enemies.length;i++)
+			{
+				this.panelMap.set(enemies[i],new SC.CP(enemies[i]));
+				this.add(this.panelMap.get(enemies[i]),this.enemiesDiv);
+			}
 			for(var i=0;i<allies.length;i++)
 			{
 				this.panelMap.set(allies[i],new SC.CP(allies[i]));
-				this.add(this.panelMap.get(allies[i]),this.controlDiv);
+				this.add(this.panelMap.get(allies[i]),this.alliesDiv);
 			}
 			
 			//start
@@ -41,7 +49,7 @@
 			var cp=this.panelMap.get(event.value.player);
 			cp.addStyleClass("active");
 			this.focused=new SC.PBM(event.value)
-			this.add(this.focused,this.controlDiv);
+			this.add(this.focused,this.visualDiv);
 			this.focused.addListener("destroy",this,function()
 			{
 				cp.removeStyleClass("active");
@@ -53,6 +61,12 @@
 			var cp=this.panelMap.get(event.target)
 			if(cp)cp.update();
 			this.battle.next();
+		},
+		destroy:function()
+		{
+			delete this.listeners[".finish"];
+			this.battle.destroy();
+			this.mega();
 		}
 	});
 	

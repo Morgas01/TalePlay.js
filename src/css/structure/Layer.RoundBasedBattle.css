@@ -1,0 +1,11 @@
+.RoundBasedBattle {
+	display:flex;
+	flex-direction:column;
+}
+.RoundBasedBattle .enemies, .RoundBasedBattle .allies {
+	display: flex;
+}
+.RoundBasedBattle .visual {
+	flex-grow:1;
+	position:relative;
+}
