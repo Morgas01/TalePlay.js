@@ -15,6 +15,7 @@
 			param.element="fieldset";
 			
 			this.mega(param);
+			this.addStyleClass("Dialog");
 			this.createListener("dialogEnd");
 			
 			this.legend=document.createElement("legend");
