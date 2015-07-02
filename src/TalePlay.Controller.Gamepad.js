@@ -37,7 +37,7 @@
 		setDisabled:function(disabled)
 		{
 			this.mega(disabled);
--			if(disabled)
+			if(disabled)
 			{
 				cancelAnimationFrame(this.pollKey);
 			}

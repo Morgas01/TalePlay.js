@@ -94,7 +94,7 @@
     };
     TALE.Battle.areDead=function(group)
     {
-    	return group.reduce((a,b)=>a&&TALE.Battle.isDead(b),true);
+    	return group.reduce(function(a,b){return a&&TALE.Battle.isDead(b)},true);
     };
     SMOD("Battle",TALE.Battle);
 	

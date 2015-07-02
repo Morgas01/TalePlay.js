@@ -66,7 +66,7 @@
     		var it=this.timeMap.entries();
     		for(var step=it.next();!step.done;step=it.next())
     		{
-    			var [character,time]=step.value;
+    			var character=step.value[0],time=step.value[1];
     			if(time>=this.maxSpeed) return character;
     		}
     		return null;
@@ -76,7 +76,7 @@
     		var it=this.timeMap.entries();
     		for(var step=it.next();!step.done;step=it.next())
     		{
-    			var [character,time]=step.value;
+				var character=step.value[0],time=step.value[1];
     			if (BATTLE.isDead(character)) time=0;
     			else time+=character.attributes.get("SPD")||0;
     			this.timeMap.set(character,time);
