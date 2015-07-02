@@ -85,5 +85,20 @@
 				]
 			}
 		]
+	},
+	"d3":{
+		"dialogParts":[
+			{
+				"title":"Guard",
+				"bottom":"30%",
+				"left":"30%",
+				"right":"30%",
+				"parts":[
+					{
+						"text":"Go to the orange square"
+					}
+				]
+			}
+		]
 	}
 }

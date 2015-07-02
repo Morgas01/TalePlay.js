@@ -34,7 +34,7 @@
 	WR(morgasDir+"Morgas.Detached.js");
 	WR(morgasDir+"Morgas.Promise.js");
 	WR(morgasDir+"DB/Morgas.DB.js");
-	WR(morgasDir+"Morgas.util.request.js");
+	WR(morgasDir+"Morgas.util.Request.js");
 
 	WR(srcDir+"TalePlay.Board.js");
 	WR(srcDir+"TalePlay.Layer.js");
@@ -103,4 +103,24 @@
 
 	// Theme
 	CSS(cssDir+"themes/TalePlay-classic.css");
+	
+	//Battle
+	WR(srcDir+"TalePlay.Battle.js");
+	WR(srcDir+"TalePlay.Attributes.js");
+	WR(srcDir+"TalePlay.Character.js");
+	WR(srcDir+"TalePlay.Character.Energy.js");
+	WR(srcDir+"TalePlay.Skill.js");
+	
+	WR(testDir+"test.TalePlay.Battle.js");
+	
+	//RoundBasedBattle
+	WR(srcDir+"TalePlay.Character.Player.js");
+	WR(srcDir+"TalePlay.Character.Monster.js");
+	WR(srcDir+"TalePlay.Battle.RoundBased.js");
+	WR(guiDir+"TalePlay.GUIElement.CharacterPanel.js");
+	WR(guiDir+"TalePlay.GUIElement.Menu.PlayerBattleMenu.js");
+	WR(srcDir+"TalePlay.Layer.RoundBasedBattle.js");
+	CSS(cssDir+"structure/Layer.RoundBasedBattle.css");
+	
+	WR(testDir+"test.TalePlay.Layer.RoundBasedBattle.js");
 })();

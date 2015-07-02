@@ -51,7 +51,7 @@
 					this.stepID=null;
 				}
 				this.stepDirection=direction;
-				var step=this._stepActive();
+				this._stepActive();
 			}
 		},
 		_stepActive:function()

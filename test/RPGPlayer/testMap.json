@@ -248,7 +248,13 @@
 					{
 						"type": "CHANGE_MAP",
 						"mapName": "testMap2",
-						"position": {"x": 200,"y": 50}
+						"position": {"x": 200,"y": 50},
+						"condition": "!quest:Quest 2"
+					},
+					{
+						"type": "SHOW_DIALOG",
+						"dialogName": "d3",
+						"condition": "quest:Quest 2"
 					}
 				]
 			}

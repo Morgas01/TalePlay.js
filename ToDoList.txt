@@ -2,6 +2,7 @@ GUI.Map.Cursor.Animation:
 	-	wait function
 
 GUI.Map:
+	-	map evolve (doors,keys,switches...)
 	-	viewport follow or manual
 	-	push objects
 	-	colision improvement
