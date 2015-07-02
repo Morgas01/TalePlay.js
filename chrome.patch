@@ -1,15 +1,15 @@
 diff --git a/src/GUI/TalePlay.GUIElement.ControllerConfig.js b/src/GUI/TalePlay.GUIElement.ControllerConfig.js
-index 7e3cf87..7294b9e 100644
+index 677df11..8fb7188 100644
 --- a/src/GUI/TalePlay.GUIElement.ControllerConfig.js
 +++ b/src/GUI/TalePlay.GUIElement.ControllerConfig.js
 @@ -251,8 +251,8 @@
  				event.stopPropagation();
  				
  				var input=event.target;
--				input.value=event.code||event.key;
--				input.title=getTitle(event.code||event.key);
-+				input.value=event.code||event.key||event.keyCode;
-+				input.title=getTitle(event.code||event.key||event.keyCode);
+-				input.value=event.code;
+-				input.title=getTitle(event.code);
++				input.value=event.code||event.keyCode;
++				input.title=getTitle(event.code||event.keyCode);
  			}
  		},
  		onClick:function(event)
@@ -60,7 +60,7 @@ index eb96659..dca5919 100644
  	            if(data.animation)
  	            {
 diff --git a/src/GUI/TalePlay.GUIElement.Menu.js b/src/GUI/TalePlay.GUIElement.Menu.js
-index 63f935a..67e27bb 100644
+index 3ae334b..047cb5e 100644
 --- a/src/GUI/TalePlay.GUIElement.Menu.js
 +++ b/src/GUI/TalePlay.GUIElement.Menu.js
 @@ -136,18 +136,18 @@
@@ -96,14 +96,13 @@ index 63f935a..67e27bb 100644
  		VERTICAL:1,
  		HORIZONTAL:2,
 diff --git a/src/Morgas b/src/Morgas
-index cef8a8e..8d19604 160000
 --- a/src/Morgas
 +++ b/src/Morgas
 @@ -1 +1 @@
--Subproject commit cef8a8e7c1195c2ffb04a9efae13e21499f2bf13
-+Subproject commit 8d196046a4606ce4cec1dcc4b7f1eb7611f35d34
+-Subproject commit 8d196046a4606ce4cec1dcc4b7f1eb7611f35d34
++Subproject commit 8d196046a4606ce4cec1dcc4b7f1eb7611f35d34-dirty
 diff --git a/src/RPGPlayer/TalePlay.RPGPlayer.js b/src/RPGPlayer/TalePlay.RPGPlayer.js
-index 967cda1..44c9bd6 100644
+index b5faeb3..802550f 100644
 --- a/src/RPGPlayer/TalePlay.RPGPlayer.js
 +++ b/src/RPGPlayer/TalePlay.RPGPlayer.js
 @@ -189,7 +189,8 @@
@@ -126,8 +125,43 @@ index 967cda1..44c9bd6 100644
  			
  			return clone;
  		},
+diff --git a/src/TalePlay.Battle.RoundBased.js b/src/TalePlay.Battle.RoundBased.js
+index 8a12f4a..72365d2 100644
+--- a/src/TalePlay.Battle.RoundBased.js
++++ b/src/TalePlay.Battle.RoundBased.js
+@@ -66,7 +66,7 @@
+     		var it=this.timeMap.entries();
+     		for(var step=it.next();!step.done;step=it.next())
+     		{
+-    			var [character,time]=step.value;
++    			var character=step.value[0],time=step.value[1];
+     			if(time>=this.maxSpeed) return character;
+     		}
+     		return null;
+@@ -76,7 +76,7 @@
+     		var it=this.timeMap.entries();
+     		for(var step=it.next();!step.done;step=it.next())
+     		{
+-    			var [character,time]=step.value;
++				var character=step.value[0],time=step.value[1];
+     			if (BATTLE.isDead(character)) time=0;
+     			else time+=character.attributes.get("SPD")||0;
+     			this.timeMap.set(character,time);
+diff --git a/src/TalePlay.Battle.js b/src/TalePlay.Battle.js
+index 7c832b6..248d3c1 100644
+--- a/src/TalePlay.Battle.js
++++ b/src/TalePlay.Battle.js
+@@ -94,7 +94,7 @@
+     };
+     TALE.Battle.areDead=function(group)
+     {
+-    	return group.reduce((a,b)=>a&&TALE.Battle.isDead(b),true);
++    	return group.reduce(function(a,b){return a&&TALE.Battle.isDead(b)},true);
+     };
+     SMOD("Battle",TALE.Battle);
+ 	
 diff --git a/src/TalePlay.Board.js b/src/TalePlay.Board.js
-index f52a691..9213163 100644
+index f52a691..3480ae6 100644
 --- a/src/TalePlay.Board.js
 +++ b/src/TalePlay.Board.js
 @@ -86,7 +86,7 @@
@@ -172,28 +206,28 @@ index 5499ed4..032cb40 100644
  			this.pollKey=requestAnimationFrame(this.update);
  		},
 diff --git a/src/TalePlay.Controller.Keyboard.js b/src/TalePlay.Controller.Keyboard.js
-index a7d58cc..c234fd0 100644
+index d78351b..b371a01 100644
 --- a/src/TalePlay.Controller.Keyboard.js
 +++ b/src/TalePlay.Controller.Keyboard.js
 @@ -51,13 +51,13 @@
  		{
  			if(!this.disabled&&this.mapping)
  			{
--				if(this.mapping.hasButtonMapping(event.code||event.key)||this.mapping.hasButtonAxisMapping(event.code||event.key))
-+				if(this.mapping.hasButtonMapping(event.code||event.key||event.keyCode)||this.mapping.hasButtonAxisMapping(event.code||event.key||event.keyCode))
+-				if(this.mapping.hasButtonMapping(event.code)||this.mapping.hasButtonAxisMapping(event.code))
++				if(this.mapping.hasButtonMapping(event.code||event.keyCode)||this.mapping.hasButtonAxisMapping(event.code||event.keyCode))
  				{
  					event.preventDefault();
  					event.stopPropagation();
  					
  					var map={};
--					map[event.code||event.key]=value;
-+					map[event.code||event.key||event.keyCode]=value;
+-					map[event.code]=value;
++					map[event.code||event.keyCode]=value;
  					this.setButton(map);
  				}
  			}
 @@ -79,7 +79,19 @@
- 			" ": "0",
- 			"Shift": "1",
+ 			"Numpad5": "6",
+ 			"Numpad6": "7",
  			"Pause": "8",
 -			"Enter": "9"
 +			"Enter": "9",
@@ -211,14 +245,14 @@ index a7d58cc..c234fd0 100644
 +			"102": "7",
  		},
  		"buttonAxis": {
- 			"w": "1",
+ 			"KeyW": "1",
 @@ -89,7 +101,17 @@
- 			"Up": "3",
- 			"Right": "2",
- 			"Down": "-3",
--			"Left": "-2"
-+			"Left": "-2",
-+			
+ 			"ArrowUp": "3",
+ 			"ArrowRight": "2",
+ 			"ArrowDown": "-3",
+-			"ArrowLeft": "-2"
++			"ArrowLeft": "-2",
++
 +			//chrome keyCode
 +			"37": "-2",
 +			"38": "3",
