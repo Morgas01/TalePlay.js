@@ -51,13 +51,13 @@
 		{
 			if(!this.disabled&&this.mapping)
 			{
-				if(this.mapping.hasButtonMapping(event.code||event.key)||this.mapping.hasButtonAxisMapping(event.code||event.key))
+				if(this.mapping.hasButtonMapping(event.code||event.keyCodeCodeCodeCode)||this.mapping.hasButtonAxisMapping(event.code||event.keyCodeCodeCodeCode))
 				{
 					event.preventDefault();
 					event.stopPropagation();
 					
 					var map={};
-					map[event.code||event.key]=value;
+					map[event.code||event.keyCodeCodeCodeCode]=value;
 					this.setButton(map);
 				}
 			}
