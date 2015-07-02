@@ -34,7 +34,7 @@
 	WR(morgasDir+"Morgas.Detached.js");
 	WR(morgasDir+"Morgas.Promise.js");
 	WR(morgasDir+"DB/Morgas.DB.js");
-	WR(morgasDir+"Morgas.util.request.js");
+	WR(morgasDir+"Morgas.util.Request.js");
 
 	WR(srcDir+"TalePlay.Board.js");
 	WR(srcDir+"TalePlay.Layer.js");
