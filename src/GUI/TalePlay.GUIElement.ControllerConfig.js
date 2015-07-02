@@ -251,8 +251,8 @@
 				event.stopPropagation();
 				
 				var input=event.target;
-				input.value=event.code||event.keyCodeCodeCodeCode;
-				input.title=getTitle(event.code||event.keyCodeCodeCodeCode);
+				input.value=event.code||event.keyCode;
+				input.title=getTitle(event.code||event.keyCode);
 			}
 		},
 		onClick:function(event)

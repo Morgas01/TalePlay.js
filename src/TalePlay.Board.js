@@ -86,7 +86,7 @@
 		{
 			if(!this.disabled&&this.layers.length>0)
 			{
-				var args=Array.slice(arguments);
+				var args=Array.prototype.slice(arguments);
 				event.player=null;
 				for(var i=this.controllers.length-1;i>=0;i--)
 				{
