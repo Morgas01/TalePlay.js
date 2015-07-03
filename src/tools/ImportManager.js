@@ -1,7 +1,13 @@
-window.addEventListener("load",function(){
+new µ.Promise([µ.util.Request.json("../Morgas/src/Morgas.Dependencies.json"),µ.util.Request.json("../TalePlay.Dependencies.json"),function(signal)
+{
+	window.addEventListener("load",signal.resolve);
+}]).then(function(mDeps,tDeps){
 
+	var resolver=new µ.DependencyResolver();
+	resolver.addConfig(mDeps);
+	resolver.addConfig(tDeps);
     var html='';
-    for(var i in TalePlay.dependencies.config)
+    for(var i in resolver.config)
     {
         html+='<label><input type="checkbox" value="'+i+'">'+i+'</label>';
     }
@@ -13,7 +19,7 @@ window.addEventListener("load",function(){
         var values=Array.map(document.querySelectorAll('[type="checkbox"]:checked'),function(val){return val.value});
         if(values)
         {
-            var resolved=TalePlay.dependencies.resolve(values);
+            var resolved=resolver.resolve(values);
             for(var i=0;i<resolved.length;i++)
         	{
             	var checkbox=document.querySelector('[type="checkbox"][value="'+resolved[i]+'"]:not(:checked)');
@@ -25,6 +31,7 @@ window.addEventListener("load",function(){
             });
             document.getElementById("result").value=resolved.map(function(v)
             {
+				if(v in mDeps) v="Morgas/src/"+v;
                 if(v.endsWith(".css"))
                 {
                     return '<link rel="stylesheet" href="'+prefix+v+'">'

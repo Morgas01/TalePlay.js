@@ -1,12 +1,15 @@
 
 var MORGASPATH="./src/Morgas/";
 
-require(MORGASPATH+"./src/Morgas.js");
-require(MORGASPATH+"./src/Morgas.DependencyResolver.js");
-require(MORGASPATH+"./src/Morgas.Dependencies.js");
-require("./src/TalePlay.Dependencies.js");
-
+require(MORGASPATH+"src/Morgas.js");
+require(MORGASPATH+"src/Morgas.DependencyResolver.js");
 µ.debug.verbose=µ.debug.LEVEL.DEBUG;
+
+var mDeps=require(MORGASPATH+"src/Morgas.Dependencies.json");
+var tDeps=require("./src/TalePlay.Dependencies.json");
+var resolver=new µ.DependencyResolver();
+resolver.addConfig(mDeps);
+resolver.addConfig(tDeps);
 
 var fs=require("fs");
 
@@ -31,12 +34,17 @@ var FILE_ENCODING = 'utf-8',EOL = '\n';
 var createPackage=function(name,sources)
 {
 	µ.debug("Package: "+name,µ.debug.LEVEL.INFO);
-	var packageFiles=TalePlay.dependencies.resolve(sources);
+	var packageFiles=resolver.resolve(sources).map(function(a)
+	{
+		if(a in mDeps)return "Morgas/src/"+a;
+		return a;
+	});
 	var packageJsFiles=packageFiles.filter(function(f){return f.indexOf(".css")===-1;})
 	.map(function(f)
 	{
 		var file=__dirname+"/src/"+f;
-		return "//"+f+EOL+fs.readFileSync(file, FILE_ENCODING);
+		return "//"+f+EOL+
+			fs.readFileSync(file, FILE_ENCODING);
 	})
 	.join(EOL);
 	fs.writeFileSync(__dirname+"/build/"+name+".js",packageJsFiles);
@@ -56,10 +64,10 @@ var createPackage=function(name,sources)
 	fs.writeFileSync(__dirname+"/build/"+name+".css",packageCssFiles);
 };
 
-var files=Object.keys(TalePlay.dependencies.config);
+var files=Object.keys(tDeps);
 for(var i=0;i<files.length;i++)
 {
-	if(files[i].indexOf("Morgas/")!==0&&files[i].indexOf(".css")===-1)
+	if(files[i].indexOf(".css")===-1)
 	{
 		try{
 			minify(files[i]);
@@ -80,6 +88,6 @@ var basic_package=[
 	"Math/TalePlay.Math.Point.js",
 	"Math/TalePlay.Math.Rect.js"
 ];
-createPackage("TalePlay_FULL",Object.keys(TalePlay.dependencies.config));
+createPackage("TalePlay_FULL",Object.keys(resolver.config));
 createPackage("TalePlay_RPGPlayer",basic_package.concat("RPGPlayer/TalePlay.RPGPlayer.js"));
 createPackage("TalePlay_MapMaker",basic_package.concat("TalePlay.Layer.MapMaker.js"));
