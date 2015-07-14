@@ -16,4 +16,5 @@ NEW:
 	 cutscenes
 	 dialog maker
 	 battle
-	 threefold save 
+	 threefold save
+	 gamepad detection + set mapping
