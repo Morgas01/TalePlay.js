@@ -34,7 +34,9 @@
 				"move",
 				"getImages",
 				"getSize",
-				"update"
+				"update",
+				"getPositionOnViewport",
+				"getPositionOnMap",
 			],this);
 			
         	this.organizer=new SC.Org()

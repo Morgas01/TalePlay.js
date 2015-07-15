@@ -164,6 +164,7 @@
 		{
 			param=param||{};
 			this.mega();
+			SC.rs.all(this,["onClick"]);
 			this.domElement.classList.add("MapMaker");
 			if(param.board)
 			{
@@ -173,6 +174,7 @@
 			this.map=new SC.Map({
 				cursors:new SC.Map.Cursor(param.cursorImage||"../Images/cursor_target.svg",0,{x:100,y:100},{x:50,y:50})
 			});
+			this.map.domElement.addEventListener("click",this.onClick,true);
 			this.add(this.map);
 			this.images=new SC.Menu({
 				styleClass:["images","panel"],
@@ -201,7 +203,7 @@
                     switch(event.index)
                     {
                     	case 0:
-                    		this.selectImage(event);
+                    		this.selectImage();
                     		break;
                     	case 1:
                     		this.GUIElements[1].onButton(event);
@@ -210,6 +212,10 @@
                     		this.cloneImage(event);
                     }
 			}
+		},
+		onClick:function(event)
+		{
+			this.selectImage(event);
 		},
 		addImages:function(imageSrc)
 		{
@@ -264,9 +270,14 @@
                 onAction:this.imageLayerParam.onAction,
            });
 		},
-        selectImage:function()
+        selectImage:function(clickEvent)
         {
-            var pos=this.map.cursors[0].getPosition();
+            var pos=null;
+            if (clickEvent)
+            {
+            	pos=this.map.getPositionOnMap(new SC.Point(clickEvent.clientX,clickEvent.clientY).sub(this.map.domElement.getBoundingClientRect()));
+            }
+            else pos=this.map.cursors[0].getPosition();
             var image=this.map.getImages(val => val!==this.map.cursors[0]&&val.rect.contains(pos))[0];
             if(image)
             {

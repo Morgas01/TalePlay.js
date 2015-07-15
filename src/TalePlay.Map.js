@@ -99,6 +99,16 @@
         {
             return SC.find(this.images,pattern,true);
         },
+        getPositionOnViewport:function(numberOrPoint,y)
+        {
+            var b=this.domElement.getBoundingClientRect();
+            return this.position.clone().negate().add(numberOrPoint,y).add(b.width/2,b.height/2);
+        },
+        getPositionOnMap:function(numberOrPoint,y)
+        {
+            var b=this.domElement.getBoundingClientRect();
+            return this.position.clone().add(numberOrPoint,y).sub(b.width/2,b.height/2);
+        },
         getSize:function()
         {
         	return this.size;
