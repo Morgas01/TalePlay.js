@@ -8,7 +8,8 @@
 		getIn:"getInputValues",
 		Map:"GUI.Map",
 		Menu:"GUI.Menu",
-		Point:"Math.Point"
+		Point:"Math.Point",
+		Rect:"Math.Rect"
 	});
 	
 	//inner class
@@ -164,7 +165,7 @@
 		{
 			param=param||{};
 			this.mega();
-			SC.rs.all(this,["onClick"]);
+			SC.rs.all(this,["onClick","onMouseDown"]);
 			this.domElement.classList.add("MapMaker");
 			if(param.board)
 			{
@@ -174,7 +175,8 @@
 			this.map=new SC.Map({
 				cursors:new SC.Map.Cursor(param.cursorImage||"../Images/cursor_target.svg",0,{x:100,y:100},{x:50,y:50})
 			});
-			this.map.domElement.addEventListener("click",this.onClick,true);
+			this.map.domElement.addEventListener("click",this.onClick,false);
+			this.map.domElement.addEventListener("mousedown",this.onMouseDown,false);
 			this.add(this.map);
 			this.images=new SC.Menu({
 				styleClass:["images","panel"],
@@ -321,6 +323,37 @@
             		image:image
             	});
             }
+        },
+        onMouseDown:function(downEvent)
+        {
+        	var map=this.map, el=map.domElement, dragging=false, box=null, cursor=map.cursors[0];
+        	el.setCapture();
+			el.addEventListener("mousemove",function onMove (moveEvent) 
+			{
+				if(!dragging)
+				{
+					var x=downEvent.clientX-moveEvent.clientX,y=downEvent.clientY-moveEvent.clientY;
+					if(x*x+y*y>20*20)
+					{
+						dragging=true;
+						el.addEventListener("mouseup",function onUp (upEvent)
+						{
+							el.removeEventListener("mousemove",onMove,false);
+							el.removeEventListener("mouseup",onUp,false);
+							
+							var area=new SC.Rect(downEvent,upEvent);
+							
+							var selectedImages=map.getImages(val => val!==cursor&&area.containsRect(val.rect)[0];
+						},false);
+						box=document.createElement("div");
+						box.classList.add("marker");
+					}
+				}
+				else
+				{
+					
+				}
+			},false);
         },
 		toJSON:function()
 		{
