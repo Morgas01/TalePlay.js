@@ -5,6 +5,11 @@
 .MapMaker .Map {
 	flex-shrink:1;
 }
+.MapMaker .Map .marker{
+    position: absolute;
+	border: 1px solid white;
+    box-shadow: 1px 1px;
+}
 .MapMaker .images {
 	width:200px;
 	height: 100%;

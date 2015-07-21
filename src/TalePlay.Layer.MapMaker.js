@@ -269,7 +269,7 @@
                 
                 getTriggerValueHTML:this.imageLayerParam.getTriggerValueHTML,
                 getTriggerValue:this.imageLayerParam.getTriggerValue,
-                onAction:this.imageLayerParam.onAction,
+                onAction:this.imageLayerParam.onAction
            });
 		},
         selectImage:function(clickEvent)
@@ -306,7 +306,7 @@
 	                
 	                getTriggerValueHTML:this.imageLayerParam.getTriggerValueHTML,
 	                getTriggerValue:this.imageLayerParam.getTriggerValue,
-	                onAction:this.imageLayerParam.onAction,
+	                onAction:this.imageLayerParam.onAction
 	           });
             }
         },
@@ -326,32 +326,42 @@
         },
         onMouseDown:function(downEvent)
         {
-        	var map=this.map, el=map.domElement, dragging=false, box=null, cursor=map.cursors[0];
+        	var map=this.map, el=map.domElement, dragging=false, box=null, cursor=map.cursors[0], cr=el.getBoundingClientRect(),area=new SC.Rect();
         	el.setCapture();
+			downEvent.preventDefault();
 			el.addEventListener("mousemove",function onMove (moveEvent) 
 			{
+				moveEvent.preventDefault();
 				if(!dragging)
 				{
 					var x=downEvent.clientX-moveEvent.clientX,y=downEvent.clientY-moveEvent.clientY;
 					if(x*x+y*y>20*20)
 					{
 						dragging=true;
-						el.addEventListener("mouseup",function onUp (upEvent)
-						{
-							el.removeEventListener("mousemove",onMove,false);
-							el.removeEventListener("mouseup",onUp,false);
-							
-							var area=new SC.Rect(downEvent,upEvent);
-							
-							var selectedImages=map.getImages(val => val!==cursor&&area.containsRect(val.rect)[0];
-						},false);
 						box=document.createElement("div");
 						box.classList.add("marker");
+						el.appendChild(box);
+						el.addEventListener("mouseup",function onUp (upEvent)
+						{
+							upEvent.preventDefault();
+							box.remove();
+							el.removeEventListener("mousemove",onMove,false);
+							el.removeEventListener("mouseup",onUp,false);
+
+							area.setPosition(map.getPositionOnMap(area.position));
+							var selectedImages=map.getImages(val => val!==cursor&&area.containsRect(val.rect));
+							console.log(selectedImages);
+						},false);
 					}
 				}
 				else
 				{
-					
+					area.setAbsolute(downEvent.clientX,downEvent.clientY,moveEvent.clientX,moveEvent.clientY);
+					area.position.sub(cr);
+					box.style.top=area.position.y+"px";
+					box.style.left=area.position.x+"px";
+					box.style.height=area.size.y+"px";
+					box.style.width=area.size.x+"px";
 				}
 			},false);
         },

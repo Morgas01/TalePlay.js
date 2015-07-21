@@ -42,7 +42,7 @@
 			var _x1=Math.min(x1,x2),
 			_y1=Math.min(y1,y2),
 			_x2=Math.max(x1,x2),
-			_y=Math.max(y1,y2);
+			_y2=Math.max(y1,y2);
 			this.set(_x1, _y1, _x2-_x1, _y2-_y1);
 			return this;
 		},
@@ -72,7 +72,7 @@
         },
         containsRect:function(rect)
         {
-            var a=a.getAbsolute();
+            var a=rect.getAbsolute();
             return this.contains(a.min)&&this.contains(a.max);
         },
         copy:function(rect)
