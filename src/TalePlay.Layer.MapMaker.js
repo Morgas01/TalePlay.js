@@ -158,6 +158,63 @@
 				this.destroy();
 			}
 		}
+	});//inner class
+	var moveLayer=µ.Class(Layer,{
+		init:function(param)
+		{
+			this.mega();
+			this.images=param.images;
+			SC.rs.all(this,["onClick"]);
+			this.move=new SC.Point();
+			this.domElement.classList.add("overlay","moveLayer");
+			this.domElement.innerHTML='<form class="panel center" onsubmit="return false">'+
+				'<table>'+
+					'<tr>'+
+						'<td>Position</td><td>X</td><td><input type="number" name="x" required="required"></td>'+
+						'<td>Y</td><td><input type="number" name="y" required="required"></td>'+
+					'</tr>'+
+				'</table>'+
+				'<button data-action="ok">OK</button><button data-action="cancel">cancel</button>'+
+			'</form>';
+			SC.setIn(this.domElement.querySelectorAll("[name]"),this.move);
+
+			this.domElement.addEventListener("click",this.onClick,false);
+			param.board.addLayer(this);
+			this.domElement.querySelector('input').focus();
+		},
+		onClick:function(e)
+		{
+			var action=e.target.dataset.action;
+			if(action)
+			{
+				e.stopPropagation();
+				switch(e.target.dataset.action)
+				{
+					case "ok":
+						var form=this.domElement.children[0];
+						if(form.checkValidity())
+						{
+							SC.getIn(this.domElement.querySelectorAll("[name]"),this.move);
+							if(!this.move.equals(0))
+							{
+								for(var image of this.images)
+								{
+									image.rect.position.add(this.move);
+									image.update();
+								}
+							}
+							else break;
+						}
+						else return;
+						break;
+					case "cancel":
+						//does nothing
+						break;
+				}
+				this.board.focus();
+				this.destroy();
+			}
+		}
 	});
 	
 	var MapMaker=Layer.MapMaker=µ.Class(Layer,{
@@ -329,7 +386,7 @@
         	var map=this.map, el=map.domElement, dragging=false, box=null, cursor=map.cursors[0], cr=el.getBoundingClientRect(),area=new SC.Rect();
         	el.setCapture();
 			downEvent.preventDefault();
-			el.addEventListener("mousemove",function onMove (moveEvent) 
+			var onMove = function (moveEvent)
 			{
 				moveEvent.preventDefault();
 				if(!dragging)
@@ -341,17 +398,6 @@
 						box=document.createElement("div");
 						box.classList.add("marker");
 						el.appendChild(box);
-						el.addEventListener("mouseup",function onUp (upEvent)
-						{
-							upEvent.preventDefault();
-							box.remove();
-							el.removeEventListener("mousemove",onMove,false);
-							el.removeEventListener("mouseup",onUp,false);
-
-							area.setPosition(map.getPositionOnMap(area.position));
-							var selectedImages=map.getImages(val => val!==cursor&&area.containsRect(val.rect));
-							console.log(selectedImages);
-						},false);
 					}
 				}
 				else
@@ -363,7 +409,26 @@
 					box.style.height=area.size.y+"px";
 					box.style.width=area.size.x+"px";
 				}
-			},false);
+			};
+			var onUp=(upEvent)=>
+			{
+				el.removeEventListener("mousemove",onMove,false);
+				el.removeEventListener("mouseup",onUp,false);
+				if(dragging)
+				{
+					upEvent.preventDefault();
+					box.remove();
+
+					area.setPosition(map.getPositionOnMap(area.position));
+					var selectedImages=map.getImages(val => val!==cursor&&area.containsRect(val.rect));
+					if(selectedImages.length>0) new moveLayer({
+						board:this.board,
+						images:selectedImages
+					});
+				}
+			};
+			el.addEventListener("mousemove",onMove,false);
+			el.addEventListener("mouseup",onUp,false);
         },
 		toJSON:function()
 		{
