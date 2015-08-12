@@ -215,7 +215,7 @@
 				while(todo.length>0)
 				{
 					var image=todo.shift();
-					image.url=this.imageBaseUrl+image.url;
+					if(image.url.indexof("/")==-1)image.url=this.imageBaseUrl+image.url;
 				}
 				json.position=position;
 				var animation=this.map.movingCursors.get(this.gameSave.getCursor());
