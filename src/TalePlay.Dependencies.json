@@ -72,7 +72,7 @@
 	"GUI/TalePlay.GUIElement.Map.js":{
 		"deps":["Morgas.js","GUI/TalePlay.GUIElement.js","TalePlay.Map.js"],
 		"uses":["Morgas.util.object.find.js","Morgas.util.function.rescope.js","Morgas.util.function.proxy.js",
-			  "Morgas.Organizer.js","Math/TalePlay.Math.Point.js"]
+			  "Morgas.Organizer.js","Math/TalePlay.Math.Point.js","css/structure/GUIElement.Map.css"]
 	},
 	"css/structure/GUIElement.Menu.css":true,
 	"GUI/TalePlay.GUIElement.Menu.js":{
