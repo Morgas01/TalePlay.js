@@ -33,7 +33,16 @@
 	        ],
 	        cursors:[
 	 	    	new SC.gMap.Cursor(imagesDir+"cursor_target.svg",{x:150,y:200},{x:50,y:50},{x:25,y:25},"crossair"),
-		    	new SC.gMap.Cursor([imagesDir+"Butterfly_down.svg",imagesDir+"Butterfly_up.svg",null,imagesDir+"Butterfly_right.svg",null,imagesDir+"Butterfly_down.svg",null,imagesDir+"Butterfly_left.svg",null],{x:250,y:200},{x:50,y:50},{x:25,y:25},"Butterfly 6-steps",true,false,100)
+		    	new SC.gMap.Cursor([imagesDir+"Butterfly_down.svg",imagesDir+"Butterfly_up.svg",null,imagesDir+"Butterfly_right.svg",null,imagesDir+"Butterfly_down.svg",null,imagesDir+"Butterfly_left.svg",null],
+		    			{x:250,y:200},
+		    			{x:50,y:50},
+		    			{x:25,y:25},
+		    			"Butterfly 6-steps",
+		    			true,
+		    			null,
+		    			null,
+		    			false,
+		    			100)
 		    ],
 		    assignFilter:function(event,cursor,index){return event.type!=="analogStickChanged"||event.index===index;},
             threshold:75
@@ -88,7 +97,7 @@
 				{x:326,y:326},
 				{x:374,y:374},
 				{x:100,y:250},
-				{x:50,y:50}
+				{x:50,y:50}//not reachable
 			]));
 		})
 		board.domElement.parentNode.parentNode.appendChild(animationButton);

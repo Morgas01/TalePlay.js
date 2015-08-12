@@ -347,7 +347,7 @@
     		this.mega(GUI.Map.Cursor.emptyImage,position,size,name,colision,trigger);
     		
     		this.viewRect=this.rect.clone();
-    		this.viewRect.set(viewOffset,viewSize);
+    		this.viewRect.set(viewOffset||0,viewSize);
     		
     		this.domElement.classList.add("cursor");
             this.domElement.style.zIndex=GUI.Map.Cursor.zIndexOffset;
