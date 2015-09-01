@@ -30,8 +30,10 @@
 	WR(morgasDir+"Morgas.util.object.equals.js");
 	WR(morgasDir+"Morgas.util.object.find.js");
 	WR(morgasDir+"Morgas.util.object.iterate.js");
+	WR(morgasDir+"Morgas.SortedArray.js");
 	WR(morgasDir+"Morgas.Organizer.js");
 	WR(morgasDir+"Morgas.Detached.js");
+	WR(morgasDir+"Morgas.util.object.adopt.js");
 	WR(morgasDir+"Morgas.Promise.js");
 	WR(morgasDir+"DB/Morgas.DB.js");
 	WR(morgasDir+"Morgas.util.Request.js");

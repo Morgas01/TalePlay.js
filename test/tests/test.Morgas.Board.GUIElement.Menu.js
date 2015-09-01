@@ -1,6 +1,6 @@
-(function() {
+(function(µ,SMOD,GMOD,HMOD,SC){
 	var name="Menu";
-	var SC=µ.getModule("shortcut")({
+	var SC=SC({
 		Board:"Board",
 		Layer:"Layer",
 		gMenu:"GUI.Menu",
@@ -93,4 +93,4 @@
 		
 		ok(true);
 	});
-})();
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

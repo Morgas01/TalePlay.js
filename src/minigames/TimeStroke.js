@@ -1,7 +1,7 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var GUI=GMOD("GUIElement"),
-	SC=GMOD("shortcut")({
+	SC=SC({
 		rescope:"rescope"
 	});
 	
@@ -118,4 +118,4 @@
 		this.active=false;
 	};
 	SMOD("Minigames.TimeStroke",TimeStroke);
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

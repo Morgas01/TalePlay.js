@@ -1,4 +1,4 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	module("Morgas.Math.Point");
 	
@@ -18,5 +18,5 @@
 		assert.propEqual2(new POINT({x:9,y:10}).mul(11,12),{x:99,y:120},"mul");
 		assert.propEqual2(new POINT({x:13,y:14}).div(15,16),{x:13/15,y:14/16},"div");
 	});
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

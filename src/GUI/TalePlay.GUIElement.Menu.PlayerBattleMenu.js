@@ -1,8 +1,8 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var MENU=GMOD("GUI.Menu");
 	
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		Skill:"Skill",
 		Character:"Character"
 	});
@@ -87,5 +87,5 @@
 		return item.name;
 	}
 	SMOD("Menu.PlayerBattleMenu",PBM);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

@@ -1,0 +1,12 @@
+{
+  "name": "TalePlay",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Morgas01/TalePlay.js.git"
+  },
+  "devDependencies": {
+    "qunitjs": "^1.18.0",
+    "uglify-js": "^2.4.24"
+  }
+}

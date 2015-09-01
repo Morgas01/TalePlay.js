@@ -1,8 +1,7 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
     var TALE=this.TalePlay=this.TalePlay||{};
 
-	var LOGGER=GMOD("debug");
     var LISTENERS=GMOD("Listeners");
     
     TALE.Battle=µ.Class(LISTENERS,{
@@ -71,7 +70,7 @@
     				action.target.life.add(action.amount);
     				break;
     			default:
-    				LOGGER.warn(["unknown action type ",action.type]);
+    				µ.logger.warn("unknown action type ",action.type);
     				return null;
     		}
     		this.fire("action",action);
@@ -97,5 +96,5 @@
     	return group.reduce((a,b)=>a&&TALE.Battle.isDead(b),true);
     };
     SMOD("Battle",TALE.Battle);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

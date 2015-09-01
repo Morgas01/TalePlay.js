@@ -1,8 +1,8 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var GUI=GMOD("GUIElement");
 	
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		ENERGY:"Character.Energy"
 	})
 	
@@ -57,5 +57,5 @@
 		}
 	});
 	SMOD("GUI.CharacterPanel",GUI.CharacterPanel);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

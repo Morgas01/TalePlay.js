@@ -1,16 +1,15 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	//TODO change to Layer
 	
 	var AMENU=GMOD("Layer.ActionMenu");
 	
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		manager:"GUI.ControllerManager",
 		rj:"request.json",
-		debug:"debug"
-		/* default module
-		 * Layer.Persistance
-		 */
+
+		//default
+		persistanceLayer:"Layer.Persistance"
 	});
 	
 	var SMENU=AMENU.StartMenu=µ.Class(AMENU,{
@@ -44,8 +43,10 @@
 
 			this.domElement.classList.add("StartMenu");
 			this.createListener("start");
-		
-			this.persistanceLayer=(typeof param.persistanceLayer==="function")?param.persistanceLayer:GMOD(param.persistanceLayer||"Layer.Persistance");
+
+			if(typeof param.persistanceLayer==="function") this.persistanceLayer=param.persistanceLayer;
+			else if (param.persistanceLayer)this.persistanceLayer=GMOD(param.persistanceLayer);
+			else this.persistanceLayer=SC.persistanceLayer;
 			this.dbConn=param.dbConn;
 			this.saveClass=param.saveClass;
 			this.saveConverter=param.saveConverter;
@@ -80,7 +81,7 @@
 			},
 			function(error)
 			{
-				SC.debug(["could not load new game: ",error],SC.debug.LEVEL.ERROR);
+				µ.logger.error("could not load new game: ",error);
 			});
 		},
 		openControllerManager:function(item)
@@ -115,5 +116,5 @@
 		}
 	});
 	SMOD("StartMenu",SMENU);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

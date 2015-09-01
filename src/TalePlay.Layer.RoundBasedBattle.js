@@ -1,8 +1,8 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var Layer=GMOD("Layer"),
 	
-	SC=GMOD("shortcut")({
+	SC=SC({
 		rs:"rescope",
 		RBB:"Battle.RoundBased",
 		CP:"GUI.CharacterPanel",
@@ -71,5 +71,5 @@
 	});
 	
 	SMOD("Layer.RoundBasedBattle",Layer.RoundBasedBattle);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

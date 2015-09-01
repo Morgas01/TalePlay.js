@@ -1,4 +1,4 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	module("Battle");
 	
@@ -63,5 +63,5 @@
 		});
 		ok(true);
 	});
-	
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

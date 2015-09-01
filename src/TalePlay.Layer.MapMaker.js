@@ -1,8 +1,8 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var Layer=GMOD("Layer");
 
-	var SC=µ.getModule("shortcut")({
+	var SC=SC({
 		rs:"rescope",
 		setIn:"setInputValues",
 		getIn:"getInputValues",
@@ -462,4 +462,4 @@
 		}
 	});
 	SMOD("MapMaker",MapMaker);
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

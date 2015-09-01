@@ -1,9 +1,9 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var PLAYER=GMOD("RPGPlayer");
 	var DBOBJ=GMOD("DBObj");
 	
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		field:"DBField"
 	});
 	
@@ -42,5 +42,5 @@
 		setCustomData:	function(v){return this.setValueOf("customData",v);}
 	});
 	SMOD("RPGPlayer.GameSave",GSAVE);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

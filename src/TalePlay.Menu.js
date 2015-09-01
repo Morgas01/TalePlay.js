@@ -1,4 +1,4 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
     var TALE=this.TalePlay=this.TalePlay||{};
 	
@@ -269,5 +269,5 @@
 	};
 	
 	SMOD("Menu",MENU);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

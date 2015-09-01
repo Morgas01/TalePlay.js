@@ -1,4 +1,4 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
     var GUI=GMOD("GUIElement");
 
@@ -57,4 +57,4 @@
         this.domElement.dataset.button=button;
     };
     SMOD("Minigames.ButtonStack",ButtonStack);
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

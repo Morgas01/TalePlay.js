@@ -1,6 +1,6 @@
-(function() {
+(function(µ,SMOD,GMOD,HMOD,SC){
 	var name="Map";
-	var SC=µ.getModule("shortcut")({
+	var SC=SC({
 		Board:"Board",
 		Layer:"Layer",
 		gMap:"GUI.Map"
@@ -104,4 +104,4 @@
 		
 		ok(true);
 	});
-})();
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

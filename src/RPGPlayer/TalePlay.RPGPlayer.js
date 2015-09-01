@@ -1,20 +1,19 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var Layer=GMOD("Layer");
 
-	var SC=µ.getModule("shortcut")({
+	var SC=SC({
 		det:"Detached",
 		rj:"request.json",
-		debug:"debug",
 		idb:"IDBConn",
 		
 		Map:"GUI.Map",
 		Dialog:"GUI.Dialog",
-		GameSave:"RPGPlayer.GameSave"
-		/* default modules:
-		 * StartMenu
-		 * RPGPlayer.GameMenu
-		 */
+		GameSave:"RPGPlayer.GameSave",
+
+		// default modules:
+		 StartMenu:"StartMenu",
+		 GameMenu:"RPGPlayer.GameMenu"
 	});
 	
 	var requestCallbacks={
@@ -30,7 +29,7 @@
             },
 			error:function quest_load_error(error)
             {
-				SC.debug(["Could not load Quests: ",error],0);
+				µ.logger.error("Could not load Quests: ",error);
 				return error;
             }
 		},
@@ -45,7 +44,7 @@
             },
 			error:function dialogs_load_error(error)
             {
-            	SC.debug(["Could not load Dialogs: ",error],0);
+            	µ.logger.error("Could not load Dialogs: ",error);
 				return error;
             }
 		}
@@ -95,9 +94,14 @@
             this.focused=null;
 			this.map=new SC.Map();
 			this.map.addListener("trigger",this,"_onTrigger");
-			
-			this._StartMenu=(typeof param.startMenu==="function")?param.startMenu:GMOD(param.startMenu||"StartMenu");
-			this._GameMenu=(typeof param.gameMenu==="function")?param.gameMenu:GMOD(param.gameMenu||"RPGPlayer.GameMenu");
+
+			if(typeof param.startMenu==="function") this._StartMenu=param.startMenu;
+			else if (param.startMenu)this._StartMenu=GMOD(param.startMenu);
+			else this._StartMenu=SC.StartMenu;
+
+			if(typeof param.gameMenu==="function") this._GameMenu=param.gameMenu;
+			else if (param.gameMenu)this._GameMenu=GMOD(param.gameMenu);
+			else this._GameMenu=SC.GameMenu;
 			
 			this._openStartMenu();
         },
@@ -178,7 +182,7 @@
         		}
         		else
         		{
-        			SC.debug("quest "+saveQuests[i]+" not found",SC.debug.LEVE.ERROR);
+					µ.logger.error("quest "+saveQuests[i]+" not found");
         		}
         	}
             this._changeMap(save.getMap(), save.getPosition());
@@ -232,7 +236,7 @@
 			},
 			function changeMap_Error(error)
 			{
-				SC.debug(["Could not load Map: ",name,error],0);
+				µ.logger.error("Could not load Map: ",name,error);
 				return error;
 			});
 		},
@@ -352,14 +356,14 @@
 							case "quest_item":
 								break;
 							default:
-								SC.debug.error("unknown term: "+aspects[a]);
+								µ.logger.error("unknown term: "+aspects[a]);
 								aspectResult=false;
 								break;
 						}
 					}
 					else
 					{
-						SC.debug.error("invalid term: "+aspects[a]);
+						µ.logger.error("invalid term: "+aspects[a]);
 						return false;
 					}
 				}
@@ -378,7 +382,7 @@
 		}
 		catch(error)
 		{
-			SC.debug([error,save],SC.debug.LEVEL.ERROR);
+			µ.logger.error(error,save);
 			return [index,"CORRUPT DATA","&nbsp;"];
 		}
 	};
@@ -412,4 +416,4 @@
 		toJSON:function(){return this.name}
 	});
 	SMOD("RPGPlayer.Quest",RPGPlayer.Quest);
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

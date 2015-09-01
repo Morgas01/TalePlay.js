@@ -1,8 +1,8 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
 	var MENU=GMOD("GUI.Menu"),
 	
-	SC=GMOD("shortcut")({
+	SC=SC({
 		menu:"Menu"
 	});
 	var TicTacToe=µ.Class(MENU,{
@@ -95,4 +95,4 @@
 		return item==1?"◯":item==2?"✕":"&nbsp;";
 	};
 	SMOD("Minigames.TicTacToe",TicTacToe);
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

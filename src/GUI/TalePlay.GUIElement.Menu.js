@@ -1,8 +1,8 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var GUI=GMOD("GUIElement");
 	
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		MENU:"Menu",
 		rescope:"rescope"
 	});
@@ -342,7 +342,7 @@
 			this._updateActive();
 		}
 	});
-	GMOD("shortcut")({SelectionTypes:()=>GMOD("Menu").SelectionTypes},MENU);
+	µ.shortcut({SelectionTypes:()=>GMOD("Menu").SelectionTypes},MENU);
 	MENU.Types={
 		VERTICAL:1,
 		HORIZONTAL:2,
@@ -361,5 +361,5 @@
 	}
 	
 	SMOD("GUI.Menu",MENU);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

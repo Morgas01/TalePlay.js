@@ -1,12 +1,11 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	//TODO change to Layer
 	
 	var LAYER=GMOD("Layer");
 	
-	var SC=GMOD("shortcut")({
-		Menu:"GUI.Menu",
-		debug:"debug"
+	SC=SC({
+		Menu:"GUI.Menu"
 	});
 	
 	var AMENU=LAYER.ActionMenu=µ.Class(LAYER,{
@@ -40,7 +39,7 @@
 			}
 			else
 			{
-				SC.debug(event.value.action+" is not a function",SC.debug.LEVEL.ERROR);
+				µ.logger.error(event.value.action+" is not a function");
 			}
 		}
 	});
@@ -49,5 +48,5 @@
 		return item.text;
 	};
 	SMOD("Layer.ActionMenu",AMENU);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

@@ -1,11 +1,11 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
     var TALE=this.TalePlay=this.TalePlay||{};
 	
 	var LST=GMOD("Listeners");
 	var POINT=GMOD("Math.Point");
 	
-	var SC=µ.shortcut({
+	var SC=SC({
 		mapping:"Controller.Mapping"
 	});
 	
@@ -248,5 +248,5 @@
 	
 	
 	SMOD("Controller",CTRL);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

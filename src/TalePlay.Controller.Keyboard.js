@@ -1,8 +1,8 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
 	var CTRL=GMOD("Controller");
 	
-	var SC=µ.shortcut({
+	var SC=SC({
 		rescope:"rescope"
 	});
 	
@@ -95,4 +95,4 @@
 	};
 	SMOD("Controller.Keyboard",CTRL.Keyboard)
 
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

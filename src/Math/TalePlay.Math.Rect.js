@@ -1,9 +1,9 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
     var TALE=this.TalePlay=this.TalePlay||{};
 	TALE.Math=TALE.Math||{};
 	
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		POINT:"Math.Point"
 	});
 	
@@ -83,4 +83,4 @@
         }
 	});
 	SMOD("Math.Rect",RECT);
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

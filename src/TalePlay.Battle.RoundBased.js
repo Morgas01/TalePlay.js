@@ -1,9 +1,8 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
-	var LOGGER=GMOD("debug");
     var BATTLE=GMOD("Battle");
     
-    var SC=GMOD("shortcut")({
+    SC=SC({
     	MONSTER:"Character.Monster",
     	Promise:"Promise"
     });
@@ -98,16 +97,16 @@
 	    				signal:signal,
 	    				battle:this
 	    			});
-    			},[],this).complete(function(skillAndTarget){
+    			},{scope:this}).then(function(skillAndTarget){
     				this.executeSkill(skillAndTarget[0],character,skillAndTarget[1]);
-    			}).always(function(){
+    			},µ.logger.info).then(function(){
     				this.turnPromise=null;
     				this.resetState(".playerTurn");
     				this.next();
-    			})
+    			},µ.logger.error)
     		}
     	}
     });
     SMOD("Battle.RoundBased",BATTLE.RoundBased);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

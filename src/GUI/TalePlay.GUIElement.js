@@ -1,10 +1,9 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
     var TALE=this.TalePlay=this.TalePlay||{};
 
 	var LST=GMOD("Listeners");
-	var SC=GMOD("shortcut")({
-		sc:"shortcut",
+	SC=SC({
         node:"NodePatch",
         Layer:"Layer"
     });
@@ -21,7 +20,7 @@
 		        removeChild:"removeChild"
 			},true);
 			
-			SC.sc({layer:function(node)
+			µ.shortcut({layer:function(node)
 			{
 				var layer=node.parent;
 				while(layer&&!(layer instanceof SC.Layer))
@@ -112,5 +111,5 @@
 	});
 	
 	SMOD("GUIElement",GE);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

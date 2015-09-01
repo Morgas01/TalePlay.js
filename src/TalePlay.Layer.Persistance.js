@@ -1,11 +1,10 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var LAYER=GMOD("Layer");
 	
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		rs:"rescope",
 		Menu:"GUI.Menu",
-		debug:"debug",
 		download:"download"
 	});
 	
@@ -126,5 +125,5 @@
 		}
 	});
 	SMOD("Layer.Persistance",PERSISTANCE);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

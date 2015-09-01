@@ -1,11 +1,7 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
     var TALE=this.TalePlay=this.TalePlay||{};
 	TALE.Math=TALE.Math||{};
-	
-	var SC=GMOD("shortcut")({
-		debug:"debug"
-	});
 	
 	var POINT=TALE.Math.Point=µ.Class({
 		init:function(numberOrPoint,y)
@@ -32,7 +28,7 @@
 			}
 			if(isNaN(this.x)||isNaN(this.y))
 			{
-				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+				µ.logger.warn(new µ.Warning("Point became NaN",this));
 			}
 			return this;
 		},
@@ -79,7 +75,7 @@
 			}
 			if(isNaN(this.x)||isNaN(this.y))
 			{
-				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+				µ.logger.warn(new µ.Warning("Point became NaN",this));
 			}
 			return this;
 		},
@@ -101,7 +97,7 @@
 			}
 			if(isNaN(this.x)||isNaN(this.y))
 			{
-				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+				µ.logger.warn(new µ.Warning("Point became NaN",this));
 			}
 			return this;
 		},
@@ -123,7 +119,7 @@
 			}
 			if(isNaN(this.x)||isNaN(this.y))
 			{
-				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+				µ.logger.warn(new µ.Warning("Point became NaN",this));
 			}
 			return this;
 		},
@@ -145,7 +141,7 @@
 			}
 			if(isNaN(this.x)||isNaN(this.y))
 			{
-				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+				µ.logger.warn(new µ.Warning("Point became NaN",this));
 			}
 			return this;
 		},
@@ -256,12 +252,12 @@
 			}
 			if(isNaN(this.x)||isNaN(this.y))
 			{
-				SC.debug(["Point became NaN",this],SC.debug.LEVEL.WARNING);
+				µ.logger.warn(new µ.Warning("Point became NaN",this));
 			}
 			return this;
 		}
 	});
 	
 	SMOD("Math.Point",POINT);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

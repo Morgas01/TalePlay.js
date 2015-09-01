@@ -1,8 +1,8 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var GUI=GMOD("GUIElement"),
 	
-	SC=GMOD("shortcut")({
+	SC=SC({
 		rs:"rescope"
 	});
 	
@@ -123,5 +123,5 @@
 	});
 	
 	SMOD("GUI.TextBox",BOX);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

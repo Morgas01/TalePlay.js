@@ -1,7 +1,7 @@
-(function() {
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var name="ControllerManager";
-	var SC=µ.getModule("shortcut")({
+	var SC=SC({
 		Board:"Board",
 		Layer:"Layer",
 		Manager:"GUI.ControllerManager"
@@ -17,4 +17,4 @@
 		manager.update();
 		ok(true);
 	});
-})();
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

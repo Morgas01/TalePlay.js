@@ -1,10 +1,9 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
     var TALE=this.TalePlay=this.TalePlay||{};
 	
 	
-	var SC=GMOD("shortcut")({
-		promise:"Promise",
+	SC=SC({
 		ATTR:"Attributes"
 	});
 	
@@ -22,5 +21,5 @@
 		}
 	});
 	SMOD("Character",TALE.Character);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

@@ -1,4 +1,4 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var CHAR=GMOD("Character");
 	
@@ -41,5 +41,5 @@
 		},
 	});
 	SMOD("Character.Energy",CHAR.Energy);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

@@ -1,14 +1,13 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
 	var GUI=GMOD("GUIElement"),
 	MAP=GMOD("Map"),
-	SC=GMOD("shortcut")({
+	SC=SC({
 		find:"find",
 		rescope:"rescope",
 		proxy:"proxy",
         Org:"Organizer",
-		point:"Math.Point",
-		debug:"debug"
+		point:"Math.Point"
 	});
 	
 	var cursorFilter= image => image instanceof GUI.Map.Cursor;
@@ -45,7 +44,7 @@
         	.group("trigger","trigger.type");
 			
             this.threshold=new SC.point();
-            GMOD("shortcut")({cursors:cursorGetter},this,this,true);
+			µ.shortcut({cursors:cursorGetter},this,this,true);
             this.movingCursors=new Map();
             this.setThreshold(param.threshold);
             param.cursors&&this.addAll(param.cursors);
@@ -311,8 +310,8 @@
     GUI.Map.Image=µ.Class(MAP.Image,{
     	init:function(url,position,size,name,collision,trigger){
     		this.mega(url,position,size,name);
-			
-			GMOD("shortcut")({"guiMap":["map","gui"]},this,this,true);
+
+			µ.shortcut({"guiMap":["map","gui"]},this,this,true);
 
             this.collision=!!collision;
             this.trigger={
@@ -577,7 +576,7 @@
 						else if (info.collided)this.activeAction=null;
 						break;
 					default:
-						SC.debug("unknown action type: "+this.activeAction.type,SC.debug.LEVEL.ERROR);
+						µ.logger.error("unknown action type: ",this.activeAction.type);
 						this.activeAction=null
 				}
 			}
@@ -623,5 +622,5 @@
     	}
     });
 	SMOD("GUI.Map",GUI.Map);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

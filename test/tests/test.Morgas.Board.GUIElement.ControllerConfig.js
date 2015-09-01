@@ -1,7 +1,7 @@
-(function() {
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var name="ControllerConfig";
-	var SC=µ.getModule("shortcut")({
+	var SC=SC({
 		Board:"Board",
 		Layer:"Layer",
 		KCon:"Controller.Keyboard",
@@ -27,4 +27,4 @@
 		
 		ok(true);
 	});
-})();
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

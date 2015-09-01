@@ -1,6 +1,6 @@
-(function() {
+(function(µ,SMOD,GMOD,HMOD,SC){
 	var name="RoundBasedBattle";
-	var SC=µ.getModule("shortcut")({
+	var SC=SC({
 		Board:"Board",
 		RBB:"Layer.RoundBasedBattle",
 		Player:"Character.Player",
@@ -59,4 +59,4 @@
 		
 		ok(true);
 	});
-})();
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

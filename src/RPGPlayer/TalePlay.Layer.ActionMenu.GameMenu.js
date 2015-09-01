@@ -1,15 +1,14 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	//TODO change to Layer
 	
 	var AMENU=GMOD("Layer.ActionMenu");
 
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		manager:"GUI.ControllerManager",
-		debug:"debug"
-		/* default module
-		 * Layer.Persistance
-		 */
+
+		// default
+		persistanceLayer:"Layer.Persistance"
 	});
 
 	var GMENU=AMENU.GameMenu=µ.Class(AMENU,{
@@ -45,8 +44,10 @@
 
 			this.domElement.classList.add("GameMenu");
 			this.createListener("start close");
-		
-			this.persistanceLayer=(typeof param.persistanceLayer==="function")?param.persistanceLayer:GMOD(param.persistanceLayer||"Layer.Persistance");
+
+			if(typeof param.persistanceLayer==="function") this.persistanceLayer=param.persistanceLayer;
+			else if (param.persistanceLayer)this.persistanceLayer=GMOD(param.persistanceLayer);
+			else this.persistanceLayer=SC.persistanceLayer;
 			this.dbConn=param.dbConn;
 			this.saveClass=param.saveClass;
 			this.saveConverter=param.saveConverter;
@@ -102,5 +103,5 @@
 		}
 	});
 	SMOD("RPGPlayer.GameMenu",GMENU);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

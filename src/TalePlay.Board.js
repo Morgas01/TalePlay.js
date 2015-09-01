@@ -1,8 +1,8 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
     var TALE=this.TalePlay=this.TalePlay||{};
     
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		rs:"rescope",
         node:"NodePatch"
 	});
@@ -129,4 +129,4 @@
 		}
 	});
 	SMOD("Board",BOARD);
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

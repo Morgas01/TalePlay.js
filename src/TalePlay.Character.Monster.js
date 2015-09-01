@@ -1,9 +1,8 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
     var CHAR=GMOD("Character");
 	
-	var SC=GMOD("shortcut")({
-		promise:"Promise",
+	SC=SC({
 		ATTR:"Attributes"
 	});
 	
@@ -37,5 +36,5 @@
 			//TODO
 		}
 	}
-	
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

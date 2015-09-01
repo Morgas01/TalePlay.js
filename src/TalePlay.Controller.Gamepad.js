@@ -1,8 +1,8 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
 	var CTRL=GMOD("Controller");
 
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		rs:"rescope"
 	});
 	
@@ -54,4 +54,4 @@
 		}
 	});
 	SMOD("Controller.Gamepad",GP);
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

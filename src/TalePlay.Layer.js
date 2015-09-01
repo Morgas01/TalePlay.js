@@ -1,10 +1,10 @@
-(function(µ,SMOD,GMOD,HMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 
     var TALE=this.TalePlay=this.TalePlay||{};
 
 	var LST=GMOD("Listeners");
 	
-    var SC=GMOD("shortcut")({
+    SC=SC({
 	    node:"NodePatch",
     });
 	
@@ -100,4 +100,4 @@
 			"buttonChanged":"onButton"
 	};
 	SMOD("Layer",LAYER);
-})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

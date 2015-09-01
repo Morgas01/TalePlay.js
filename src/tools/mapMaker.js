@@ -1,6 +1,6 @@
 ﻿window.addEventListener("load", function()
 {
-	var SC=µ.getModule("shortcut")({
+	var SC=µ.shortcut({
 		download:"download",
 		find:"find",
 		Board:"Board",

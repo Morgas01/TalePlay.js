@@ -1,10 +1,10 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	//TODO change to Layer
 	
 	var GUI=GMOD("GUIElement");
 	
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		rs:"rescope",
 		bind:"bind",
 		mapping:"Controller.Mapping",
@@ -285,5 +285,5 @@
 		}
 	};
 	SMOD("GUI.ControllerManager",MANAGER);
-	
-})(Morgas,Morgas.setModule,Morgas.getModule);
+
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

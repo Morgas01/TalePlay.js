@@ -1,9 +1,9 @@
-(function(µ,SMOD,GMOD){
+(function(µ,SMOD,GMOD,HMOD,SC){
 	
 	var CTRL=GMOD("Controller");
 	var DBObj=GMOD("DBObj");
 	
-	var SC=GMOD("shortcut")({
+	SC=SC({
 		DBField:"DBField"
 	});
 	
@@ -129,4 +129,4 @@
 		
 	});
 	SMOD("Controller.Mapping",MAPPING);
-})(Morgas,Morgas.setModule,Morgas.getModule);
+})(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);
