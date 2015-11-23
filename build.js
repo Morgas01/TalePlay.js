@@ -1,9 +1,11 @@
 var fs=require("fs");
 var minify=require("./src/Morgas/minify");
 
-require("./src/Morgas/src/NodeJs/removeFolder")("build");
+require("./src/Morgas/src/NodeJs/Morgas.NodeJs");
 
-require("./src/Morgas/parseDependencies")(["src","src/GUI","src/Math","src/minigames","src/RPGPlayer","src/Morgas/src","src/Morgas/src/DB"])
+var removeFolder=µ.getModule("removeFolder");
+
+require("./src/Morgas/parseDependencies")(["src","src/GUI","src/Math","src/minigames","src/RPGPlayer","src/Morgas/src","src/Morgas/src/DB"],"Morgas/src/")
 .then(function(result)
 {
 	fs.writeFile("src/TalePlay.ModuleRegister.json",JSON.stringify(result.modules,null,"\t"),function(err)
