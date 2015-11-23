@@ -2,6 +2,8 @@
 
     var GUI=GMOD("GUIElement");
 
+    //SC=SC();
+
     var ButtonStack=µ.Class(GUI,{
         init:function(param)
         {

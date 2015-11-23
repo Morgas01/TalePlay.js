@@ -3,25 +3,27 @@
 	<head>
 		<title>ButtonStack</title>
 		<meta charset="UTF-8">
-		
-		<script src="../Morgas/src/Morgas.js"></script>
-		<script src="../TalePlay.Board.js"></script>
-		<script src="../Morgas/src/Morgas.Listeners.js"></script>
-		<script src="../TalePlay.Layer.js"></script>
-		<script src="../Math/TalePlay.Math.Point.js"></script>
-		<script src="../TalePlay.Controller.js"></script>
-		<script src="../TalePlay.Controller.Keyboard.js"></script>
-		<script src="../TalePlay.Controller.Gamepad.js"></script>
-		<script src="../GUI/TalePlay.GUIElement.js"></script>
-		<script src="ButtonStack.js"></script>
-		<script src="../Morgas/src/Morgas.util.function.rescope.js"></script>
-		<script src="../Morgas/src/Morgas.Patch.js"></script>
-		<script src="../Morgas/src/Morgas.NodePatch.js"></script>
-		<script src="../Morgas/src/DB/Morgas.DB.js"></script>
-		<script src="../TalePlay.Controller.Mapping.js"></script>
-		<script src="../Morgas/src/Morgas.util.function.proxy.js"></script>
-		<script src="../Morgas/src/Morgas.Detached.js"></script>
-		<script src="../Morgas/src/Morgas.util.object.iterate.js"></script>
+
+		<script defer src="../Morgas/src/Morgas.js"></script>
+		<script defer src="../TalePlay.Board.js"></script>
+		<script defer src="../Morgas/src/Morgas.Listeners.js"></script>
+		<script defer src="../Math/TalePlay.Math.Point.js"></script>
+		<script defer src="../TalePlay.Controller.js"></script>
+		<script defer src="../TalePlay.Controller.Gamepad.js"></script>
+		<script defer src="../TalePlay.Controller.Keyboard.js"></script>
+		<script defer src="../GUI/TalePlay.GUIElement.js"></script>
+		<script defer src="ButtonStack.js"></script>
+		<script defer src="../Morgas/src/Morgas.util.function.rescope.js"></script>
+		<script defer src="../Morgas/src/Morgas.Patch.js"></script>
+		<script defer src="../Morgas/src/Morgas.NodePatch.js"></script>
+		<script defer src="../Morgas/src/DB/Morgas.DB.js"></script>
+		<script defer src="../TalePlay.Controller.Mapping.js"></script>
+		<script defer src="../TalePlay.Layer.js"></script>
+		<script defer src="../Morgas/src/Morgas.util.function.proxy.js"></script>
+		<script defer src="../Morgas/src/Morgas.Promise.js"></script>
+		<script defer src="../Morgas/src/Morgas.util.object.iterate.js"></script>
+		<script defer src="../Morgas/src/Morgas.util.object.adopt.js"></script>
+
 		<link rel="stylesheet" href="../css/structure/core.css">
 		<link rel="stylesheet" href="ButtonStack.css">
 		
@@ -63,7 +65,7 @@
 		</style>
 		<script>
 			window.addEventListener("load", function loaded(){
-				var SC=µ.getModule("shortcut")({
+				var SC=µ.shortcut({
 					Board:"Board",
 					Layer:"Layer",
 					game:"Minigames.ButtonStack",
@@ -72,9 +74,12 @@
 				board=new SC.Board(document.body),
 				layer=new SC.Layer(),
 				ctrl=new SC.CK({buttons:{
-                    1:"1",
-                    2:"2",
-                    3:"3"
+                    "Digit1" : 1,
+                    "Numpad1": 1,
+                    "Digit2" : 2,
+                    "Numpad2": 2,
+                    "Digit3" : 3,
+                    "Numpad3": 3
                 }}),
 				game=new SC.game();
 				
