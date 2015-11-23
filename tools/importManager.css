@@ -18,11 +18,11 @@ body {
 body > * {
     margin: 5px;
 }
-.selections {
+#selections {
     display: flex;
     flex-wrap: wrap;
 }
-.selections label {
+#selections label {
     flex-basis: 25%;
 }
 #result {

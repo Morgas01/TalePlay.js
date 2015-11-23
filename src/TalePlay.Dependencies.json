@@ -1,17 +1,17 @@
 {
 	"TalePlay.Attributes.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"TalePlay.Battle.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"TalePlay.Battle.RoundBased.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Battle.js"
 		],
 		"uses": [
@@ -21,7 +21,7 @@
 	},
 	"TalePlay.Board.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.util.function.rescope.js",
@@ -30,12 +30,12 @@
 	},
 	"TalePlay.Character.Energy.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"TalePlay.Character.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"TalePlay.Attributes.js"
@@ -43,7 +43,7 @@
 	},
 	"TalePlay.Character.Monster.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Character.js"
 		],
 		"uses": [
@@ -52,7 +52,7 @@
 	},
 	"TalePlay.Character.Player.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Character.js"
 		],
 		"uses": [
@@ -61,7 +61,7 @@
 	},
 	"TalePlay.Controller.Gamepad.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Controller.js"
 		],
 		"uses": [
@@ -70,7 +70,7 @@
 	},
 	"TalePlay.Controller.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"Morgas/src/Morgas.Listeners.js",
 			"Math/TalePlay.Math.Point.js"
 		],
@@ -80,7 +80,7 @@
 	},
 	"TalePlay.Controller.Keyboard.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Controller.js"
 		],
 		"uses": [
@@ -89,7 +89,7 @@
 	},
 	"TalePlay.Controller.Mapping.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Controller.js",
 			"Morgas/src/DB/Morgas.DB.js"
 		],
@@ -97,7 +97,7 @@
 	},
 	"TalePlay.Layer.ActionMenu.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Layer.js"
 		],
 		"uses": [
@@ -106,7 +106,7 @@
 	},
 	"TalePlay.Layer.ActionMenu.StartMenu.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Layer.ActionMenu.js"
 		],
 		"uses": [
@@ -117,7 +117,7 @@
 	},
 	"TalePlay.Layer.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"Morgas/src/Morgas.Listeners.js"
 		],
 		"uses": [
@@ -126,7 +126,7 @@
 	},
 	"TalePlay.Layer.MapMaker.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Layer.js"
 		],
 		"uses": [
@@ -140,7 +140,7 @@
 	},
 	"TalePlay.Layer.Persistance.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Layer.js"
 		],
 		"uses": [
@@ -151,7 +151,7 @@
 	},
 	"TalePlay.Layer.RoundBasedBattle.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Layer.js"
 		],
 		"uses": [
@@ -161,9 +161,18 @@
 			"GUI/TalePlay.GUIElement.Menu.PlayerBattleMenu.js"
 		]
 	},
+	"TalePlay.Map.Interactive.js": {
+		"deps": [
+			"Morgas/src/Morgas.js",
+			"TalePlay.Map.js"
+		],
+		"uses": [
+			"Morgas/src/Morgas.Organizer.js"
+		]
+	},
 	"TalePlay.Map.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.util.object.find.js",
@@ -174,22 +183,22 @@
 	},
 	"TalePlay.Menu.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"TalePlay.Skill.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"GUI/TalePlay.GUIElement.CharacterPanel.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"GUI/TalePlay.GUIElement.ControllerConfig.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.util.function.rescope.js",
@@ -199,7 +208,7 @@
 	},
 	"GUI/TalePlay.GUIElement.ControllerManager.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"GUI/TalePlay.GUIElement.js"
 		],
 		"uses": [
@@ -214,7 +223,7 @@
 	},
 	"GUI/TalePlay.GUIElement.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"Morgas/src/Morgas.Listeners.js"
 		],
 		"uses": [
@@ -224,7 +233,7 @@
 	},
 	"GUI/TalePlay.GUIElement.Map.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"GUI/TalePlay.GUIElement.js",
 			"TalePlay.Map.js"
 		],
@@ -238,7 +247,7 @@
 	},
 	"GUI/TalePlay.GUIElement.Menu.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"GUI/TalePlay.GUIElement.js"
 		],
 		"uses": [
@@ -248,7 +257,7 @@
 	},
 	"GUI/TalePlay.GUIElement.Menu.PlayerBattleMenu.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"GUI/TalePlay.GUIElement.Menu.js"
 		],
 		"uses": [
@@ -258,7 +267,7 @@
 	},
 	"GUI/TalePlay.GUIElement.TextBox.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"GUI/TalePlay.GUIElement.js"
 		],
 		"uses": [
@@ -267,12 +276,12 @@
 	},
 	"Math/TalePlay.Math.Point.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Math/TalePlay.Math.Rect.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Math/TalePlay.Math.Point.js"
@@ -280,12 +289,13 @@
 	},
 	"minigames/ButtonStack.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js",
+			"GUI/TalePlay.GUIElement.js"
 		]
 	},
 	"minigames/TicTacToe.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"GUI/TalePlay.GUIElement.Menu.js"
 		],
 		"uses": [
@@ -294,7 +304,7 @@
 	},
 	"minigames/TimeStroke.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"GUI/TalePlay.GUIElement.js"
 		],
 		"uses": [
@@ -303,7 +313,7 @@
 	},
 	"RPGPlayer/TalePlay.GUIElement.Dialog.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"GUI/TalePlay.GUIElement.js"
 		],
 		"uses": [
@@ -314,7 +324,7 @@
 	},
 	"RPGPlayer/TalePlay.Layer.ActionMenu.GameMenu.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Layer.ActionMenu.js"
 		],
 		"uses": [
@@ -324,7 +334,7 @@
 	},
 	"RPGPlayer/TalePlay.RPGPlayer.GameSave.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"RPGPlayer/TalePlay.RPGPlayer.js",
 			"Morgas/src/DB/Morgas.DB.js"
 		],
@@ -332,7 +342,7 @@
 	},
 	"RPGPlayer/TalePlay.RPGPlayer.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"TalePlay.Layer.js"
 		],
 		"uses": [
@@ -347,22 +357,18 @@
 	},
 	"Morgas/src/Morgas.DependencyResolver.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
-	"Morgas/src/Morgas.js": {
-		"deps": [
-			"Morgas.js"
-		]
-	},
+	"Morgas/src/Morgas.js": true,
 	"Morgas/src/Morgas.Listeners.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.NodePatch.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"Morgas/src/Morgas.Patch.js"
 		],
 		"uses": [
@@ -371,7 +377,7 @@
 	},
 	"Morgas/src/Morgas.Organizer.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"Morgas/src/Morgas.SortedArray.js"
 		],
 		"uses": [
@@ -383,12 +389,12 @@
 	},
 	"Morgas/src/Morgas.Patch.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.Promise.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.util.object.adopt.js",
@@ -397,7 +403,7 @@
 	},
 	"Morgas/src/Morgas.SortedArray.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.util.object.iterate.js"
@@ -405,27 +411,27 @@
 	},
 	"Morgas/src/Morgas.util.converter.csv.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.crc32.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.download.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.function.bind.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.function.proxy.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.util.object.iterate.js"
@@ -433,22 +439,22 @@
 	},
 	"Morgas/src/Morgas.util.function.rescope.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.object.adopt.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.object.equals.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.object.find.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.util.object.equals.js",
@@ -457,12 +463,12 @@
 	},
 	"Morgas/src/Morgas.util.object.goPath.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.object.inputValues.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.util.object.goPath.js"
@@ -470,12 +476,12 @@
 	},
 	"Morgas/src/Morgas.util.object.iterate.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.object.iterateAsync.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.Promise.js",
@@ -484,17 +490,17 @@
 	},
 	"Morgas/src/Morgas.util.object.uniquify.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.queryParam.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		]
 	},
 	"Morgas/src/Morgas.util.Request.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.Promise.js"
@@ -502,7 +508,7 @@
 	},
 	"Morgas/src/Morgas.Worker.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"Morgas/src/Morgas.Listeners.js"
 		],
 		"uses": [
@@ -513,7 +519,7 @@
 	},
 	"Morgas/src/DB/Morgas.DB.IndexedDBConnector.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"Morgas/src/DB/Morgas.DB.js"
 		],
 		"uses": [
@@ -524,7 +530,7 @@
 	},
 	"Morgas/src/DB/Morgas.DB.js": {
 		"deps": [
-			"Morgas.js"
+			"Morgas/src/Morgas.js"
 		],
 		"uses": [
 			"Morgas/src/Morgas.Promise.js"
@@ -532,7 +538,7 @@
 	},
 	"Morgas/src/DB/Morgas.DB.ObjectConnector.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"Morgas/src/DB/Morgas.DB.js",
 			"Morgas/src/Morgas.Organizer.js"
 		],
@@ -543,7 +549,7 @@
 	},
 	"Morgas/src/DB/Morgas.Organizer.LazyCache.js": {
 		"deps": [
-			"Morgas.js",
+			"Morgas/src/Morgas.js",
 			"Morgas/src/Morgas.Organizer.js"
 		],
 		"uses": [

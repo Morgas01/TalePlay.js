@@ -17,6 +17,8 @@
 	"MapMaker": "TalePlay.Layer.MapMaker.js",
 	"Layer.Persistance": "TalePlay.Layer.Persistance.js",
 	"Layer.RoundBasedBattle": "TalePlay.Layer.RoundBasedBattle.js",
+	"Map.Int": "TalePlay.Map.Interactive.js",
+	"Map.Animation": "TalePlay.Map.Interactive.js",
 	"Map": "TalePlay.Map.js",
 	"Menu": "TalePlay.Menu.js",
 	"Skill": "TalePlay.Skill.js",
