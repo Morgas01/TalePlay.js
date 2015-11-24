@@ -3,11 +3,12 @@
 	var	MAP=GMOD("Map");
 
     SC=SC({
-		org:"Organizer"
+		org:"Organizer",
+		rs:"rescope"
     });
 
 	var collisionFilter=function(img){return img.collision};
-	var triggerGroups=function(img){return Object.keys(img.triggers)};
+	//var triggerGroups=function(img){return Object.keys(img.triggers)};
 
     var INT=MAP.Interactive=µ.Class(MAP,
     {
@@ -16,10 +17,16 @@
 			this.org=new SC.org();
         	this.mega(param);
 
-			this.org.filter("collision",collisionFilter)
-			.group("triggers",triggerGroups);
+			SC.rs.all(this,["_animate"]);
 
-			this.animations=new Map();
+			this.org.filter("collision",collisionFilter);
+			//.group("triggers",triggerGroups);
+
+			this.animations=new Set();
+			this.animationRequest=null;
+			this.animationTime=null;
+
+			this.startAnimations();
         },
 		add:function(image)
 		{
@@ -38,8 +45,51 @@
 				return true;
 			}
 			return false;
+		},
+		addAnimation:function(animation)
+		{
+			this.animations.add(animation);
+		},
+		startAnimations:function()
+		{
+			if(this.animationRequest==null)
+			{
+				this.animationTime=Date.now();
+				this.animationRequest=requestAnimationFrame(this._animate);
+			}
+		},
+		stopAnimaion:function()
+		{
+			if(this.animationRequest!=null)
+			{
+				cancelAnimationFrame(this.animationRequest);
+				this.animationRequest=this.animationTime=null;
+			}
+		},
+		_animate:function()
+		{
+			var time=Date.now();
+			var timeDiff=time-this.animationTime;
+			for(var ani of this.animations)
+			{
+				var running=true;
+				try
+				{
+					running=ani.step(timeDiff);
+				}
+				catch (e)
+				{
+					running=false;
+					µ.logger.warn(e);
+				}
+				if(!running) this.animations.delete(ani);
+			}
+
+			this.animationTime=time;
+			this.animationRequest=requestAnimationFrame(this._animate);
 		}
     });
+	SMOD("Map.Int",INT);
 	INT.Image= µ.Class(MAP.Image,
     {
         init:function(url,position,size,name,collision,triggers)
@@ -57,12 +107,17 @@
         }
     });
 	INT.Image.TRIGGER_TYPES=["stepIn","setpOver","stepOut","activate","collide"];
-	INT.Image.Animation=µ.Class({
-		step:function(image,timeDiff)
+	SMOD("Map.Int.Image",INT.Image);
+
+	INT.Animation=µ.Class({
+		init:function(target)
+		{
+			this.target=target;
+		},
+		step:function(timeDiff)
 		{
 			return false;
 		}
 	});
-    SMOD("Map.Int",INT);
-	SMOD("Map.Animation",INT.Image.Animation);
+	SMOD("Map.Int.Animation",INT.Animation);
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);
