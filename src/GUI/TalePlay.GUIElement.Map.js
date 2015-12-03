@@ -4,6 +4,7 @@
 	MAP=GMOD("Map"),
 	SC=SC({
 		find:"find",
+		adopt:"adopt",
 		rescope:"rescope",
 		proxy:"proxy",
         Org:"Organizer",
@@ -315,14 +316,12 @@
 
             this.collision=!!collision;
             this.trigger={
-            	type:null,
-            	value:null
+            	activate:null,
+            	stepIn:null,
+            	stepOver:null,
+            	stepOut:null
             };
-            if(trigger)
-            {
-            	this.trigger.type=trigger.type||null;
-            	this.trigger.value=trigger.value||null;
-            }
+            SC.adopt(this.trigger,trigger);
     	},
 		toJSON:function()
 		{
